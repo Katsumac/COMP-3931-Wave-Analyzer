@@ -1,6 +1,6 @@
 ﻿namespace comp3931Project
 {
-    partial class Form1
+    partial class WaveAnalyzer
     {
         /// <summary>
         ///  Required designer variable.
@@ -30,6 +30,7 @@
         {
             menuStrip1 = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
+            surpriseToolStripMenuItem = new ToolStripMenuItem();
             newToolStripMenuItem = new ToolStripMenuItem();
             optionsToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
@@ -43,15 +44,22 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, newToolStripMenuItem, optionsToolStripMenuItem, settingsToolStripMenuItem, saveToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(1014, 28);
+            menuStrip1.Size = new Size(1482, 28);
             menuStrip1.TabIndex = 1;
             menuStrip1.Text = "menuStrip1";
             // 
             // fileToolStripMenuItem
             // 
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { surpriseToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(46, 24);
             fileToolStripMenuItem.Text = "File";
+            // 
+            // surpriseToolStripMenuItem
+            // 
+            surpriseToolStripMenuItem.Name = "surpriseToolStripMenuItem";
+            surpriseToolStripMenuItem.Size = new Size(149, 26);
+            surpriseToolStripMenuItem.Text = "Surprise!";
             // 
             // newToolStripMenuItem
             // 
@@ -77,16 +85,17 @@
             saveToolStripMenuItem.Size = new Size(54, 24);
             saveToolStripMenuItem.Text = "Save";
             // 
-            // Form1
+            // WaveAnalyzer
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Navy;
-            ClientSize = new Size(1014, 578);
+            ClientSize = new Size(1482, 853);
             Controls.Add(menuStrip1);
+            IsMdiContainer = true;
             MainMenuStrip = menuStrip1;
-            Name = "Form1";
-            Text = "Form1";
+            Name = "WaveAnalyzer";
+            Text = "Wave Analyzer";
             Load += Form1_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
@@ -101,5 +110,6 @@
         private ToolStripMenuItem optionsToolStripMenuItem;
         private ToolStripMenuItem settingsToolStripMenuItem;
         private ToolStripMenuItem saveToolStripMenuItem;
+        private ToolStripMenuItem surpriseToolStripMenuItem;
     }
 }
