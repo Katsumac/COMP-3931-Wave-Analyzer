@@ -14,13 +14,13 @@ namespace comp3931Project
 
         private void Form1_Load(object sender, EventArgs e)
         {
+
             Filter filter = new Filter();
             filter.MdiParent = this;
             filter.TopLevel = false;
             filter.Show();
-            filter.Location = new Point(Screen.PrimaryScreen.Bounds.Width / 4, 520);
-
-
+            filter.Location = new Point(Screen.PrimaryScreen.Bounds.Width / 9, 490);
+            filter.Size = new Size(1000, 330);
 
             foreach (Control control in this.Controls)
             {
@@ -73,6 +73,17 @@ namespace comp3931Project
             {
                 e.Graphics.DrawCurve(pen, wavePoints.ToArray());
             }
+        }
+
+        private void filterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Filter filter = new Filter();
+            filter.MdiParent = this;
+            filter.TopLevel = false;
+            filter.Show();
+            filter.Location = new Point(Screen.PrimaryScreen.Bounds.Width / 9, 490);
+            filter.Size = new Size(1000, 330);
+
         }
     }
 }
