@@ -29,8 +29,12 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             contextMenuStrip1 = new ContextMenuStrip(components);
-            label1 = new Label();
+            chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            ((System.ComponentModel.ISupportInitialize)chart1).BeginInit();
             SuspendLayout();
             // 
             // contextMenuStrip1
@@ -39,30 +43,38 @@
             contextMenuStrip1.Name = "contextMenuStrip1";
             contextMenuStrip1.Size = new Size(61, 4);
             // 
-            // label1
+            // chart1
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(157, 103);
-            label1.Name = "label1";
-            label1.Size = new Size(243, 20);
-            label1.TabIndex = 1;
-            label1.Text = "This contains the filter functionality.";
+            chartArea1.Name = "ChartArea1";
+            chart1.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            chart1.Legends.Add(legend1);
+            chart1.Location = new Point(2, 0);
+            chart1.Margin = new Padding(0);
+            chart1.Name = "chart1";
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            chart1.Series.Add(series1);
+            chart1.Size = new Size(578, 252);
+            chart1.TabIndex = 1;
+            chart1.Text = "chart1";
             // 
             // Filter
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(582, 253);
-            Controls.Add(label1);
+            ClientSize = new Size(982, 253);
+            Controls.Add(chart1);
             Name = "Filter";
             Text = "Filter";
             Load += Filter_Load;
+            ((System.ComponentModel.ISupportInitialize)chart1).EndInit();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
         private ContextMenuStrip contextMenuStrip1;
-        private Label label1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
     }
 }
