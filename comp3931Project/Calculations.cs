@@ -9,15 +9,16 @@ namespace comp3931Project
     internal class Calculations
     {
 
-        public static double[] DFT(double[] s, int n)
+        public static ComplexNumber.complexnumber[] DFT(double[] s, int n)
         {
-            double[] A =  new double[n];
+            ComplexNumber.complexnumber[] A = new ComplexNumber.complexnumber[n];
             for (int f = 0; f < n; f++)
             {
-                double ATemp = 0;
+                ComplexNumber.complexnumber ATemp = new ComplexNumber.complexnumber(0, 0);
                 for (int t = 0; t < n; t++)
                 {
-                    ATemp += s[t] * Math.Cos(2 * Math.PI * t * f / n);
+                    ATemp.real += s[t] * Math.Cos(2 * Math.PI * t * f / n);
+                    ATemp.imaginary -= s[t] * Math.Sin(2 * Math.PI * t * f / n);
                 }
                 A[f] = ATemp;
             }
@@ -29,7 +30,7 @@ namespace comp3931Project
         double[] S = new double[N];
         for (int t = 0; t < N; t++)
         {
-            S[t] = Math.Cos((2 * Math.PI * t * f) / N) + Math.Cos((2 * Math.PI * t * (f + 2)) / N);
+                S[t] = Math.Cos((2 * Math.PI * t * f) / N);// + Math.Cos((2 * Math.PI * t * (f + 2)) / N);
         }
         return S;
     }

@@ -35,10 +35,7 @@
             optionsToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
             saveToolStripMenuItem = new ToolStripMenuItem();
-            WaveBox = new PictureBox();
-            filterToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)WaveBox).BeginInit();
             SuspendLayout();
             // 
             // menuStrip1
@@ -47,8 +44,8 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, newToolStripMenuItem, optionsToolStripMenuItem, settingsToolStripMenuItem, saveToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Padding = new Padding(6, 3, 0, 3);
-            menuStrip1.Size = new Size(1482, 30);
+            menuStrip1.Padding = new Padding(9, 4, 0, 4);
+            menuStrip1.Size = new Size(2409, 46);
             menuStrip1.TabIndex = 1;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -56,73 +53,55 @@
             // 
             fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { surpriseToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            fileToolStripMenuItem.Size = new Size(46, 24);
+            fileToolStripMenuItem.Size = new Size(71, 38);
             fileToolStripMenuItem.Text = "File";
             // 
             // surpriseToolStripMenuItem
             // 
             surpriseToolStripMenuItem.Name = "surpriseToolStripMenuItem";
-            surpriseToolStripMenuItem.Size = new Size(149, 26);
+            surpriseToolStripMenuItem.Size = new Size(240, 44);
             surpriseToolStripMenuItem.Text = "Surprise!";
+            surpriseToolStripMenuItem.Click += surpriseToolStripMenuItem_Click;
             // 
             // newToolStripMenuItem
             // 
             newToolStripMenuItem.Name = "newToolStripMenuItem";
-            newToolStripMenuItem.Size = new Size(53, 24);
+            newToolStripMenuItem.Size = new Size(82, 38);
             newToolStripMenuItem.Text = "New";
             // 
             // optionsToolStripMenuItem
             // 
-            optionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { filterToolStripMenuItem });
             optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            optionsToolStripMenuItem.Size = new Size(75, 24);
+            optionsToolStripMenuItem.Size = new Size(118, 38);
             optionsToolStripMenuItem.Text = "Options";
             // 
             // settingsToolStripMenuItem
             // 
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            settingsToolStripMenuItem.Size = new Size(76, 24);
+            settingsToolStripMenuItem.Size = new Size(120, 38);
             settingsToolStripMenuItem.Text = "Settings";
             // 
             // saveToolStripMenuItem
             // 
             saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            saveToolStripMenuItem.Size = new Size(54, 24);
+            saveToolStripMenuItem.Size = new Size(84, 38);
             saveToolStripMenuItem.Text = "Save";
-            // 
-            // WaveBox
-            // 
-            WaveBox.Location = new Point(14, 51);
-            WaveBox.Margin = new Padding(3, 4, 3, 4);
-            WaveBox.Name = "WaveBox";
-            WaveBox.Size = new Size(1434, 317);
-            WaveBox.TabIndex = 3;
-            WaveBox.TabStop = false;
-            WaveBox.Paint += WaveBox_Paint;
-            // 
-            // filterToolStripMenuItem
-            // 
-            filterToolStripMenuItem.Name = "filterToolStripMenuItem";
-            filterToolStripMenuItem.Size = new Size(224, 26);
-            filterToolStripMenuItem.Text = "Filter";
-            filterToolStripMenuItem.Click += filterToolStripMenuItem_Click;
             // 
             // WaveAnalyzer
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Navy;
-            ClientSize = new Size(1482, 853);
-            Controls.Add(WaveBox);
+            ClientSize = new Size(2409, 1365);
             Controls.Add(menuStrip1);
             IsMdiContainer = true;
             MainMenuStrip = menuStrip1;
+            Margin = new Padding(6, 4, 6, 4);
             Name = "WaveAnalyzer";
             Text = "Wave Analyzer";
             Load += Form1_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)WaveBox).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -135,7 +114,5 @@
         private ToolStripMenuItem settingsToolStripMenuItem;
         private ToolStripMenuItem saveToolStripMenuItem;
         private ToolStripMenuItem surpriseToolStripMenuItem;
-        private PictureBox WaveBox;
-        private ToolStripMenuItem filterToolStripMenuItem;
     }
 }

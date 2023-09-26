@@ -1,12 +1,10 @@
+using System.Windows.Forms;
+using static System.Windows.Forms.DataFormats;
+
 namespace comp3931Project
 {
     public partial class WaveAnalyzer : Form
     {
-
-        Pen pen = new Pen(Color.Red, 2.0F);
-
-        List<PointF> wavePoints = new List<PointF> { };
-
         public WaveAnalyzer()
         {
             InitializeComponent();
@@ -43,47 +41,20 @@ namespace comp3931Project
 
         }
 
-        private double ConvertToRadians(int angle)
+        private void surpriseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            return (Math.PI * angle) / 180;
-        }
+            WaveWindow wavewindow = new WaveWindow();
+            //wavewindow.TopLevel = false;
+           // wavewindow.FormBorderStyle = FormBorderStyle.None;
 
-        private double GetSin(int angle)
-        {
-            double radians = ConvertToRadians(angle);
-            return Math.Sin(radians);
-        }
+            //   wavewindow.AutoScroll = true;
+            wavewindow.StartPosition = FormStartPosition.Manual;
+            wavewindow.Left = 500;
+            wavewindow.Top = 500;
 
-        private void CalculatePoints(int range)
-        {
-            for (int i = 0; i < range; i++)
-            {
-                float sineY = (float)GetSin(i) * (-1);
-
-                float sineScale = WaveBox.Height / 2;
-                wavePoints.Add(new PointF(i, sineY * sineScale + sineScale));
-            }
-        }
-
-        private void WaveBox_Paint(object sender, PaintEventArgs e)
-        {
-            CalculatePoints(1260);
-            e.Graphics.Clear(Color.White);
-            if (wavePoints.Count > 0)
-            {
-                e.Graphics.DrawCurve(pen, wavePoints.ToArray());
-            }
-        }
-
-        private void filterToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Filter filter = new Filter();
-            filter.MdiParent = this;
-            filter.TopLevel = false;
-            filter.Show();
-            filter.Location = new Point(Screen.PrimaryScreen.Bounds.Width / 9, 490);
-            filter.Size = new Size(1000, 330);
-
+           // WaveAnalyzer.panel1.Controls.Add(wavewindow);
+          //  wavewindow.Location = new Point(0, 0);
+            wavewindow.Show();
         }
     }
 }
