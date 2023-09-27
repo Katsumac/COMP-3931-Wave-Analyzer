@@ -35,6 +35,7 @@
             optionsToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
             saveToolStripMenuItem = new ToolStripMenuItem();
+            WaveAnalyzerPanel = new Panel();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -44,8 +45,8 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, newToolStripMenuItem, optionsToolStripMenuItem, settingsToolStripMenuItem, saveToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Padding = new Padding(9, 4, 0, 4);
-            menuStrip1.Size = new Size(2409, 46);
+            menuStrip1.Padding = new Padding(5, 2, 0, 2);
+            menuStrip1.Size = new Size(966, 24);
             menuStrip1.TabIndex = 1;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -53,50 +54,60 @@
             // 
             fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { surpriseToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            fileToolStripMenuItem.Size = new Size(71, 38);
+            fileToolStripMenuItem.Size = new Size(37, 20);
             fileToolStripMenuItem.Text = "File";
             // 
             // surpriseToolStripMenuItem
             // 
             surpriseToolStripMenuItem.Name = "surpriseToolStripMenuItem";
-            surpriseToolStripMenuItem.Size = new Size(240, 44);
+            surpriseToolStripMenuItem.Size = new Size(119, 22);
             surpriseToolStripMenuItem.Text = "Surprise!";
             surpriseToolStripMenuItem.Click += surpriseToolStripMenuItem_Click;
             // 
             // newToolStripMenuItem
             // 
             newToolStripMenuItem.Name = "newToolStripMenuItem";
-            newToolStripMenuItem.Size = new Size(82, 38);
+            newToolStripMenuItem.Size = new Size(43, 20);
             newToolStripMenuItem.Text = "New";
             // 
             // optionsToolStripMenuItem
             // 
             optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            optionsToolStripMenuItem.Size = new Size(118, 38);
+            optionsToolStripMenuItem.Size = new Size(61, 20);
             optionsToolStripMenuItem.Text = "Options";
             // 
             // settingsToolStripMenuItem
             // 
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            settingsToolStripMenuItem.Size = new Size(120, 38);
+            settingsToolStripMenuItem.Size = new Size(61, 20);
             settingsToolStripMenuItem.Text = "Settings";
             // 
             // saveToolStripMenuItem
             // 
             saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            saveToolStripMenuItem.Size = new Size(84, 38);
+            saveToolStripMenuItem.Size = new Size(43, 20);
             saveToolStripMenuItem.Text = "Save";
+            // 
+            // WaveAnalyzerPanel
+            // 
+            WaveAnalyzerPanel.AutoSize = true;
+            WaveAnalyzerPanel.Location = new Point(0, 27);
+            WaveAnalyzerPanel.Name = "WaveAnalyzerPanel";
+            WaveAnalyzerPanel.Size = new Size(969, 361);
+            WaveAnalyzerPanel.TabIndex = 3;
+            WaveAnalyzerPanel.Paint += WaveAnalyzerPanel_Paint;
             // 
             // WaveAnalyzer
             // 
-            AutoScaleDimensions = new SizeF(13F, 32F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Navy;
-            ClientSize = new Size(2409, 1365);
+            ClientSize = new Size(966, 735);
+            Controls.Add(WaveAnalyzerPanel);
             Controls.Add(menuStrip1);
             IsMdiContainer = true;
             MainMenuStrip = menuStrip1;
-            Margin = new Padding(6, 4, 6, 4);
+            Margin = new Padding(3, 2, 3, 2);
             Name = "WaveAnalyzer";
             Text = "Wave Analyzer";
             Load += Form1_Load;
@@ -114,5 +125,6 @@
         private ToolStripMenuItem settingsToolStripMenuItem;
         private ToolStripMenuItem saveToolStripMenuItem;
         private ToolStripMenuItem surpriseToolStripMenuItem;
+        private Panel WaveAnalyzerPanel;
     }
 }

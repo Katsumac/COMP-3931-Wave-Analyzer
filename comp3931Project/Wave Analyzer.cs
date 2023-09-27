@@ -12,7 +12,6 @@ namespace comp3931Project
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
             Filter filter = new Filter();
             filter.MdiParent = this;
             filter.TopLevel = false;
@@ -43,18 +42,25 @@ namespace comp3931Project
 
         private void surpriseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WaveWindow wavewindow = new WaveWindow();
+            WaveWindow wavewindow = new WaveWindow() { TopLevel = false, TopMost = true };
+            wavewindow.FormBorderStyle = FormBorderStyle.None;
+            WaveAnalyzerPanel.Controls.Add(wavewindow);
             //wavewindow.TopLevel = false;
-           // wavewindow.FormBorderStyle = FormBorderStyle.None;
+            // wavewindow.FormBorderStyle = FormBorderStyle.None;
 
             //   wavewindow.AutoScroll = true;
-            wavewindow.StartPosition = FormStartPosition.Manual;
-            wavewindow.Left = 500;
-            wavewindow.Top = 500;
+            /*  wavewindow.StartPosition = FormStartPosition.Manual;
+              wavewindow.Left = 500;
+              wavewindow.Top = 500;*/
 
-           // WaveAnalyzer.panel1.Controls.Add(wavewindow);
-          //  wavewindow.Location = new Point(0, 0);
+            // WaveAnalyzer.panel1.Controls.Add(wavewindow);
+            //  wavewindow.Location = new Point(0, 0);
             wavewindow.Show();
+        }
+
+        private void WaveAnalyzerPanel_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

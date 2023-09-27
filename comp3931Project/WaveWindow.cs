@@ -33,9 +33,9 @@ namespace comp3931Project
         {
 
             for (int i = 0; i < S.Count(); i++)
-            { 
+            {
                 float sineScale = WaveBox.Height / 2;
-                wavePoints.Add(new PointF(i, (float)S[i] * (sineScale / 3) + sineScale));
+                wavePoints.Add(new PointF(i * 3, (float)S[i] * (sineScale / 3) + sineScale));
             }
 
         }
@@ -51,14 +51,17 @@ namespace comp3931Project
         }
         private void WaveBox_Paint(object sender, PaintEventArgs e)
         {
-            ProcessSamples(Calculations.createSamples(1500, 5));
-
-
+            ProcessSamples(Calculations.createSamples(2200, 100));
+            PointF[] a = wavePoints.ToArray();
             e.Graphics.Clear(Color.White);
             if (wavePoints.Count > 0)
+
             {
-                e.Graphics.DrawCurve(pen, wavePoints.ToArray());
+                e.Graphics.DrawCurve(pen, a);
+                e.Graphics.DrawLine(pen, 0, WaveBox.Height / 2, a[wavePoints.Count - 1].X, WaveBox.Height / 2);
             }
         }
+
+
     }
 }
