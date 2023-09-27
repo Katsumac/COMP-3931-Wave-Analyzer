@@ -10,6 +10,7 @@ namespace comp3931Project
     {
 
         public static double[] DFT(double[] s, int n)
+
         {
             double[] A = new double[n];
             for (int f = 0; f < n; f++)
@@ -26,15 +27,16 @@ namespace comp3931Project
         }
 
        /* public static ComplexNumber.complexnumber[] DFT(double[] s, int n)
+
         {
-            ComplexNumber.complexnumber[] A = new ComplexNumber.complexnumber[n];
+            double[] A = new double[n];
             for (int f = 0; f < n; f++)
             {
-                ComplexNumber.complexnumber ATemp = new ComplexNumber.complexnumber(0, 0);
+                double ATemp = 0;
                 for (int t = 0; t < n; t++)
                 {
-                    ATemp.real += s[t] * Math.Cos(2 * Math.PI * t * f / n);
-                    ATemp.imaginary -= s[t] * Math.Sin(2 * Math.PI * t * f / n);
+                    ATemp += s[t] * Math.Cos(2 * Math.PI * t * f / n);
+                   // ATemp.imaginary -= s[t] * Math.Sin(2 * Math.PI * t * f / n);
                 }
                 A[f] = ATemp;
             }

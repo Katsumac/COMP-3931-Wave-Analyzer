@@ -38,6 +38,9 @@
             filterToolStripMenuItem = new ToolStripMenuItem();
             waveDisplayToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
+
+            saveToolStripMenuItem = new ToolStripMenuItem();
+            WaveAnalyzerPanel = new Panel();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -47,7 +50,11 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, loadToolStripMenuItem, toolsToolStripMenuItem, settingsToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
+
             menuStrip1.Size = new Size(1184, 28);
+
+            menuStrip1.Padding = new Padding(5, 2, 0, 2);
+
             menuStrip1.TabIndex = 1;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -55,18 +62,23 @@
             // 
             fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { surpriseToolStripMenuItem, saveToAudioFileToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+
             fileToolStripMenuItem.Size = new Size(46, 24);
+
             fileToolStripMenuItem.Text = "File";
             // 
             // surpriseToolStripMenuItem
             // 
             surpriseToolStripMenuItem.Name = "surpriseToolStripMenuItem";
+
             surpriseToolStripMenuItem.Size = new Size(212, 26);
+
             surpriseToolStripMenuItem.Text = "Surprise!";
             surpriseToolStripMenuItem.Click += surpriseToolStripMenuItem_Click;
             // 
             // saveToAudioFileToolStripMenuItem
             // 
+
             saveToAudioFileToolStripMenuItem.Name = "saveToAudioFileToolStripMenuItem";
             saveToAudioFileToolStripMenuItem.Size = new Size(212, 26);
             saveToAudioFileToolStripMenuItem.Text = "Save to Audio File";
@@ -103,10 +115,12 @@
             waveDisplayToolStripMenuItem.Name = "waveDisplayToolStripMenuItem";
             waveDisplayToolStripMenuItem.Size = new Size(224, 26);
             waveDisplayToolStripMenuItem.Text = "Wave Display";
+
             // 
             // settingsToolStripMenuItem
             // 
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
+
             settingsToolStripMenuItem.Size = new Size(76, 24);
             settingsToolStripMenuItem.Text = "Settings";
             // 
@@ -120,6 +134,29 @@
             IsMdiContainer = true;
             MainMenuStrip = menuStrip1;
             Margin = new Padding(4, 2, 4, 2);
+
+            // 
+            // WaveAnalyzerPanel
+            // 
+            WaveAnalyzerPanel.AutoSize = true;
+            WaveAnalyzerPanel.Location = new Point(0, 27);
+            WaveAnalyzerPanel.Name = "WaveAnalyzerPanel";
+            WaveAnalyzerPanel.Size = new Size(969, 361);
+            WaveAnalyzerPanel.TabIndex = 3;
+            WaveAnalyzerPanel.Paint += WaveAnalyzerPanel_Paint;
+            // 
+            // WaveAnalyzer
+            // 
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.Navy;
+            ClientSize = new Size(966, 735);
+            Controls.Add(WaveAnalyzerPanel);
+            Controls.Add(menuStrip1);
+            IsMdiContainer = true;
+            MainMenuStrip = menuStrip1;
+            Margin = new Padding(3, 2, 3, 2);
+
             Name = "WaveAnalyzer";
             Text = "Wave Analyzer";
             Load += Form1_Load;
@@ -136,9 +173,13 @@
         private ToolStripMenuItem loadToolStripMenuItem;
         private ToolStripMenuItem settingsToolStripMenuItem;
         private ToolStripMenuItem surpriseToolStripMenuItem;
+
         private ToolStripMenuItem audioFileToolStripMenuItem;
         private ToolStripMenuItem saveToAudioFileToolStripMenuItem;
         private ToolStripMenuItem filterToolStripMenuItem;
         private ToolStripMenuItem waveDisplayToolStripMenuItem;
+
+        private Panel WaveAnalyzerPanel;
+
     }
 }
