@@ -23,7 +23,7 @@ namespace comp3931Project
             filter.MdiParent = this;
             filter.TopLevel = false;
             filter.Show();
-            filter.Location = new Point(0, 300);
+            filter.Location = new Point(0, 500);
             filter.Size = new Size(1000, 330);
 
             foreach (Control control in this.Controls)
@@ -69,7 +69,7 @@ namespace comp3931Project
         private void filterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             loadFilter();
-
+        }
         private void WaveAnalyzerPanel_Paint(object sender, PaintEventArgs e)
         {
 

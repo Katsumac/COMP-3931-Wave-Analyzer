@@ -39,7 +39,6 @@
             waveDisplayToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
 
-            saveToolStripMenuItem = new ToolStripMenuItem();
             WaveAnalyzerPanel = new Panel();
             menuStrip1.SuspendLayout();
             SuspendLayout();
