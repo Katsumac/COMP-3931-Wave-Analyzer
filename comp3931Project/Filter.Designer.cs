@@ -56,7 +56,7 @@
             series1.Legend = "Legend1";
             series1.Name = "Series1";
             chart1.Series.Add(series1);
-            chart1.Size = new Size(578, 252);
+            chart1.Size = new Size(977, 252);
             chart1.TabIndex = 1;
             chart1.Text = "chart1";
             // 

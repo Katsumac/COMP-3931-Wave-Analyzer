@@ -12,11 +12,18 @@ namespace comp3931Project
 
         private void Form1_Load(object sender, EventArgs e)
         {
+
+            loadFilter();   
+        }
+
+        private void loadFilter()
+        {
+
             Filter filter = new Filter();
             filter.MdiParent = this;
             filter.TopLevel = false;
             filter.Show();
-            filter.Location = new Point(Screen.PrimaryScreen.Bounds.Width / 9, 490);
+            filter.Location = new Point(0, 300);
             filter.Size = new Size(1000, 330);
 
             foreach (Control control in this.Controls)
@@ -57,6 +64,11 @@ namespace comp3931Project
             //  wavewindow.Location = new Point(0, 0);
             wavewindow.Show();
         }
+
+
+        private void filterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            loadFilter();
 
         private void WaveAnalyzerPanel_Paint(object sender, PaintEventArgs e)
         {
