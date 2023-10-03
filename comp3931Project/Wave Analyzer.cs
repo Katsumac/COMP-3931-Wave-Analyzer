@@ -13,7 +13,7 @@ namespace comp3931Project
         private void Form1_Load(object sender, EventArgs e)
         {
 
-            loadFilter();   
+            loadFilter();
         }
 
         private void loadFilter()
@@ -73,6 +73,16 @@ namespace comp3931Project
         private void WaveAnalyzerPanel_Paint(object sender, PaintEventArgs e)
         {
 
+        }
+
+        private void audioFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WaveFileReadWrite.readFile(".\\comp3931Project\\music.wav");
+        }
+
+        private void saveToAudioFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            WaveFileReadWrite.writeFile(WaveFileReadWrite.readFile(".\\comp3931Project\\music.wav"), ".\\comp3931Project\\music.wav");
         }
     }
 }

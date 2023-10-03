@@ -42,7 +42,7 @@
             WaveBox.Location = new Point(2, 1);
             WaveBox.Margin = new Padding(2, 1, 2, 1);
             WaveBox.Name = "WaveBox";
-            WaveBox.Size = new Size(1073, 392);
+            WaveBox.Size = new Size(1226, 523);
             WaveBox.TabIndex = 0;
             WaveBox.TabStop = false;
             WaveBox.Paint += WaveBox_Paint;
@@ -55,24 +55,25 @@
             WaveBoxPanel.Location = new Point(0, 0);
             WaveBoxPanel.Margin = new Padding(2, 1, 2, 1);
             WaveBoxPanel.Name = "WaveBoxPanel";
-            WaveBoxPanel.Size = new Size(890, 408);
+            WaveBoxPanel.Size = new Size(1017, 353);
             WaveBoxPanel.TabIndex = 1;
             // 
             // WaveWindowPanel
             // 
             WaveWindowPanel.AutoScroll = true;
             WaveWindowPanel.Controls.Add(WaveBox);
-            WaveWindowPanel.Location = new Point(0, 3);
+            WaveWindowPanel.Location = new Point(0, 4);
+            WaveWindowPanel.Margin = new Padding(3, 4, 3, 4);
             WaveWindowPanel.Name = "WaveWindowPanel";
-            WaveWindowPanel.Size = new Size(909, 401);
+            WaveWindowPanel.Size = new Size(1039, 535);
             WaveWindowPanel.TabIndex = 1;
             // 
             // WaveWindow
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlDark;
-            ClientSize = new Size(890, 408);
+            ClientSize = new Size(1017, 353);
             Controls.Add(WaveBoxPanel);
             Margin = new Padding(2, 1, 2, 1);
             Name = "WaveWindow";

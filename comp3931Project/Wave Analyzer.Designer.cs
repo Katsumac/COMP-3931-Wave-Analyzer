@@ -38,7 +38,6 @@
             filterToolStripMenuItem = new ToolStripMenuItem();
             waveDisplayToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
-
             WaveAnalyzerPanel = new Panel();
             menuStrip1.SuspendLayout();
             SuspendLayout();
@@ -49,11 +48,8 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, loadToolStripMenuItem, toolsToolStripMenuItem, settingsToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-
-            menuStrip1.Size = new Size(1184, 28);
-
-            menuStrip1.Padding = new Padding(5, 2, 0, 2);
-
+            menuStrip1.Padding = new Padding(6, 3, 0, 3);
+            menuStrip1.Size = new Size(1104, 30);
             menuStrip1.TabIndex = 1;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -61,26 +57,22 @@
             // 
             fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { surpriseToolStripMenuItem, saveToAudioFileToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-
             fileToolStripMenuItem.Size = new Size(46, 24);
-
             fileToolStripMenuItem.Text = "File";
             // 
             // surpriseToolStripMenuItem
             // 
             surpriseToolStripMenuItem.Name = "surpriseToolStripMenuItem";
-
-            surpriseToolStripMenuItem.Size = new Size(212, 26);
-
+            surpriseToolStripMenuItem.Size = new Size(224, 26);
             surpriseToolStripMenuItem.Text = "Surprise!";
             surpriseToolStripMenuItem.Click += surpriseToolStripMenuItem_Click;
             // 
             // saveToAudioFileToolStripMenuItem
             // 
-
             saveToAudioFileToolStripMenuItem.Name = "saveToAudioFileToolStripMenuItem";
-            saveToAudioFileToolStripMenuItem.Size = new Size(212, 26);
+            saveToAudioFileToolStripMenuItem.Size = new Size(224, 26);
             saveToAudioFileToolStripMenuItem.Text = "Save to Audio File";
+            saveToAudioFileToolStripMenuItem.Click += saveToAudioFileToolStripMenuItem_Click;
             // 
             // loadToolStripMenuItem
             // 
@@ -94,6 +86,7 @@
             audioFileToolStripMenuItem.Name = "audioFileToolStripMenuItem";
             audioFileToolStripMenuItem.Size = new Size(224, 26);
             audioFileToolStripMenuItem.Text = "Audio File";
+            audioFileToolStripMenuItem.Click += audioFileToolStripMenuItem_Click;
             // 
             // toolsToolStripMenuItem
             // 
@@ -114,48 +107,33 @@
             waveDisplayToolStripMenuItem.Name = "waveDisplayToolStripMenuItem";
             waveDisplayToolStripMenuItem.Size = new Size(224, 26);
             waveDisplayToolStripMenuItem.Text = "Wave Display";
-
             // 
             // settingsToolStripMenuItem
             // 
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-
             settingsToolStripMenuItem.Size = new Size(76, 24);
             settingsToolStripMenuItem.Text = "Settings";
+            // 
+            // WaveAnalyzerPanel
+            // 
+            WaveAnalyzerPanel.AutoSize = true;
+            WaveAnalyzerPanel.Location = new Point(0, 36);
+            WaveAnalyzerPanel.Margin = new Padding(3, 4, 3, 4);
+            WaveAnalyzerPanel.Name = "WaveAnalyzerPanel";
+            WaveAnalyzerPanel.Size = new Size(1107, 481);
+            WaveAnalyzerPanel.TabIndex = 3;
+            WaveAnalyzerPanel.Paint += WaveAnalyzerPanel_Paint;
             // 
             // WaveAnalyzer
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Navy;
-            ClientSize = new Size(1184, 659);
-            Controls.Add(menuStrip1);
-            IsMdiContainer = true;
-            MainMenuStrip = menuStrip1;
-            Margin = new Padding(4, 2, 4, 2);
-
-            // 
-            // WaveAnalyzerPanel
-            // 
-            WaveAnalyzerPanel.AutoSize = true;
-            WaveAnalyzerPanel.Location = new Point(0, 27);
-            WaveAnalyzerPanel.Name = "WaveAnalyzerPanel";
-            WaveAnalyzerPanel.Size = new Size(969, 361);
-            WaveAnalyzerPanel.TabIndex = 3;
-            WaveAnalyzerPanel.Paint += WaveAnalyzerPanel_Paint;
-            // 
-            // WaveAnalyzer
-            // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.Navy;
-            ClientSize = new Size(966, 735);
+            ClientSize = new Size(1104, 980);
             Controls.Add(WaveAnalyzerPanel);
             Controls.Add(menuStrip1);
             IsMdiContainer = true;
             MainMenuStrip = menuStrip1;
-            Margin = new Padding(3, 2, 3, 2);
-
             Name = "WaveAnalyzer";
             Text = "Wave Analyzer";
             Load += Form1_Load;
