@@ -78,9 +78,32 @@ namespace comp3931Project
             this.DataSize = BitConverter.ToInt32(fileHeader, 40);
     }
 
-        public void WriteWavFile(String filename)
+        public void WriteWavFile(String filename, byte[] arr)
         {
-            
+            FileStream fs = new FileStream("music.wav", FileMode.Create);
+            BinaryWriter writer = new BinaryWriter(fs);
+
+            writer.Write(this.ChunkID);
+            writer.Write(this.ChunkSize);
+            writer.Write(this.Format);
+            writer.Write(this.FMTID);
+            writer.Write(this.FMTSize);
+            writer.Write(this.FMTFormatTag);
+            writer.Write(this.FMTChannels);
+            writer.Write(this.FMTSampleRate);
+            writer.Write(this.FMTByteRate);
+            writer.Write(this.FMBlock);
+            writer.Write(this.FMTBPS);
+            writer.Write(this.DataID);
+            writer.Write(this.DataSize);
+
+            for (int i = 0; i < arr.Length; i++)
+            {
+                writer.Write(arr[i]);
+            }
+
+            fs.Close();
+
         }
     }
 }
