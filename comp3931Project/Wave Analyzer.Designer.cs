@@ -39,6 +39,7 @@
             waveDisplayToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
             WaveAnalyzerPanel = new Panel();
+            waveGraphToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -63,20 +64,20 @@
             // surpriseToolStripMenuItem
             // 
             surpriseToolStripMenuItem.Name = "surpriseToolStripMenuItem";
-            surpriseToolStripMenuItem.Size = new Size(224, 26);
+            surpriseToolStripMenuItem.Size = new Size(212, 26);
             surpriseToolStripMenuItem.Text = "Surprise!";
             surpriseToolStripMenuItem.Click += surpriseToolStripMenuItem_Click;
             // 
             // saveToAudioFileToolStripMenuItem
             // 
             saveToAudioFileToolStripMenuItem.Name = "saveToAudioFileToolStripMenuItem";
-            saveToAudioFileToolStripMenuItem.Size = new Size(224, 26);
+            saveToAudioFileToolStripMenuItem.Size = new Size(212, 26);
             saveToAudioFileToolStripMenuItem.Text = "Save to Audio File";
             saveToAudioFileToolStripMenuItem.Click += saveToAudioFileToolStripMenuItem_Click;
             // 
             // loadToolStripMenuItem
             // 
-            loadToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { audioFileToolStripMenuItem });
+            loadToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { audioFileToolStripMenuItem, waveGraphToolStripMenuItem });
             loadToolStripMenuItem.Name = "loadToolStripMenuItem";
             loadToolStripMenuItem.Size = new Size(56, 24);
             loadToolStripMenuItem.Text = "Load";
@@ -84,7 +85,7 @@
             // audioFileToolStripMenuItem
             // 
             audioFileToolStripMenuItem.Name = "audioFileToolStripMenuItem";
-            audioFileToolStripMenuItem.Size = new Size(224, 26);
+            audioFileToolStripMenuItem.Size = new Size(159, 26);
             audioFileToolStripMenuItem.Text = "Audio File";
             audioFileToolStripMenuItem.Click += audioFileToolStripMenuItem_Click;
             // 
@@ -98,14 +99,14 @@
             // filterToolStripMenuItem
             // 
             filterToolStripMenuItem.Name = "filterToolStripMenuItem";
-            filterToolStripMenuItem.Size = new Size(224, 26);
+            filterToolStripMenuItem.Size = new Size(181, 26);
             filterToolStripMenuItem.Text = "Filter";
             filterToolStripMenuItem.Click += filterToolStripMenuItem_Click;
             // 
             // waveDisplayToolStripMenuItem
             // 
             waveDisplayToolStripMenuItem.Name = "waveDisplayToolStripMenuItem";
-            waveDisplayToolStripMenuItem.Size = new Size(224, 26);
+            waveDisplayToolStripMenuItem.Size = new Size(181, 26);
             waveDisplayToolStripMenuItem.Text = "Wave Display";
             // 
             // settingsToolStripMenuItem
@@ -123,6 +124,13 @@
             WaveAnalyzerPanel.Size = new Size(1107, 481);
             WaveAnalyzerPanel.TabIndex = 3;
             WaveAnalyzerPanel.Paint += WaveAnalyzerPanel_Paint;
+            // 
+            // waveGraphToolStripMenuItem
+            // 
+            waveGraphToolStripMenuItem.Name = "waveGraphToolStripMenuItem";
+            waveGraphToolStripMenuItem.Size = new Size(224, 26);
+            waveGraphToolStripMenuItem.Text = "Wave Graph";
+            waveGraphToolStripMenuItem.Click += waveGraphToolStripMenuItem_Click;
             // 
             // WaveAnalyzer
             // 
@@ -157,6 +165,6 @@
         private ToolStripMenuItem waveDisplayToolStripMenuItem;
 
         private Panel WaveAnalyzerPanel;
-
+        private ToolStripMenuItem waveGraphToolStripMenuItem;
     }
 }

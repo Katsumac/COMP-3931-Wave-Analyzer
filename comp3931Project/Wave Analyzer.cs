@@ -84,5 +84,11 @@ namespace comp3931Project
         {
             WaveFileReadWrite.writeFile(WaveFileReadWrite.readFile(".\\comp3931Project\\music.wav"), ".\\comp3931Project\\music.wav");
         }
+
+        private void waveGraphToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            dynamicWaveGraph waveGraph = new dynamicWaveGraph();
+            waveGraph.Show();
+        }
     }
 }

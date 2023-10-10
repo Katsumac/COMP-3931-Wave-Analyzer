@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace comp3931Project
 {
@@ -61,7 +62,5 @@ namespace comp3931Project
                 e.Graphics.DrawLine(pen, 0, WaveBox.Height / 2, a[wavePoints.Count - 1].X, WaveBox.Height / 2);
             }
         }
-
-
     }
 }

@@ -11,17 +11,16 @@ using System.Windows.Forms.DataVisualization.Charting;
 
 namespace comp3931Project
 {
-    public partial class Filter : Form
+    public partial class dynamicWaveGraph : Form
     {
-        public Filter()
+        public dynamicWaveGraph()
         {
             InitializeComponent();
         }
 
-        private void Filter_Load(object sender, EventArgs e)
+        private void dynamicWaveGraph_Load(object sender, EventArgs e)
         {
-            double[] A = Calculations.DFT(Calculations.createSamples(30, 8), 30);
-            /*            ComplexNumber.complexnumber[] A = Calculations.DFT(Calculations.createSamples(30, 8), 30);*/
+            double[] sample = Calculations.createSamples(30, 8);
 
             const int pageSize = 10;
 
@@ -30,26 +29,28 @@ namespace comp3931Project
 
             // Populate the bar chart chart
             Series filterChart = chart1.Series.Add("Frequency");
-            populateBarChart(A, filterChart);
+            filterChart.ChartType = SeriesChartType.Spline;
+          
+            populateLineChart(sample, filterChart);
 
             // Customize the bar chart
             ChartArea filterChartArea = chart1.ChartAreas[filterChart.ChartArea];
-            customizeBarChart(pageSize, filterChartArea, A);
+            customizeLineChart(pageSize, filterChartArea, sample);
 
             chart1.MouseWheel += chart1_MouseWheel;
         }
 
-        private void populateBarChart(double[] A, Series chartLabel)
+        private void populateLineChart(double[] sample, Series chartLabel)
         {
-            for (int i = 0; i < A.Length; i++)
-                chartLabel.Points.AddXY(i, A[i]);
+            for (int i = 0; i < sample.Length; i++)
+                chartLabel.Points.AddXY(i, sample[i]);
         }
 
-        private void customizeBarChart(int pageSize, ChartArea chartArea, double[] A)
+        private void customizeLineChart(int pageSize, ChartArea chartArea, double[] sample)
         {
             // How much data we want
             chartArea.AxisX.Minimum = 0;
-            chartArea.AxisX.Maximum = A.Length;
+            chartArea.AxisX.Maximum = sample.Length;
 
             // Enables scrolling
             chartArea.CursorX.AutoScroll = true;
@@ -60,6 +61,7 @@ namespace comp3931Project
             chartArea.AxisX.Interval = 1;
 
             // Works with Zoomable to allow zooming via highlighting
+            chartArea.CursorX.IsUserEnabled = true;
             chartArea.CursorX.IsUserSelectionEnabled = true;
 
             // Sets the thumb style
@@ -69,7 +71,7 @@ namespace comp3931Project
             chartArea.AxisX.ScaleView.SmallScrollSize = pageSize;
         }
 
-        /*      For bar chart scrolling*/
+        /*      For line chart scrolling*/
         private void chart1_MouseWheel(object sender, MouseEventArgs e)
         {
             var chart = (Chart)sender;
@@ -94,15 +96,5 @@ namespace comp3931Project
                 yAxis.ScaleView.Zoom(0, yMax - 1);
             }
         }
-
-
-
-        /*        private void populateBarChart(ComplexNumber.complexnumber[] A, Series chartLabel)
-                {
-                    for (int f = 0; f < A.Length; f++)
-                    {
-                        filterChart.Points.AddXY(f, A[f]);
-                    }
-                }*/
     }
 }
