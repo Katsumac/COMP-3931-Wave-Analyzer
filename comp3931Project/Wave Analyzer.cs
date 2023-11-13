@@ -13,18 +13,19 @@ namespace comp3931Project
         private void Form1_Load(object sender, EventArgs e)
         {
 
+            loadDynamicWaveGraph();
+            loadDynamicWaveGraph2();
             loadFilter();
         }
 
-        private void loadFilter()
+        private void loadDynamicWaveGraph()
         {
-
-            Filter filter = new Filter();
-            filter.MdiParent = this;
-            filter.TopLevel = false;
-            filter.Show();
-            filter.Location = new Point(0, 500);
-            filter.Size = new Size(1000, 330);
+            dynamicWaveGraph dynamicWaveGraph = new dynamicWaveGraph();
+            dynamicWaveGraph.MdiParent = this;
+            dynamicWaveGraph.TopLevel = false;
+            dynamicWaveGraph.Show();
+            dynamicWaveGraph.Location = new Point(0, 10);
+            dynamicWaveGraph.Size = new Size(1035, 300);
 
             foreach (Control control in this.Controls)
             {
@@ -37,21 +38,52 @@ namespace comp3931Project
             }
         }
 
-        private void domainUpDown1_SelectedItemChanged(object sender, EventArgs e)
+        private void loadDynamicWaveGraph2()
         {
+            dynamicWaveGraph2 dynamicWaveGraph2 = new dynamicWaveGraph2();
+            dynamicWaveGraph2.MdiParent = this;
+            dynamicWaveGraph2.TopLevel = false;
+            dynamicWaveGraph2.Show();
+            dynamicWaveGraph2.Location = new Point(0, 320);
+            dynamicWaveGraph2.Size = new Size(1035, 300);
 
+            foreach (Control control in this.Controls)
+            {
+                MdiClient client = control as MdiClient;
+                if (client != null)
+                {
+                    client.BackColor = Color.Blue;
+                    break;
+                }
+            }
         }
 
-        private void toolStripContainer1_ContentPanel_Load(object sender, EventArgs e)
+        private void loadFilter()
         {
 
+            Filter filter = new Filter();
+            filter.MdiParent = this;
+            filter.TopLevel = false;
+            filter.Show();
+            filter.Location = new Point(0, 630);
+            filter.Size = new Size(1035, 300);
+
+            foreach (Control control in this.Controls)
+            {
+                MdiClient client = control as MdiClient;
+                if (client != null)
+                {
+                    client.BackColor = Color.Blue;
+                    break;
+                }
+            }
         }
 
         private void surpriseToolStripMenuItem_Click(object sender, EventArgs e)
         {
             WaveWindow wavewindow = new WaveWindow() { TopLevel = false, TopMost = true };
             wavewindow.FormBorderStyle = FormBorderStyle.None;
-            WaveAnalyzerPanel.Controls.Add(wavewindow);
+            //WaveAnalyzerPanel.Controls.Add(wavewindow);
             //wavewindow.TopLevel = false;
             // wavewindow.FormBorderStyle = FormBorderStyle.None;
 
@@ -90,5 +122,36 @@ namespace comp3931Project
             dynamicWaveGraph waveGraph = new dynamicWaveGraph();
             waveGraph.Show();
         }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var fileContent = string.Empty;
+            var filePath = string.Empty;
+
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = "c:\\";
+                openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    //Get the path of specified file
+                    filePath = openFileDialog.FileName;
+
+                    //Read the contents of the file into a stream
+                    var fileStream = openFileDialog.OpenFile();
+
+                    using (StreamReader reader = new StreamReader(fileStream))
+                    {
+                        fileContent = reader.ReadToEnd();
+                    }
+                }
+            }
+
+            MessageBox.Show(fileContent, "File Content at path: " + filePath, MessageBoxButtons.OK);
+        }
+
     }
 }

@@ -34,6 +34,7 @@
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             contextMenuStrip1 = new ContextMenuStrip(components);
             chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            FilterButton = new Button();
             ((System.ComponentModel.ISupportInitialize)chart1).BeginInit();
             SuspendLayout();
             // 
@@ -56,15 +57,27 @@
             series1.Legend = "Legend1";
             series1.Name = "Series1";
             chart1.Series.Add(series1);
-            chart1.Size = new Size(977, 252);
+            chart1.Size = new Size(1015, 252);
             chart1.TabIndex = 1;
             chart1.Text = "chart1";
+            chart1.SelectionRangeChanged += chart1_SelectionRangeChanged;
+            // 
+            // FilterButton
+            // 
+            FilterButton.Location = new Point(887, 69);
+            FilterButton.Name = "FilterButton";
+            FilterButton.Size = new Size(94, 29);
+            FilterButton.TabIndex = 2;
+            FilterButton.Text = "Filter";
+            FilterButton.UseVisualStyleBackColor = true;
+            FilterButton.Click += FilterButton_Click;
             // 
             // Filter
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(982, 253);
+            ClientSize = new Size(1017, 253);
+            Controls.Add(FilterButton);
             Controls.Add(chart1);
             Name = "Filter";
             Text = "Filter";
@@ -76,5 +89,6 @@
         #endregion
         private ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private Button FilterButton;
     }
 }

@@ -8,59 +8,88 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Diagnostics;
+using System.Drawing.Printing;
 
 namespace comp3931Project
 {
     public partial class Filter : Form
     {
+        private double start;
+        private double end;
+
         public Filter()
         {
             InitializeComponent();
         }
 
-        private void Filter_Load(object sender, EventArgs e)
+        private static Series filterChart;
+
+        public void Filter_Load(object sender, EventArgs e)
         {
+
             double[] A = Calculations.DFT(Calculations.createSamples(30, 8), 30);
             /*            ComplexNumber.complexnumber[] A = Calculations.DFT(Calculations.createSamples(30, 8), 30);*/
 
-            const int pageSize = 10;
 
+            /*            if (isPopulated)
+                        {*/
             // clear the chart
+            const int pageSize = 10;
             chart1.Series.Clear();
+            filterChart = chart1.Series.Add("Frequency");
+
+            filterChart.Points.AddXY(1, 1);
+            filterChart.Color = Color.Transparent;
 
             // Populate the bar chart chart
-            Series filterChart = chart1.Series.Add("Frequency");
-            populateBarChart(A, filterChart);
+            /*                populateBarChart(dynamicWaveGraph.getData(), filterChart);
+            */
+            /*            populateBarChart(A, filterChart);*/
+            chart1.Update();
+            /*            }*/
+
 
             // Customize the bar chart
             ChartArea filterChartArea = chart1.ChartAreas[filterChart.ChartArea];
-            customizeBarChart(pageSize, filterChartArea, A);
+            customizeBarChart(pageSize, filterChartArea, filterChart, A);
 
             chart1.MouseWheel += chart1_MouseWheel;
+
+            chart1.SelectionRangeChanged += Chart_SelectionRangeChanged;
+
         }
 
-        private void populateBarChart(double[] A, Series chartLabel)
+        public void populateBarChart(double[] A, Series chartLabel)
         {
             for (int i = 0; i < A.Length; i++)
+            {
                 chartLabel.Points.AddXY(i, A[i]);
+            }
+            const int pageSize = 10;
+            ChartArea filterChartArea = chart1.ChartAreas[filterChart.ChartArea];
+            customizeBarChart(pageSize, filterChartArea, filterChart, A);
         }
 
-        private void customizeBarChart(int pageSize, ChartArea chartArea, double[] A)
+        private void customizeBarChart(int pageSize, ChartArea chartArea, Series filterChart, double[] A)
         {
             // How much data we want
             chartArea.AxisX.Minimum = 0;
-            chartArea.AxisX.Maximum = A.Length;
 
             // Enables scrolling
             chartArea.CursorX.AutoScroll = true;
 
             // How much we see on one page
-            chartArea.AxisX.ScaleView.Zoomable = true;
+            chartArea.AxisX.ScaleView.Zoomable = false;
             chartArea.AxisX.ScaleView.Zoom(0, pageSize);
+            filterChart["PixelPointWidth"] = "16";
             chartArea.AxisX.Interval = 1;
 
             // Works with Zoomable to allow zooming via highlighting
+            chartArea.CursorX.IsUserEnabled = true;
+            chartArea.CursorY.IsUserEnabled = true;
             chartArea.CursorX.IsUserSelectionEnabled = true;
+            chartArea.AxisX.ScrollBar.IsPositionedInside = true;
 
             // Sets the thumb style
             chartArea.AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll;
@@ -85,7 +114,7 @@ namespace comp3931Project
 
             if (e.Delta < 0)
             {
-                xAxis.ScaleView.Zoom(0, 10);
+                xAxis.ScaleView.Zoom(-5, 10);
                 yAxis.ScaleView.ZoomReset();
             }
             else if (e.Delta > 0)
@@ -95,14 +124,66 @@ namespace comp3931Project
             }
         }
 
+        private void Chart_SelectionRangeChanged(object sender, CursorEventArgs e)
+        {
+            /*            int start = e.NewSelectionStart;*/
+            double end = e.NewSelectionEnd;
+
+            /*            Debug.WriteLine("This is the start: " + start);
+                        Debug.WriteLine("This is the end: " + end);*/
+            double[] A = Calculations.DFT(Calculations.createSamples(30, 8), 30);
+
+            for (int start = (int)e.NewSelectionStart; start < end; start++)
+            {
+                Debug.WriteLine(A[start]);
+            }
+
+        }
+        public Series getChartLabel()
+        {
+            filterChart = chart1.Series.Add("Frequency");
+            return filterChart;
+        }
 
 
-        /*        private void populateBarChart(ComplexNumber.complexnumber[] A, Series chartLabel)
-                {
-                    for (int f = 0; f < A.Length; f++)
-                    {
-                        filterChart.Points.AddXY(f, A[f]);
-                    }
-                }*/
+        private void populateBarChart(ComplexNumber.complexnumber[] A, Series chartLabel)
+        {
+            for (int f = 0; f < A.Length; f++)
+            {
+                filterChart.Points.AddXY(f, A[f]);
+            }
+        }
+
+        // Work on this
+        private void FilterButton_Click(object sender, EventArgs e)
+        {
+            double[] a = dynamicWaveGraph.getSample();
+            Series b = dynamicWaveGraph.getChartLabel();
+            Calculations.createLowPassFilter(a.Length, (int) end);
+            Calculations.convolute(a);
+            a = dynamicWaveGraph.getSample();
+            b.Points.Clear();
+            dynamicWaveGraph.populateLineChart(a, b);
+            dynamicWaveGraph d = new dynamicWaveGraph();
+            d.Update();
+        }
+
+        public Series getFilterChart()
+        {
+            return filterChart;
+        }
+
+        private void chart1_SelectionRangeChanged(object sender, CursorEventArgs e)
+        {
+            start = e.NewSelectionStart;
+            end = e.NewSelectionEnd;
+
+            if (start > end)
+            {
+                double temp = start;
+                start = end;
+                end = temp;
+            }
+        }
     }
 }

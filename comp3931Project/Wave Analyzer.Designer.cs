@@ -34,12 +34,13 @@
             saveToAudioFileToolStripMenuItem = new ToolStripMenuItem();
             loadToolStripMenuItem = new ToolStripMenuItem();
             audioFileToolStripMenuItem = new ToolStripMenuItem();
+            waveGraphToolStripMenuItem = new ToolStripMenuItem();
+            openToolStripMenuItem = new ToolStripMenuItem();
+            pasteGraphToolStripMenuItem = new ToolStripMenuItem();
             toolsToolStripMenuItem = new ToolStripMenuItem();
             filterToolStripMenuItem = new ToolStripMenuItem();
             waveDisplayToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
-            WaveAnalyzerPanel = new Panel();
-            waveGraphToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -77,7 +78,7 @@
             // 
             // loadToolStripMenuItem
             // 
-            loadToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { audioFileToolStripMenuItem, waveGraphToolStripMenuItem });
+            loadToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { audioFileToolStripMenuItem, waveGraphToolStripMenuItem, openToolStripMenuItem, pasteGraphToolStripMenuItem });
             loadToolStripMenuItem.Name = "loadToolStripMenuItem";
             loadToolStripMenuItem.Size = new Size(56, 24);
             loadToolStripMenuItem.Text = "Load";
@@ -85,9 +86,28 @@
             // audioFileToolStripMenuItem
             // 
             audioFileToolStripMenuItem.Name = "audioFileToolStripMenuItem";
-            audioFileToolStripMenuItem.Size = new Size(159, 26);
+            audioFileToolStripMenuItem.Size = new Size(172, 26);
             audioFileToolStripMenuItem.Text = "Audio File";
             audioFileToolStripMenuItem.Click += audioFileToolStripMenuItem_Click;
+            // 
+            // waveGraphToolStripMenuItem
+            // 
+            waveGraphToolStripMenuItem.Name = "waveGraphToolStripMenuItem";
+            waveGraphToolStripMenuItem.Size = new Size(172, 26);
+            waveGraphToolStripMenuItem.Text = "Wave Graph";
+            waveGraphToolStripMenuItem.Click += waveGraphToolStripMenuItem_Click;
+            // 
+            // openToolStripMenuItem
+            // 
+            openToolStripMenuItem.Name = "openToolStripMenuItem";
+            openToolStripMenuItem.Size = new Size(172, 26);
+            openToolStripMenuItem.Text = "Open...";
+            openToolStripMenuItem.Click += openToolStripMenuItem_Click;
+            // 
+            // pasteGraphToolStripMenuItem
+            // 
+            pasteGraphToolStripMenuItem.Name = "pasteGraphToolStripMenuItem";
+            pasteGraphToolStripMenuItem.Size = new Size(172, 26);
             // 
             // toolsToolStripMenuItem
             // 
@@ -115,30 +135,12 @@
             settingsToolStripMenuItem.Size = new Size(76, 24);
             settingsToolStripMenuItem.Text = "Settings";
             // 
-            // WaveAnalyzerPanel
-            // 
-            WaveAnalyzerPanel.AutoSize = true;
-            WaveAnalyzerPanel.Location = new Point(0, 36);
-            WaveAnalyzerPanel.Margin = new Padding(3, 4, 3, 4);
-            WaveAnalyzerPanel.Name = "WaveAnalyzerPanel";
-            WaveAnalyzerPanel.Size = new Size(1107, 481);
-            WaveAnalyzerPanel.TabIndex = 3;
-            WaveAnalyzerPanel.Paint += WaveAnalyzerPanel_Paint;
-            // 
-            // waveGraphToolStripMenuItem
-            // 
-            waveGraphToolStripMenuItem.Name = "waveGraphToolStripMenuItem";
-            waveGraphToolStripMenuItem.Size = new Size(224, 26);
-            waveGraphToolStripMenuItem.Text = "Wave Graph";
-            waveGraphToolStripMenuItem.Click += waveGraphToolStripMenuItem_Click;
-            // 
             // WaveAnalyzer
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Navy;
             ClientSize = new Size(1104, 980);
-            Controls.Add(WaveAnalyzerPanel);
             Controls.Add(menuStrip1);
             IsMdiContainer = true;
             MainMenuStrip = menuStrip1;
@@ -163,8 +165,8 @@
         private ToolStripMenuItem saveToAudioFileToolStripMenuItem;
         private ToolStripMenuItem filterToolStripMenuItem;
         private ToolStripMenuItem waveDisplayToolStripMenuItem;
-
-        private Panel WaveAnalyzerPanel;
         private ToolStripMenuItem waveGraphToolStripMenuItem;
+        private ToolStripMenuItem openToolStripMenuItem;
+        private ToolStripMenuItem pasteGraphToolStripMenuItem;
     }
 }

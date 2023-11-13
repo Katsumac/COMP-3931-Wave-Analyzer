@@ -9,29 +9,28 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Diagnostics;
-using System.Reflection.Metadata.Ecma335;
+using ScottPlot;
 
 namespace comp3931Project
 {
-    public partial class dynamicWaveGraph : Form
+    public partial class dynamicWaveGraph2 : Form
     {
 
-        private static double[] filteredValues;
-        private static Series frequency;
-        private static double[] xValues;
-        private static double[] yValues;
+        private Series frequency;
+        private dynamicWaveGraph dynamicWaveGraph = new dynamicWaveGraph();
         private static double[] sample;
-        private double start;
-        private double end;
 
-        public dynamicWaveGraph()
+        public dynamicWaveGraph2()
         {
             InitializeComponent();
         }
 
-        private void dynamicWaveGraph_Load(object sender, EventArgs e)
+        private void dynamicWaveGraph2_Load(object sender, EventArgs e)
         {
             sample = Calculations.createSamples(30, 8);
+
+            /*            formsPlot1.Plot.AddSignal(sample, 20_000);
+                        formsPlot1.Refresh();*/
 
             const int pageSize = 10;
 
@@ -42,20 +41,28 @@ namespace comp3931Project
             frequency = chart1.Series.Add("Frequency");
             frequency.ChartType = SeriesChartType.Spline;
 
-            populateLineChart(sample, frequency);
+            frequency.Points.AddXY(1, 1);
+
+            /*populateLineChart(sample, frequency);*/
 
             // Customize the bar chart
             ChartArea filterChartArea = chart1.ChartAreas[frequency.ChartArea];
+
             customizeLineChart(pageSize, filterChartArea, sample);
 
             chart1.MouseWheel += chart1_MouseWheel;
-            chart1.SelectionRangeChanged += Chart_SelectionRangeChanged;
         }
 
-        public static void populateLineChart(double[] sample, Series chartLabel)
+        private void populateLineChart(double[] sample, Series chartLabel)
         {
             for (int i = 0; i < sample.Length; i++)
                 chartLabel.Points.AddXY(i, sample[i]);
+        }
+
+        private void pasteLineChart(double[] xValues, double[] yValues, Series chartLabel)
+        {
+            for (int i = 0; i < xValues.Length; i++)
+                chartLabel.Points.AddXY(xValues[i], yValues[i]);
         }
 
         private void customizeLineChart(int pageSize, ChartArea chartArea, double[] sample)
@@ -81,15 +88,6 @@ namespace comp3931Project
 
             // Small scrolling size
             chartArea.AxisX.ScaleView.SmallScrollSize = pageSize;
-        }
-
-        public double[] getXValues()
-        {
-            return xValues;
-        }
-        public double[] getYValues()
-        {
-            return yValues;
         }
 
         /*      For line chart scrolling*/
@@ -118,71 +116,23 @@ namespace comp3931Project
             }
         }
 
-        private void Chart_SelectionRangeChanged(object sender, CursorEventArgs e)
-        {
-            start = e.NewSelectionStart;
-            end = e.NewSelectionEnd;
-
-            if (start > end)
-            {
-                double temp = start;
-                start = end;
-                end = temp;
-            }
-        }
-
         private void DFTButton_Click(object sender, EventArgs e)
         {
             Filter filter = new Filter();
             filter.getFilterChart().Points.Clear();
-            double[] DFTSamples = Calculations.DFT(sample, sample.Length);
-            setSample(sample);
-            filter.populateBarChart(DFTSamples, filter.getFilterChart());
+            filter.populateBarChart(Calculations.DFT(dynamicWaveGraph.getYValues(), dynamicWaveGraph.getYValues().Length), filter.getFilterChart());
             filter.getFilterChart().Color = Color.CornflowerBlue;
             filter.Filter_Load(sender, e);
         }
 
         private void chart1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.C && e.Control)
+            if (e.KeyCode == Keys.V && e.Control)
             {
-                Debug.WriteLine("This is the start: " + start);
-                Debug.WriteLine("This is the end: " + end);
-
-                /*                double[] A = Calculations.createSamples(30, 8);
-                */
-                int range = (int)(end - start) + 1;
-
-                /*            filteredValues = new double[range + 1];*/
-
-                xValues = new double[range];
-                yValues = new double[range];
-
-                for (int i = 0; i < range; i++)
-                {
-                    xValues[i] = frequency.Points[(int)(start + i)].GetValueByName("X");
-                    yValues[i] = frequency.Points[(int)(start + i)].GetValueByName("Y");
-
-                    Debug.WriteLine("(" + xValues[i] + ", " + yValues[i] + ")");
-                }
-
+                frequency.Points.Clear();
+                Debug.WriteLine("Yay!");
+                pasteLineChart(dynamicWaveGraph.getXValues(), dynamicWaveGraph.getYValues(), frequency);
             }
         }
-
-        public static double[] getSample()
-        {
-            return sample;
-        }
-
-        public static void setSample(double[] newSample)
-        {
-            sample = newSample;
-        }
-
-        public static Series getChartLabel()
-        {
-            return frequency;
-        }
-        
     }
 }
