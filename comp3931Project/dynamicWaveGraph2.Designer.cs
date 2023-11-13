@@ -1,6 +1,6 @@
 ﻿namespace comp3931Project
 {
-    partial class dynamicWaveGraph
+    partial class dynamicWaveGraph2
     {
         /// <summary>
         /// Required designer variable.
@@ -48,14 +48,14 @@
             series2.Legend = "Legend1";
             series2.Name = "Series1";
             chart1.Series.Add(series2);
-            chart1.Size = new Size(1016, 253);
+            chart1.Size = new Size(1018, 253);
             chart1.TabIndex = 0;
             chart1.Text = "chart1";
             chart1.KeyDown += chart1_KeyDown;
             // 
             // DFTButton
             // 
-            DFTButton.Location = new Point(888, 129);
+            DFTButton.Location = new Point(884, 113);
             DFTButton.Name = "DFTButton";
             DFTButton.Size = new Size(94, 29);
             DFTButton.TabIndex = 1;
@@ -63,16 +63,16 @@
             DFTButton.UseVisualStyleBackColor = true;
             DFTButton.Click += DFTButton_Click;
             // 
-            // dynamicWaveGraph
+            // dynamicWaveGraph2
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1017, 253);
             Controls.Add(DFTButton);
             Controls.Add(chart1);
-            Name = "dynamicWaveGraph";
-            Text = "dynamicWaveGraph";
-            Load += dynamicWaveGraph_Load;
+            Name = "dynamicWaveGraph2";
+            Text = "dynamicWaveGraph2";
+            Load += dynamicWaveGraph2_Load;
             ((System.ComponentModel.ISupportInitialize)chart1).EndInit();
             ResumeLayout(false);
         }
