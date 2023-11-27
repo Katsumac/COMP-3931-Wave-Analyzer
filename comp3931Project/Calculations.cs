@@ -53,7 +53,7 @@ namespace comp3931Project
             return A;
         }
 
-        static double[] inverseDFT(int N, double[] s)
+        static double[] inverseDFT(int N, double[] lowPassFilter)
         {
             s = new double[N];
 
@@ -61,7 +61,7 @@ namespace comp3931Project
             {
                 for (int f = 0; f <= N - 1; f++)
                 {
-                    s[t] += A[f] * (Math.Cos(2 * Math.PI * t * f / N) + Math.Sin(2 * Math.PI * t * f / N));
+                    s[t] += lowPassFilter[f] * (Math.Cos(2 * Math.PI * t * f / N) + Math.Sin(2 * Math.PI * t * f / N));
                 }
                 s[t] /= N;
             }

@@ -42,7 +42,7 @@ namespace comp3931Project
             frequency = chart1.Series.Add("Frequency");
             frequency.ChartType = SeriesChartType.Spline;
 
-            populateLineChart(sample, frequency);
+            populateLineChart(sample, 0, frequency);
 
             // Customize the bar chart
             ChartArea filterChartArea = chart1.ChartAreas[frequency.ChartArea];
@@ -52,9 +52,9 @@ namespace comp3931Project
             chart1.SelectionRangeChanged += Chart_SelectionRangeChanged;
         }
 
-        public static void populateLineChart(double[] sample, Series chartLabel)
+        public static void populateLineChart(double[] sample, int startIndex, Series chartLabel)
         {
-            for (int i = 0; i < sample.Length; i++)
+            for (int i = startIndex; i < sample.Length; i++)
                 chartLabel.Points.AddXY(i, sample[i]);
         }
 
@@ -136,16 +136,17 @@ namespace comp3931Project
             Filter filter = new Filter();
             filter.getFilterChart().Points.Clear();
             double[] DFTSamples = Calculations.DFT(sample, sample.Length);
-            setSample(sample);
             filter.populateBarChart(DFTSamples, filter.getFilterChart());
-            filter.getFilterChart().Color = Color.CornflowerBlue;
+            filter.getFilterChart().Color = Color.Green;
             filter.Filter_Load(sender, e);
         }
 
         private void chart1_KeyDown(object sender, KeyEventArgs e)
         {
+
             if (e.KeyCode == Keys.C && e.Control)
             {
+
                 Debug.WriteLine("This is the start: " + start);
                 Debug.WriteLine("This is the end: " + end);
 
@@ -166,7 +167,83 @@ namespace comp3931Project
                     Debug.WriteLine("(" + xValues[i] + ", " + yValues[i] + ")");
                 }
 
+
+                copySelection(yValues);
+
             }
+            else if (e.KeyCode == Keys.X && e.Control)
+            {
+
+                Debug.WriteLine("This is the start: " + start);
+                Debug.WriteLine("This is the end: " + end);
+
+                /*                double[] A = Calculations.createSamples(30, 8);
+                */
+                int range = (int)(end - start) + 1;
+
+                /*            filteredValues = new double[range + 1];*/
+
+                xValues = new double[range];
+                yValues = new double[range];
+
+                for (int i = 0; i < range; i++)
+                {
+                    xValues[i] = frequency.Points[(int)(start + i)].GetValueByName("X");
+                    yValues[i] = frequency.Points[(int)(start + i)].GetValueByName("Y");
+                    sample[i] = 0;
+                    Debug.WriteLine("(" + xValues[i] + ", " + yValues[i] + ")");
+                }
+
+
+
+                copySelection(yValues);
+
+            }
+            else if (e.KeyCode == Keys.V && e.Control)
+            {
+
+                    Debug.WriteLine("Yay!");
+                    pasteLineChart(xValues, retrieveData(), (int)start, frequency);
+                
+
+            }
+        }
+
+        private void pasteLineChart(double[] xValues, double[] yValues, int startIndex, Series chartLabel)
+        {
+            int yIndex = 0;
+            for (int i = startIndex; i < startIndex + xValues.Length - 1; i++)
+            {
+                sample[i] = yValues[yIndex];
+                yIndex++;
+                
+/*                chartLabel.Points.AddXY(startIndex, yValues[i]);
+                startIndex++;*/
+            }
+            chartLabel.Points.Clear();
+            populateLineChart(sample, 0, chartLabel);
+
+        }
+
+        private void copySelection(double[] yValues)
+        {
+            string data = string.Join(",", yValues);
+            Clipboard.SetText(data);
+        }
+
+        private double[] retrieveData()
+        {
+            string copiedDataString = Clipboard.GetText();
+
+            string[] copiedDataStringArr = copiedDataString.Split(',');
+
+            double[] actualData = new double[copiedDataStringArr.Length];
+
+            for (int i = 0; i < copiedDataStringArr.Length; i++)
+            {
+                actualData[i] = Convert.ToDouble(copiedDataStringArr[i]);
+            }
+            return actualData;
         }
 
         public static double[] getSample()
