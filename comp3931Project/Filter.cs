@@ -163,7 +163,7 @@ namespace comp3931Project
             Calculations.convolute(a);
             a = dynamicWaveGraph.getSample();
             b.Points.Clear();
-            dynamicWaveGraph.populateLineChart(a, b);
+            dynamicWaveGraph.populateLineChart(a, 0, b);
             dynamicWaveGraph d = new dynamicWaveGraph();
             d.Update();
         }
