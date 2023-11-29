@@ -135,6 +135,8 @@ namespace comp3931Project
         {
             Filter filter = new Filter();
             filter.getFilterChart().Points.Clear();
+            applyTriangleWindow();
+            /*applyHannWindow();*/
             double[] DFTSamples = Calculations.DFT(sample, sample.Length);
             setSample(sample);
             filter.populateBarChart(DFTSamples, filter.getFilterChart());
@@ -182,6 +184,24 @@ namespace comp3931Project
         public static Series getChartLabel()
         {
             return frequency;
+        }
+
+        public void applyTriangleWindow()
+        {
+            int N = sample.Length;
+            for (int n = 0; n < N; n++)
+            {
+                sample[n] *= 1.0 - Math.Abs((n - N / 2) / (N / 2));
+            }
+        }
+
+        public void applyHannWindow()
+        {
+            int N = sample.Length;
+            for (int n = 0; n < N; n++)
+            {
+                sample[n] *= 0.5 * (1 - Math.Cos(2 * Math.PI * n / (N - 1)));
+            }
         }
         
     }
