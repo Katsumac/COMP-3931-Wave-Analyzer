@@ -92,30 +92,37 @@ namespace comp3931Project
             wavewindow.setWave(wave);
 
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.Filter = "Wav|*.wav";
+            openFileDialog1.Title = "Open a Wav File";
             openFileDialog1.ShowDialog();
 
-            wave.ReadWavFile(openFileDialog1.FileName);
-
-            wavewindow.ChartWave(wave);
-
-            wavewindow.MdiParent = this;
-            wavewindow.TopLevel = false;
-            // wavewindow.Show();
-            wavewindow.Location = new Point(0, 320);
-            wavewindow.Size = new Size(1035, 300);
-            wavewindow.Show();
-
-            foreach (Control control in this.Controls)
+            if (openFileDialog1.FileName != "")
             {
-                MdiClient client = control as MdiClient;
-                if (client != null)
+                wave.ReadWavFile(openFileDialog1.FileName);
+
+                wavewindow.ChartWave(wave);
+
+                wavewindow.MdiParent = this;
+                wavewindow.TopLevel = false;
+                // wavewindow.Show();
+                wavewindow.Location = new Point(0, 320);
+                wavewindow.Size = new Size(1035, 300);
+                wavewindow.Show();
+
+                foreach (Control control in this.Controls)
                 {
-                    client.BackColor = Color.Blue;
-                    break;
+                    MdiClient client = control as MdiClient;
+                    if (client != null)
+                    {
+                        client.BackColor = Color.Blue;
+                        break;
+                    }
                 }
+
+                wavewindow.Show();
             }
 
-            wavewindow.Show();
+           
 
             //WaveAnalyzerPanel.Controls.Add(wavewindow);
             //wavewindow.TopLevel = false;
@@ -178,8 +185,8 @@ namespace comp3931Project
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.InitialDirectory = "c:\\";
-                openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-                openFileDialog.FilterIndex = 2;
+                openFileDialog.Filter = "Wav|*.wav";
+                openFileDialog.Title = "Save a Wav File";
                 openFileDialog.RestoreDirectory = true;
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
