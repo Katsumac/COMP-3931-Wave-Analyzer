@@ -119,7 +119,7 @@ namespace comp3931Project
         {
             Filter filter = new Filter();
             filter.getFilterChart().Points.Clear();
-            filter.populateBarChart(Calculations.DFT(dynamicWaveGraph.getYValues(), dynamicWaveGraph.getYValues().Length), filter.getFilterChart());
+            filter.populateBarChart(Calculations.DFT(dynamicWaveGraph.getYValues()), filter.getFilterChart());
             filter.getFilterChart().Color = Color.CornflowerBlue;
             filter.Filter_Load(sender, e);
         }

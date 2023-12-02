@@ -35,6 +35,9 @@
             contextMenuStrip1 = new ContextMenuStrip(components);
             chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             FilterButton = new Button();
+            filterSyncButton = new Button();
+            iDFTButton = new Button();
+            iDFTSyncButton = new Button();
             ((System.ComponentModel.ISupportInitialize)chart1).BeginInit();
             SuspendLayout();
             // 
@@ -64,7 +67,7 @@
             // 
             // FilterButton
             // 
-            FilterButton.Location = new Point(887, 69);
+            FilterButton.Location = new Point(887, 45);
             FilterButton.Name = "FilterButton";
             FilterButton.Size = new Size(94, 29);
             FilterButton.TabIndex = 2;
@@ -72,11 +75,44 @@
             FilterButton.UseVisualStyleBackColor = true;
             FilterButton.Click += FilterButton_Click;
             // 
+            // filterSyncButton
+            // 
+            filterSyncButton.Location = new Point(887, 90);
+            filterSyncButton.Name = "filterSyncButton";
+            filterSyncButton.Size = new Size(94, 29);
+            filterSyncButton.TabIndex = 3;
+            filterSyncButton.Text = "Filter (Sync)";
+            filterSyncButton.UseVisualStyleBackColor = true;
+            filterSyncButton.Click += filterSyncButton_Click;
+            // 
+            // iDFTButton
+            // 
+            iDFTButton.Location = new Point(887, 135);
+            iDFTButton.Name = "iDFTButton";
+            iDFTButton.Size = new Size(94, 29);
+            iDFTButton.TabIndex = 4;
+            iDFTButton.Text = "iDFT";
+            iDFTButton.UseVisualStyleBackColor = true;
+            iDFTButton.Click += iDFTButton_Click;
+            // 
+            // iDFTSyncButton
+            // 
+            iDFTSyncButton.Location = new Point(887, 181);
+            iDFTSyncButton.Name = "iDFTSyncButton";
+            iDFTSyncButton.Size = new Size(94, 29);
+            iDFTSyncButton.TabIndex = 5;
+            iDFTSyncButton.Text = "iDFT (Sync)";
+            iDFTSyncButton.UseVisualStyleBackColor = true;
+            iDFTSyncButton.Click += iDFTSyncButton_Click;
+            // 
             // Filter
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1017, 253);
+            Controls.Add(iDFTSyncButton);
+            Controls.Add(iDFTButton);
+            Controls.Add(filterSyncButton);
             Controls.Add(FilterButton);
             Controls.Add(chart1);
             Name = "Filter";
@@ -90,5 +126,8 @@
         private ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private Button FilterButton;
+        private Button filterSyncButton;
+        private Button iDFTButton;
+        private Button iDFTSyncButton;
     }
 }
