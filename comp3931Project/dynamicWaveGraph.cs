@@ -135,9 +135,9 @@ namespace comp3931Project
         {
             Filter filter = new Filter();
             filter.getFilterChart().Points.Clear();
-            applyTriangleWindow();
-            /*applyHannWindow();*/
-            double[] DFTSamples = Calculations.DFT(sample, sample.Length);
+            /*applyTriangleWindow();*/
+            applyRectangularWindow();
+            double[] DFTSamples = Calculations.DFT(sample);
             filter.populateBarChart(DFTSamples, filter.getFilterChart());
             filter.getFilterChart().Color = Color.Green;
             filter.Filter_Load(sender, e);
@@ -204,9 +204,9 @@ namespace comp3931Project
             else if (e.KeyCode == Keys.V && e.Control)
             {
 
-                    Debug.WriteLine("Yay!");
-                    pasteLineChart(xValues, retrieveData(), (int)start, frequency);
-                
+                Debug.WriteLine("Yay!");
+                pasteLineChart(xValues, retrieveData(), (int)start, frequency);
+
 
             }
         }
@@ -218,9 +218,9 @@ namespace comp3931Project
             {
                 sample[i] = yValues[yIndex];
                 yIndex++;
-                
-/*                chartLabel.Points.AddXY(startIndex, yValues[i]);
-                startIndex++;*/
+
+                /*                chartLabel.Points.AddXY(startIndex, yValues[i]);
+                                startIndex++;*/
             }
             chartLabel.Points.Clear();
             populateLineChart(sample, 0, chartLabel);
@@ -272,14 +272,25 @@ namespace comp3931Project
             }
         }
 
-        public void applyHannWindow()
+        public void applyRectangularWindow()
         {
             int N = sample.Length;
             for (int n = 0; n < N; n++)
             {
-                sample[n] *= 0.5 * (1 - Math.Cos(2 * Math.PI * n / (N - 1)));
+                sample[n] *= 1;
             }
         }
-        
+
+        private void DFTSyncButton_Click(object sender, EventArgs e)
+        {
+            Filter filter = new Filter();
+            filter.getFilterChart().Points.Clear();
+            /*applyTriangleWindow();*/
+            applyRectangularWindow();
+            double[] DFTSamples = Calculations.DFTSync(sample);
+            filter.populateBarChart(DFTSamples, filter.getFilterChart());
+            filter.getFilterChart().Color = Color.Green;
+            filter.Filter_Load(sender, e);
+        }
     }
 }

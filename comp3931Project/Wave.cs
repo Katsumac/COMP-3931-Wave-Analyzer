@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Channels;
 using System.Threading.Tasks;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace comp3931Project
 {
-    class Wave
+    public class Wave
     {
         // HEADER = 44 bytes
         
@@ -28,7 +31,11 @@ namespace comp3931Project
         // DATA Chunk
         private int DataID;
         private int DataSize;
-        //private Byte[]? Data;
+        //private Byte[] LeftChannel;
+        //private Byte[] RightChannel;
+        private double[] R;
+        private double[] L;
+        private byte[] Data;
 
         public Wave()
         {
@@ -36,51 +43,117 @@ namespace comp3931Project
 
         public void ReadWavFile(String filename)
         {
-            // byte array to hold 44 bytes of data
-            byte[] fileHeader = new byte[44];
+            FileStream fs = new FileStream(filename, FileMode.Open);
 
-            using (BinaryReader reader = new BinaryReader(new FileStream(filename, FileMode.Open)))
+            BinaryReader reader = new BinaryReader(fs);
+
+            reader.BaseStream.Seek(0, SeekOrigin.Begin);
+
+            this.ChunkID = reader.ReadInt32();
+            this.ChunkSize = reader.ReadInt32();
+            this.Format = reader.ReadInt32();
+
+            this.FMTID = reader.ReadInt32();
+            this.FMTSize = reader.ReadInt32();
+            this.FMTFormatTag = reader.ReadInt16();
+            this.FMTChannels = reader.ReadInt16();
+            this.FMTSampleRate = reader.ReadInt32();
+            this.FMTByteRate = reader.ReadInt32();
+            this.FMBlock = reader.ReadInt16();
+            this.FMTBPS = reader.ReadInt16();
+
+
+            this.DataID = reader.ReadInt32();
+            this.DataSize = reader.ReadInt32();
+
+            int bytesPerSample = FMTBPS / 8;
+            int samples = DataSize / bytesPerSample;
+
+            // possibly read all data into a buffer then process into the proper format, then split channels
+
+            byte[] buffer = new byte[DataSize];
+            Data = new byte[DataSize];
+            for (int i = 0; i < DataSize; i++)
+
             {
-                reader.BaseStream.Seek(0, SeekOrigin.Begin);
-                reader.Read(fileHeader, 0, 44);
+                Data[i] = buffer[i];
             }
 
-            // will i need to clear the wav instance?
+            buffer = reader.ReadBytes(DataSize); // buffer containing amplitudes as bytes
 
-            /* 
-             *Not sure if endian matters ? Don't rmemeber it being mentioned in class but have seen it in online sources
-             *http://soundfile.sapp.org/doc/WaveFormat/
-             Array.Reverse(fileHeader, 4, 4); // ChunkSize
-             Array.Reverse(fileHeader, 12, 4); // FMTID
-             Array.Reverse(fileHeader, 16, 4); // FMTSize
-             Array.Reverse(fileHeader, 20, 2); // FMTFormatTag
-             Array.Reverse(fileHeader, 22, 2); // FMTChannels
-             Array.Reverse(fileHeader, 24, 4); // FMTSampleRate
-             Array.Reverse(fileHeader, 28, 4); // FMTByteRate
-             Array.Reverse(fileHeader, 32, 2); // FMTBlock
-             Array.Reverse(fileHeader, 34, 2); // FMTBPS
-             Array.Reverse(fileHeader, 4, 4); // DataSize*/
+            double[] doubleArr;
 
-            this.ChunkID = BitConverter.ToInt32(fileHeader, 0);
-            this.ChunkSize = BitConverter.ToInt32(fileHeader, 4);
-            this.Format = BitConverter.ToInt32(fileHeader, 8);
+            switch (this.FMTBPS)
+            {
+                case 8:
+                    byte[] byteBuffer = new byte[DataSize];
+                    Buffer.BlockCopy(buffer, 0, byteBuffer, 0, DataSize);
+                    doubleArr = new double[byteBuffer.Length];
+                    for (int i = 0; i < byteBuffer.Length; i++)
+                    {
+                        doubleArr[i] = Convert.ToDouble(byteBuffer[i]);
+                    }
+                    break;
+                case 16:
+                    short[] shortBuffer = new short[DataSize / 2];
+                    Buffer.BlockCopy(buffer, 0, shortBuffer, 0, DataSize);
+                    doubleArr = new double[shortBuffer.Length];
+                    for (int i = 0; i < shortBuffer.Length; i++)
+                    {
+                        doubleArr[i] = Convert.ToDouble(shortBuffer[i]);
+                    }
+                    break;
+                case 32:
+                    int[] intBuffer = new int[DataSize / 4];
+                    Buffer.BlockCopy(buffer, 0, intBuffer, 0, DataSize);
+                    doubleArr = new double[intBuffer.Length];
+                    for (int i = 0; i < intBuffer.Length; i++)
+                    {
+                        doubleArr[i] = Convert.ToDouble(intBuffer[i]);
+                    }
+                    break;
+                default:
+                    //maybe pop an error message?
+                    throw new Exception("Difficulty Reading File.");
+            }
 
-            this.FMTID = BitConverter.ToInt32(fileHeader, 12);
-            this.FMTSize = BitConverter.ToInt32(fileHeader, 16);
-            this.FMTFormatTag = BitConverter.ToInt16(fileHeader, 20);
-            this.FMTChannels = BitConverter.ToInt16(fileHeader, 22);
-            this.FMTSampleRate = BitConverter.ToInt32(fileHeader, 24);
-            this.FMTByteRate = BitConverter.ToInt32(fileHeader, 28);
-            this.FMBlock = BitConverter.ToInt16(fileHeader, 32);
-            this.FMTBPS = BitConverter.ToInt16(fileHeader, 34);
 
-            this.DataID = BitConverter.ToInt32(fileHeader, 36);
-            this.DataSize = BitConverter.ToInt32(fileHeader, 40);
-    }
+            if (FMTChannels == 1)
+            {
+                this.L = new double[samples];
+                this.L = doubleArr;
+            }
+            else
+            {
+                this.L = new double[samples / 2];
+                this.R = new double[samples / 2];
 
-        public void WriteWavFile(String filename, byte[] arr)
+
+                for (int i = 0, interleavedValue = 0; i < doubleArr.Length; i++)
+                {
+                    this.L[i] = doubleArr[interleavedValue++];
+                    this.R[i] = doubleArr[interleavedValue++];
+                }
+
+            }
+        }
+
+     
+        public double[] getL()
         {
-            FileStream fs = new FileStream("music.wav", FileMode.Create);
+            return L;
+        }
+
+        public double[] getR()
+        {
+            return R;
+        }
+
+
+
+        public void WriteWavFile(String filename)
+        {
+            FileStream fs = new FileStream(filename, FileMode.Create);
             BinaryWriter writer = new BinaryWriter(fs);
 
             writer.Write(this.ChunkID);
@@ -96,14 +169,36 @@ namespace comp3931Project
             writer.Write(this.FMTBPS);
             writer.Write(this.DataID);
             writer.Write(this.DataSize);
-
-            for (int i = 0; i < arr.Length; i++)
-            {
-                writer.Write(arr[i]);
-            }
-
+         
+            switch (this.FMTBPS){
+                case 8:
+                    for (int i = 0; i < this.L.Length; i++){
+                        writer.Write((byte)this.L[i]);
+                        if (this.FMTChannels == 2){
+                            writer.Write((byte)this.R[i]);
+                        }
+                    }
+                    break;
+                case 16:
+                    for (int i = 0; i < this.L.Length; i++){
+                        writer.Write((Int16)this.L[i]);
+                        if (this.FMTChannels == 2){
+                            writer.Write((Int16)this.R[i]);
+                        }
+                    }
+                    break;
+                case 32:
+                    for (int i = 0; i < this.L.Length; i++){
+                            writer.Write(this.L[i]);
+                        if (this.FMTChannels == 2){
+                            writer.Write(this.R[i]);
+                        }
+                    }
+                    break;
+                    default:
+                        break;
+                }
             fs.Close();
-
         }
     }
 }

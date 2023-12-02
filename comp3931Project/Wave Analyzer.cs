@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using static System.Windows.Forms.DataFormats;
 
@@ -5,6 +6,8 @@ namespace comp3931Project
 {
     public partial class WaveAnalyzer : Form
     {
+        WaveWindow wavewindow;
+
         public WaveAnalyzer()
         {
             InitializeComponent();
@@ -16,6 +19,8 @@ namespace comp3931Project
             loadDynamicWaveGraph();
             loadDynamicWaveGraph2();
             loadFilter();
+            WaveWindow ww = new WaveWindow();
+            wavewindow = ww;
         }
 
         private void loadDynamicWaveGraph()
@@ -81,8 +86,37 @@ namespace comp3931Project
 
         private void surpriseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WaveWindow wavewindow = new WaveWindow() { TopLevel = false, TopMost = true };
-            wavewindow.FormBorderStyle = FormBorderStyle.None;
+
+
+            Wave wave = new Wave();
+            wavewindow.setWave(wave);
+
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.ShowDialog();
+
+            wave.ReadWavFile(openFileDialog1.FileName);
+
+            wavewindow.ChartWave(wave);
+
+            wavewindow.MdiParent = this;
+            wavewindow.TopLevel = false;
+            // wavewindow.Show();
+            wavewindow.Location = new Point(0, 320);
+            wavewindow.Size = new Size(1035, 300);
+            wavewindow.Show();
+
+            foreach (Control control in this.Controls)
+            {
+                MdiClient client = control as MdiClient;
+                if (client != null)
+                {
+                    client.BackColor = Color.Blue;
+                    break;
+                }
+            }
+
+            wavewindow.Show();
+
             //WaveAnalyzerPanel.Controls.Add(wavewindow);
             //wavewindow.TopLevel = false;
             // wavewindow.FormBorderStyle = FormBorderStyle.None;
@@ -94,7 +128,7 @@ namespace comp3931Project
 
             // WaveAnalyzer.panel1.Controls.Add(wavewindow);
             //  wavewindow.Location = new Point(0, 0);
-            wavewindow.Show();
+            //   wavewindow.Show();
         }
 
 
@@ -109,19 +143,32 @@ namespace comp3931Project
 
         private void audioFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WaveFileReadWrite.readFile(".\\comp3931Project\\music.wav");
+            Wave wave = new Wave();
+            wave.ReadWavFile("../../../TestWav.wav");
+
+            dynamicWaveGraph waveGraph = new dynamicWaveGraph();
+            waveGraph.Show();
+
+
         }
 
         private void saveToAudioFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WaveFileReadWrite.writeFile(WaveFileReadWrite.readFile(".\\comp3931Project\\music.wav"), ".\\comp3931Project\\music.wav");
-        }
 
-        private void waveGraphToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            dynamicWaveGraph waveGraph = new dynamicWaveGraph();
-            waveGraph.Show();
-        }
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "Wav|*.wav";
+            saveFileDialog1.Title = "Save a Wav File";
+            saveFileDialog1.ShowDialog();
+            if (saveFileDialog1.FileName != "")
+            {
+                Wave wave = wavewindow.getWave();
+                wave.WriteWavFile(saveFileDialog1.FileName);
+            }
+
+                // WaveFileReadWrite.writeFile(WaveFileReadWrite.readFile("../../../music.wav"), ".\\comp3931Project\\music.wav"); //DataID 1634074624
+
+            }
+
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -153,5 +200,26 @@ namespace comp3931Project
             MessageBox.Show(fileContent, "File Content at path: " + filePath, MessageBoxButtons.OK);
         }
 
+
+        private void ToolRecordButton_Click(object sender, EventArgs e)
+        {
+            start();
+            IntPtr i = getPSaveBuffer();
+            getDwDataLength();
+
+        }
+
+
+
+
+        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        static extern IntPtr getPSaveBuffer();
+
+        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        static extern bool start();
+
+
+        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        static extern ulong getDwDataLength();
     }
 }
