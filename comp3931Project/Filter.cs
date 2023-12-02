@@ -28,8 +28,8 @@ namespace comp3931Project
         public void Filter_Load(object sender, EventArgs e)
         {
 
-            double[] A = Calculations.DFT(Calculations.createSamples(30, 8), 30);
-            /*            ComplexNumber.complexnumber[] A = Calculations.DFT(Calculations.createSamples(30, 8), 30);*/
+            /*            double[] A = Calculations.DFT(Calculations.createSamples(30, 8), 30);
+            */            /*            ComplexNumber.complexnumber[] A = Calculations.DFT(Calculations.createSamples(30, 8), 30);*/
 
 
             /*            if (isPopulated)
@@ -52,11 +52,11 @@ namespace comp3931Project
 
             // Customize the bar chart
             ChartArea filterChartArea = chart1.ChartAreas[filterChart.ChartArea];
-            customizeBarChart(pageSize, filterChartArea, filterChart, A);
+            customizeBarChart(pageSize, filterChartArea, filterChart);
 
             chart1.MouseWheel += chart1_MouseWheel;
 
-            chart1.SelectionRangeChanged += Chart_SelectionRangeChanged;
+            chart1.SelectionRangeChanged += chart1_SelectionRangeChanged;
 
         }
 
@@ -68,10 +68,10 @@ namespace comp3931Project
             }
             const int pageSize = 10;
             ChartArea filterChartArea = chart1.ChartAreas[filterChart.ChartArea];
-            customizeBarChart(pageSize, filterChartArea, filterChart, A);
+            customizeBarChart(pageSize, filterChartArea, filterChart);
         }
 
-        private void customizeBarChart(int pageSize, ChartArea chartArea, Series filterChart, double[] A)
+        private void customizeBarChart(int pageSize, ChartArea chartArea, Series filterChart)
         {
             // How much data we want
             chartArea.AxisX.Minimum = 0;
@@ -124,21 +124,6 @@ namespace comp3931Project
             }
         }
 
-        private void Chart_SelectionRangeChanged(object sender, CursorEventArgs e)
-        {
-            /*            int start = e.NewSelectionStart;*/
-            double end = e.NewSelectionEnd;
-
-            /*            Debug.WriteLine("This is the start: " + start);
-                        Debug.WriteLine("This is the end: " + end);*/
-            double[] A = Calculations.DFT(Calculations.createSamples(30, 8), 30);
-
-            for (int start = (int)e.NewSelectionStart; start < end; start++)
-            {
-                Debug.WriteLine(A[start]);
-            }
-
-        }
         public Series getChartLabel()
         {
             filterChart = chart1.Series.Add("Frequency");
@@ -159,8 +144,8 @@ namespace comp3931Project
         {
             double[] a = dynamicWaveGraph.getSample();
             Series b = dynamicWaveGraph.getChartLabel();
-            Calculations.createLowPassFilter(a.Length, (int) end);
-            Calculations.convolute(a);
+            Calculations.createLowPassFilter(a.Length, (int)end);
+            Calculations.convolve(a);
             a = dynamicWaveGraph.getSample();
             b.Points.Clear();
             dynamicWaveGraph.populateLineChart(a, 0, b);
@@ -184,6 +169,31 @@ namespace comp3931Project
                 start = end;
                 end = temp;
             }
+        }
+
+        private void filterSyncButton_Click(object sender, EventArgs e)
+        {
+            double[] a = dynamicWaveGraph.getSample();
+            Series b = dynamicWaveGraph.getChartLabel();
+            Calculations.createLowPassFilter(a.Length, (int)end);
+            Calculations.convolveSync(a);
+            a = dynamicWaveGraph.getSample();
+            b.Points.Clear();
+            dynamicWaveGraph.populateLineChart(a, 0, b);
+            dynamicWaveGraph d = new dynamicWaveGraph();
+            d.Update();
+        }
+
+        private void iDFTButton_Click(object sender, EventArgs e)
+        {
+            double[] testArray = new double[30];
+            Calculations.inverseDFT(testArray.Length, testArray);
+        }
+
+        private void iDFTSyncButton_Click(object sender, EventArgs e)
+        {
+            double[] testArray = new double[30];
+            Calculations.inverseDFTSync(testArray.Length, testArray);
         }
     }
 }
