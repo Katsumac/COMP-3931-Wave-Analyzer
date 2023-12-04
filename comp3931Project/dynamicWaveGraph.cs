@@ -170,6 +170,33 @@ namespace comp3931Project
                 }
 
 
+                copySelection(yValues);
+
+            }
+            else if (e.KeyCode == Keys.X && e.Control)
+            {
+
+                Debug.WriteLine("This is the start: " + start);
+                Debug.WriteLine("This is the end: " + end);
+
+                /*                double[] A = Calculations.createSamples(30, 8);
+                */
+                int range = (int)(end - start) + 1;
+
+                /*            filteredValues = new double[range + 1];*/
+
+                xValues = new double[range];
+                yValues = new double[range];
+
+                for (int i = 0; i < range; i++)
+                {
+                    xValues[i] = frequency.Points[(int)(start + i)].GetValueByName("X");
+                    yValues[i] = frequency.Points[(int)(start + i)].GetValueByName("Y");
+                    sample[i] = 0;
+                    Debug.WriteLine("(" + xValues[i] + ", " + yValues[i] + ")");
+                }
+
+
 
                 copySelection(yValues);
 
