@@ -82,6 +82,7 @@
             Controls.Add(DFTSyncButton);
             Controls.Add(DFTButton);
             Controls.Add(chart1);
+            FormBorderStyle = FormBorderStyle.None;
             Name = "dynamicWaveGraph";
             Text = "dynamicWaveGraph";
             Load += dynamicWaveGraph_Load;
