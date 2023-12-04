@@ -115,6 +115,7 @@
             Controls.Add(filterSyncButton);
             Controls.Add(FilterButton);
             Controls.Add(chart1);
+            FormBorderStyle = FormBorderStyle.None;
             Name = "Filter";
             Text = "Filter";
             Load += Filter_Load;
