@@ -1,4 +1,9 @@
-﻿using System.Diagnostics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Diagnostics;
 
 namespace comp3931Project
 {
@@ -52,7 +57,7 @@ namespace comp3931Project
             displayDFTBenchmark();
             return A;
         }
-
+      
         /**
          * Purpose: This is the threadProc for threaded DFT. Contains the logic for DFT.
          * Fills in real, imaginary, A and phase arrays
@@ -361,6 +366,7 @@ namespace comp3931Project
             for (int threadCount = 0; threadCount < MAX_NUM_THREADS; threadCount++) {
                 threads[threadCount].Join();
             }
+
         }
 
         /**
