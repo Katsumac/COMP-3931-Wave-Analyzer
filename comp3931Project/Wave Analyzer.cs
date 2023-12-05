@@ -10,6 +10,9 @@ namespace comp3931Project
             InitializeComponent();
         }
 
+        /**
+         * Initializes the base program by loading the wave graph and filter/frequency graph
+         */
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -18,6 +21,9 @@ namespace comp3931Project
             loadFilter();
         }
 
+        /**
+         * Loads the wave graph
+         */
         private void loadDynamicWaveGraph()
         {
             dynamicWaveGraph dynamicWaveGraph = new dynamicWaveGraph();
@@ -58,6 +64,9 @@ namespace comp3931Project
             }
         }
 
+        /**
+         * Loads the filter/frequency chart
+         */
         private void loadFilter()
         {
 
@@ -83,17 +92,6 @@ namespace comp3931Project
         {
             WaveWindow wavewindow = new WaveWindow() { TopLevel = false, TopMost = true };
             wavewindow.FormBorderStyle = FormBorderStyle.None;
-            //WaveAnalyzerPanel.Controls.Add(wavewindow);
-            //wavewindow.TopLevel = false;
-            // wavewindow.FormBorderStyle = FormBorderStyle.None;
-
-            //   wavewindow.AutoScroll = true;
-            /*  wavewindow.StartPosition = FormStartPosition.Manual;
-              wavewindow.Left = 500;
-              wavewindow.Top = 500;*/
-
-            // WaveAnalyzer.panel1.Controls.Add(wavewindow);
-            //  wavewindow.Location = new Point(0, 0);
             wavewindow.Show();
         }
 

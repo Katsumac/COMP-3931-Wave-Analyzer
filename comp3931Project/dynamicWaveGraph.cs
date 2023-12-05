@@ -16,33 +16,37 @@ namespace comp3931Project
     public partial class dynamicWaveGraph : Form
     {
 
-        private static double[] filteredValues;
         private static Series frequency;
         private static double[] xValues;
         private static double[] yValues;
         private static double[] sample;
         private double start;
         private double end;
+        private const int pageSize = 10;
+        private const int yAxisMax = 20;
+        private const int yAxisMin = -20;
+        private int zoomedYAxisValue = 20;
 
+        /**
+         * Initializes the wave graph
+         */
         public dynamicWaveGraph()
         {
             InitializeComponent();
         }
 
+        /**
+         * Creates the graph samples and draws them
+         */
         private void dynamicWaveGraph_Load(object sender, EventArgs e)
         {
             sample = Calculations.createSamples(30, 8);
-
-            const int pageSize = 10;
-
-            // clear the chart
-            chart1.Series.Clear();
+            chart1.Series.Clear(); // clear the chart
 
             // Populate the bar chart chart
             frequency = chart1.Series.Add("Frequency");
             frequency.ChartType = SeriesChartType.Spline;
-
-            populateLineChart(sample, 0, frequency);
+            populateLineChart(sample, frequency);
 
             // Customize the bar chart
             ChartArea filterChartArea = chart1.ChartAreas[frequency.ChartArea];
@@ -52,72 +56,82 @@ namespace comp3931Project
             chart1.SelectionRangeChanged += Chart_SelectionRangeChanged;
         }
 
-        public static void populateLineChart(double[] sample, int startIndex, Series chartLabel)
+        /**
+         * Handles the drawing of the graph
+         */
+        public static void populateLineChart(double[] sample, Series chartLabel)
         {
-            for (int i = startIndex; i < sample.Length; i++)
+            for (int i = 0; i < sample.Length; i++)
                 chartLabel.Points.AddXY(i, sample[i]);
         }
 
+        /**
+         * Adds customizations to the graph such as zooming, axes, and style
+         */
         private void customizeLineChart(int pageSize, ChartArea chartArea, double[] sample)
         {
             // How much data we want
             chartArea.AxisX.Minimum = 0;
-            chartArea.AxisX.Maximum = sample.Length;
-
-            // Enables scrolling
-            chartArea.CursorX.AutoScroll = true;
-
-            // How much we see on one page
-            chartArea.AxisX.ScaleView.Zoomable = false;
-            chartArea.AxisX.ScaleView.Zoom(0, pageSize);
-            chartArea.AxisX.Interval = 1;
 
             // Works with Zoomable to allow zooming via highlighting
             chartArea.CursorX.IsUserEnabled = true;
             chartArea.CursorX.IsUserSelectionEnabled = true;
 
-            // Sets the thumb style
-            chartArea.AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll;
+            chartArea.CursorX.AutoScroll = true; // Enables scrolling
 
-            // Small scrolling size
-            chartArea.AxisX.ScaleView.SmallScrollSize = pageSize;
+            // How much we see on one page
+            chartArea.AxisY.Maximum = yAxisMax;
+            chartArea.AxisY.Minimum = yAxisMin;
+            chartArea.AxisX.ScaleView.Zoom(0, pageSize);
+            chartArea.AxisX.Interval = 1;
+
+            chartArea.AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll; // Sets the thumb style
+
+            chartArea.AxisX.ScaleView.SmallScrollSize = pageSize; // Small scrolling size
         }
 
+        /**
+         * Returns the x values of the wave graph
+         */
         public double[] getXValues()
         {
             return xValues;
         }
+
+        /**
+         * Returns the y values of the wave graph
+         */
         public double[] getYValues()
         {
             return yValues;
         }
 
-        /*      For line chart scrolling*/
+        /**
+         * Performs zooming when the mouse wheel is scrolled
+         */
         private void chart1_MouseWheel(object sender, MouseEventArgs e)
         {
-            var chart = (Chart)sender;
-            var xAxis = chart.ChartAreas[0].AxisX;
-            var yAxis = chart.ChartAreas[0].AxisY;
+            Chart chart = (Chart)sender;
+            Axis xAxis = chart.ChartAreas[0].AxisX;
+            Axis yAxis = chart.ChartAreas[0].AxisY;
+            double xMin = xAxis.ScaleView.ViewMinimum; // Get minimum x axis value
+            double xMax = xAxis.ScaleView.ViewMaximum; // Get maximum x axis value
+            double posXStart = xAxis.PixelPositionToValue(e.Location.X) - (xMax - xMin) / 10;
+            double posXFinish = xAxis.PixelPositionToValue(e.Location.X) + (xMax - xMin) / 10;
 
-            var xMin = xAxis.ScaleView.ViewMinimum;
-            var xMax = xAxis.ScaleView.ViewMaximum;
-            var yMax = yAxis.ScaleView.ViewMaximum;
-
-            var posXStart = xAxis.PixelPositionToValue(e.Location.X) - (xMax - xMin) / 4;
-            var posXFinish = xAxis.PixelPositionToValue(e.Location.X) + (xMax - xMin) / 4;
-
-            if (e.Delta < 0)
-            {
-                xAxis.ScaleView.Zoom(0, 10);
+            if (e.Delta < 0) { // Zoom out
+                zoomedYAxisValue = 20;
                 yAxis.ScaleView.ZoomReset();
-            }
-            else if (e.Delta > 0)
-            {
+                xAxis.ScaleView.Zoom(0, pageSize);
+            } else if (e.Delta > 0 && zoomedYAxisValue > 1) { // Zoom in
                 xAxis.ScaleView.Zoom(Math.Floor(posXStart), Math.Floor(posXFinish));
-                yAxis.ScaleView.Zoom(0, yMax - 1);
+                yAxis.ScaleView.Zoom(0, --zoomedYAxisValue);
             }
         }
 
+        /**
+         * Updates the range selected by the user
+         */
         private void Chart_SelectionRangeChanged(object sender, CursorEventArgs e)
         {
             start = e.NewSelectionStart;
@@ -131,11 +145,14 @@ namespace comp3931Project
             }
         }
 
+        /**
+         * Performs DFT when the DFT button is clicked
+         */
         private void DFTButton_Click(object sender, EventArgs e)
         {
             Filter filter = new Filter();
             filter.getFilterChart().Points.Clear();
-            /*applyTriangleWindow();*/
+            /*applyTriangularWindow();*/
             applyRectangularWindow();
             double[] DFTSamples = Calculations.DFT(sample);
             filter.populateBarChart(DFTSamples, filter.getFilterChart());
@@ -143,102 +160,92 @@ namespace comp3931Project
             filter.Filter_Load(sender, e);
         }
 
+        /**
+         * For comparison purposes. Performs nonthreaded DFT when the DFT (sync) button is clicked
+         */
+        private void DFTSyncButton_Click(object sender, EventArgs e)
+        {
+            Filter filter = new Filter();
+            filter.getFilterChart().Points.Clear();
+            /*applyTriangularWindow();*/
+            applyRectangularWindow();
+            double[] DFTSamples = Calculations.DFTSync(sample);
+            filter.populateBarChart(DFTSamples, filter.getFilterChart());
+            filter.getFilterChart().Color = Color.Green;
+            filter.Filter_Load(sender, e);
+        }
+
+        /**
+         * Handles copy/cut/paste from the ctrl + C, X and V keys
+         */
         private void chart1_KeyDown(object sender, KeyEventArgs e)
         {
-
             if (e.KeyCode == Keys.C && e.Control)
             {
-
-                Debug.WriteLine("This is the start: " + start);
-                Debug.WriteLine("This is the end: " + end);
-
-                /*                double[] A = Calculations.createSamples(30, 8);
-                */
-                int range = (int)(end - start) + 1;
-
-                /*            filteredValues = new double[range + 1];*/
-
-                xValues = new double[range];
-                yValues = new double[range];
-
-                for (int i = 0; i < range; i++)
-                {
-                    xValues[i] = frequency.Points[(int)(start + i)].GetValueByName("X");
-                    yValues[i] = frequency.Points[(int)(start + i)].GetValueByName("Y");
-
-                    Debug.WriteLine("(" + xValues[i] + ", " + yValues[i] + ")");
-                }
-
-
-                copySelection(yValues);
-
+                setValuesToClipboard(false);
             }
             else if (e.KeyCode == Keys.X && e.Control)
             {
-
-                Debug.WriteLine("This is the start: " + start);
-                Debug.WriteLine("This is the end: " + end);
-
-                /*                double[] A = Calculations.createSamples(30, 8);
-                */
-                int range = (int)(end - start) + 1;
-
-                /*            filteredValues = new double[range + 1];*/
-
-                xValues = new double[range];
-                yValues = new double[range];
-
-                for (int i = 0; i < range; i++)
-                {
-                    xValues[i] = frequency.Points[(int)(start + i)].GetValueByName("X");
-                    yValues[i] = frequency.Points[(int)(start + i)].GetValueByName("Y");
-                    sample[i] = 0;
-                    Debug.WriteLine("(" + xValues[i] + ", " + yValues[i] + ")");
-                }
-
-
-
-                copySelection(yValues);
-
+                setValuesToClipboard(true);
             }
             else if (e.KeyCode == Keys.V && e.Control)
             {
-
-                Debug.WriteLine("Yay!");
-                pasteLineChart(xValues, retrieveData(), (int)start, frequency);
-
-
+                pasteLineChart(xValues, retrieveData(), frequency);
             }
         }
 
-        private void pasteLineChart(double[] xValues, double[] yValues, int startIndex, Series chartLabel)
+        /**
+         * Gets the values from the selection range and copies them to the clipboard
+         */
+        private void setValuesToClipboard(bool isCut)
         {
-            int yIndex = 0;
-            for (int i = startIndex; i < startIndex + xValues.Length - 1; i++)
+            int range = (int)(end - start) + 1;
+            xValues = new double[range];
+            yValues = new double[range];
+            for (int i = 0; i < range; i++)
             {
-                sample[i] = yValues[yIndex];
-                yIndex++;
+                xValues[i] = frequency.Points[(int)(start + i)].GetValueByName("X");
+                yValues[i] = frequency.Points[(int)(start + i)].GetValueByName("Y");
 
-                /*                chartLabel.Points.AddXY(startIndex, yValues[i]);
-                                startIndex++;*/
+                if (isCut)
+                {
+                    sample[i] = 0;
+                }
             }
-            chartLabel.Points.Clear();
-            populateLineChart(sample, 0, chartLabel);
-
+            copySelection(yValues);
         }
 
+        /**
+         * Sets the data as a string and saves it to the clipboard
+         */
         private void copySelection(double[] yValues)
         {
             string data = string.Join(",", yValues);
             Clipboard.SetText(data);
         }
 
+        /**
+         * Takes the selected values and pastes them on the wave graph
+         */
+        private void pasteLineChart(double[] xValues, double[] yValues, Series chartLabel)
+        {
+            int yIndex = 0;
+            for (int i = 0; i < xValues.Length; i++)
+            {
+                sample[i] = yValues[yIndex];
+                yIndex++;
+            }
+            chartLabel.Points.Clear();
+            populateLineChart(sample, chartLabel);
+        }
+
+        /**
+         * Retrieves the selected values from the clipboard and copies them to a double array
+         */
         private double[] retrieveData()
         {
             string copiedDataString = Clipboard.GetText();
-
             string[] copiedDataStringArr = copiedDataString.Split(',');
-
             double[] actualData = new double[copiedDataStringArr.Length];
 
             for (int i = 0; i < copiedDataStringArr.Length; i++)
@@ -248,22 +255,34 @@ namespace comp3931Project
             return actualData;
         }
 
+        /**
+         * Returns the sample array
+         */
         public static double[] getSample()
         {
             return sample;
         }
 
+        /**
+         * Sets sample to a new double array
+         */
         public static void setSample(double[] newSample)
         {
             sample = newSample;
         }
 
+        /**
+         * Returns the chart label
+         */
         public static Series getChartLabel()
         {
             return frequency;
         }
 
-        public void applyTriangleWindow()
+        /**
+         * Performs the triangle windowing on the samples
+         */
+        public void applyTriangularWindow()
         {
             int N = sample.Length;
             for (int n = 0; n < N; n++)
@@ -272,6 +291,9 @@ namespace comp3931Project
             }
         }
 
+        /**
+         * Performs rectangle windowing on the samples
+         */
         public void applyRectangularWindow()
         {
             int N = sample.Length;
@@ -279,18 +301,6 @@ namespace comp3931Project
             {
                 sample[n] *= 1;
             }
-        }
-
-        private void DFTSyncButton_Click(object sender, EventArgs e)
-        {
-            Filter filter = new Filter();
-            filter.getFilterChart().Points.Clear();
-            /*applyTriangleWindow();*/
-            applyRectangularWindow();
-            double[] DFTSamples = Calculations.DFTSync(sample);
-            filter.populateBarChart(DFTSamples, filter.getFilterChart());
-            filter.getFilterChart().Color = Color.Green;
-            filter.Filter_Load(sender, e);
         }
     }
 }
