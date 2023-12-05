@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace comp3931Project
 {
+    /**
+     * Class that defines calculations required for the Wave Analyzer
+     */
     internal class Calculations
     {
 
@@ -28,7 +26,12 @@ namespace comp3931Project
         private const int MAX_NUM_THREADS = 4;
 
         /**
-         * For comparison purposes. Performs nonthreaded full DFT to the samples passed in
+         * Purpose: For comparison purposes. Performs nonthreaded full DFT to the samples passed in.
+         * Fills in real, imaginary, A and phase arrays
+         * 
+         * @param S: The sample array
+         * 
+         * @return: An array of amplitudes (A)
          */
         public static double[] DFTSync(double[] S) {
             Stopwatch stopwatch = new Stopwatch();
@@ -51,7 +54,15 @@ namespace comp3931Project
         }
 
         /**
-         * This is the threadProc for threaded DFT
+         * Purpose: This is the threadProc for threaded DFT. Contains the logic for DFT.
+         * Fills in real, imaginary, A and phase arrays
+         * 
+         * @param S: The sample array
+         * @param N: The sample size
+         * @param start: The index at which the thread starts performing DFT in the sample array
+         * @param end: The index at which the thread stops performing DFT in the sample array
+         * 
+         * @return: None
          */
         public static void DFT_ThreadProc(double[] S, int N, int start, int end) {
             for (int f = start; f <= end - 1; f++) {
@@ -65,7 +76,11 @@ namespace comp3931Project
         }
 
         /**
-         * Performs threaded DFT on a sample
+         * Purpose: Performs threaded full DFT to the samples passed in
+         * 
+         * @param S: The sample array
+         * 
+         * @return: An array of amplitudes
          */
         public static double[] DFT(double[] S) {
             Stopwatch stopwatch = new Stopwatch();
@@ -81,7 +96,12 @@ namespace comp3931Project
         }
 
         /**
-         * For comparison purposes. Performs nonthreaded DFT on the sample
+         * Purpose: For comparison purposes. Performs nonthreaded inverse DFT on the sample
+         * 
+         * @param N: The sample size
+         * @param lowPassFilter: The low-pass filter
+         * 
+         * @return: The sample array
          */
         public static double[] inverseDFTSync(int N, double[] lowPassFilter) {
             Stopwatch stopwatch = new Stopwatch();
@@ -101,7 +121,14 @@ namespace comp3931Project
         }
 
         /**
-         * The threadProc for inverseDFT
+         * Purpose: This is the threadProc for inverse DFT. Contains the logic for inverseDFT
+         * 
+         * @param S: The sample array
+         * @param lowPassFilter: The low-pass filter
+         * @param N: The sample size
+         * @param start: The index at which the thread starts performing inverse DFT in the sample array
+         * 
+         * @return: None
          */
         public static void inverseDFT_ThreadProc(double[] S, double[] lowPassFilter, int N, int start, int end) {
             for (int t = start; t <= end - 1; t++) {
@@ -113,7 +140,12 @@ namespace comp3931Project
         }
 
         /**
-         * Performs threaded DFT on the samples
+         * Purpose: Performs threaded inverse DFT to the samples passed in
+         * 
+         * @param N: The sample size
+         * @param lowPassFilter: The low-pass filter
+         * 
+         * @return: The sample array
          */
         public static double[] inverseDFT(int N, double[] lowPassFilter) {
             Stopwatch stopwatch = new Stopwatch();
@@ -128,7 +160,12 @@ namespace comp3931Project
         }
 
         /**
-         * Creates a low pass filter based on the selected cutoff
+         * Purpose: Creates a low pass filter based on the selected cutoff
+         * 
+         * @param N: The sample size
+         * @param fCutoff: The cutoff frequency bin
+         * 
+         * @return: A low-pass filter
          */
         public static double[] createLowPassFilter(int N, int fCutoff) {
             lowPassFilter = new double[N];
@@ -142,9 +179,13 @@ namespace comp3931Project
         }
 
         /**
-         * For comparison purposes. Performs nonthreaded convolution on samples
+         * Purpose: For comparison purposes. Performs non-assembly (C#) convolution on samples
+         * 
+         * @param s: The sample array
+         * 
+         * @return: None
          */
-        public static void convolveSync(double[] s) {
+        public static void convolveNonAsm(double[] s) {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             double[] filter = inverseDFT(lowPassFilter.Length, lowPassFilter);
@@ -166,7 +207,15 @@ namespace comp3931Project
         }
 
         /**
-         * This is the threadProc for threaded convolution
+         * Purpose: This is the threadProc for threaded convolution. Contains the logic for convolution
+         * 
+         * @param filter: The filter
+         * @param samples: The samples
+         * @param convolutedSamples: The convoluted samples array that stores the values from convolution
+         * @param start: The index at which the thread starts performing convolution in the sample array
+         * @param end: The index at which the thread stops performing convolution in the sample array
+         * 
+         * @return: None
          */
         public static void convolve_ThreadProc(double[] filter, double[] samples, double[] convolutedSamples, int start, int end) {
 /*            mutex.WaitOne();*/
@@ -179,7 +228,11 @@ namespace comp3931Project
 */        }
 
         /**
-         * Performs threaded convolution on samples
+         * Purpose: Performs threaded convolution to the samples passed in
+         * 
+         * @param s: The sample array
+         * 
+         * @return: The sample array after convolution
          */
         public static void convolve(double[] s) {
             Stopwatch stopwatch = new Stopwatch();
@@ -199,7 +252,12 @@ namespace comp3931Project
         }
 
         /**
-         * For testing purposes. Creates samples
+         * Purpose: For testing purposes. Creates samples
+         * 
+         * @param N: Sample size
+         * @param f: Frequency
+         * 
+         * @return: A sample array
          */
         public static double[] createSamples(int N, int f) {
             double[] s = new double[N];
@@ -210,7 +268,9 @@ namespace comp3931Project
         }
 
         /**
-         * Displays the benchmark between threaded and nonthreaded DFT
+         * Purpose: Displays the benchmark between threaded and nonthreaded DFT via message box
+         * 
+         * @return: None
          */
         private static void displayDFTBenchmark() {
             if (DFTRuntimeSync != 0 && DFTRuntimeThreaded != 0) {
@@ -221,7 +281,9 @@ namespace comp3931Project
         }
 
         /**
-         * Displays the benchmark between threaded and nonthreaded inverse DFT
+         * Purpose: Displays the benchmark between threaded and nonthreaded inverse DFT via message box
+         * 
+         * @return: None
          */
         private static void displayInverseDFTBenchmark() {
             if (inverseDFTRuntimeSync != 0 && inverseDFTRuntimeThreaded != 0) {
@@ -232,7 +294,9 @@ namespace comp3931Project
         }
 
         /**
-         * Displays the benchmark between threaded and nonthreaded convolution
+         * Displays the benchmark between threaded and nonthreaded convolution via message box
+         * 
+         * @return: None
          */
         private static void displayConvolutionBenchmark() {
             if (convolutionRuntimeSync != 0 && convolutionRuntimeThreaded != 0) {
@@ -243,7 +307,11 @@ namespace comp3931Project
         }
 
         /**
-         * Instantiate arrays for DFT
+         * Purpose: Instantiate arrays for DFT
+         * 
+         * @param N: The sample size
+         * 
+         * @return: None
          */
         private static void instantiateArraysForDFT(int N)
         {
@@ -254,7 +322,12 @@ namespace comp3931Project
         }
 
         /**
-         * Runs the threads for DFT
+         * Purpose: Runs the threads for DFT
+         * 
+         * @param S: The sample array
+         * @param N: The sample size
+         * 
+         * @return: None
          */
         private static void runDFTThreads(double[] S, int N) {
             Thread[] threads = new Thread[MAX_NUM_THREADS];
@@ -268,9 +341,14 @@ namespace comp3931Project
                 threads[threadCount].Join();
             }
         }
-        
+
         /**
-         * Runs the threads for inverse DFT
+         * Purpose: Runs the threads for inverse DFT
+         * 
+         * @param N: The sample size
+         * @param lowPassFilter: The low-pass filter
+         * 
+         * @return: None
          */
         private static void runInverseDFTThreads(int N, double[] lowPassFilter) {
             Thread[] threads = new Thread[MAX_NUM_THREADS];
@@ -286,7 +364,13 @@ namespace comp3931Project
         }
 
         /**
-         * Runs the threads for convolution
+         * Purpose: Runs the threads for convolution
+         * 
+         * @param filter: The filter
+         * @param samples: The samples
+         * @param convolutedSamples: The convolution array to store the values from convolution
+         * 
+         * @return: None
          */
         private static void runConvolutionThread(double[] filter, double[] samples, double[] convolutedSamples) {
             Thread[] threads = new Thread[MAX_NUM_THREADS];

@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
-using System.Diagnostics;
-using System.Drawing.Printing;
+﻿using System.Windows.Forms.DataVisualization.Charting;
 
 namespace comp3931Project
 {
+    /**
+     * Represents the filter/frequency chart
+     */
     public partial class Filter : Form
     {
         private double start;
@@ -24,7 +16,9 @@ namespace comp3931Project
         private int zoomedYAxisValue = 10;
 
         /**
-         * Initializes the filter/frequency graph
+         * Purpose: Initializes the filter/frequency graph
+         * 
+         * @return: None
          */
         public Filter()
         {
@@ -32,7 +26,12 @@ namespace comp3931Project
         }
 
         /**
-         * Loads a blank filter/frequency graph
+         * Purpose: Loads a blank filter/frequency graph
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains event data
+         * 
+         * @return: None
          */
         public void Filter_Load(object sender, EventArgs e)
         {
@@ -54,7 +53,12 @@ namespace comp3931Project
         }
 
         /**
-        * Handles the drawing of the graph
+        * Purpose: Handles the drawing of the graph
+        * 
+        * @param A: The amplitudes
+        * @param chartLabel: Represents a set of data points
+        * 
+        * @return: None
         */
         public void populateBarChart(double[] A, Series chartLabel)
         {
@@ -62,13 +66,18 @@ namespace comp3931Project
             {
                 chartLabel.Points.AddXY(i, A[i]);
             }
-            const int pageSize = 10;
             ChartArea filterChartArea = chart1.ChartAreas[filterChart.ChartArea];
             customizeBarChart(pageSize, filterChartArea, filterChart);
         }
 
         /**
-         * Adds customizations to the graph such as scrollbars, zooming, axes, and style
+         * Purpose: Adds customizations to the graph such as scrollbars, zooming, axes, and style
+         * 
+         * @param pageSize: The initial number of x values seen on the graph
+         * @oaram chartArea: A rectangular area on a chart image
+         * @param filterChart: Stores data and properties of the filter chart
+         * 
+         * @return: None
          */
         private void customizeBarChart(int pageSize, ChartArea chartArea, Series filterChart)
         {
@@ -77,23 +86,26 @@ namespace comp3931Project
             // Works with Zoomable to allow zooming via highlighting
             chartArea.CursorX.IsUserEnabled = true;
             chartArea.CursorX.IsUserSelectionEnabled = true;
-
             chartArea.CursorX.AutoScroll = true; // Enables scrolling
 
             // How much we see on one page
             chartArea.AxisY.Maximum = yAxisMax;
             chartArea.AxisY.Minimum = yAxisMin;
+            
             chartArea.AxisX.ScaleView.Zoom(0, pageSize);
-
             filterChart["PixelPointWidth"] = "16";
             chartArea.AxisX.Interval = 1;
-
             chartArea.AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll; // Sets the thumb style
             chartArea.AxisX.ScaleView.SmallScrollSize = pageSize; // Small scrolling size
         }
 
         /**
-         * Performs zooming when the mouse wheel is scrolled
+         * Purpose: Performs zooming when the mouse wheel is scrolled
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains mouse event data
+         * 
+         * @return: None
          */
         private void chart1_MouseWheel(object sender, MouseEventArgs e)
         {
@@ -116,16 +128,12 @@ namespace comp3931Project
         }
 
         /**
-         * Returns the chart label
-         */
-        public Series getChartLabel()
-        {
-            filterChart = chart1.Series.Add("Frequency");
-            return filterChart;
-        }
-
-        /**
-         * Performs filtering and updates wave graph when the filter button has been clicked
+         * Purpose: Performs filtering and updates wave graph when the filter button has been clicked
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains event data
+         * 
+         * @return: None
          */
         private void FilterButton_Click(object sender, EventArgs e)
         {
@@ -141,7 +149,9 @@ namespace comp3931Project
         }
 
         /**
-         * Returns the filter/frequency chart
+         * Purpose: Returns the filter/frequency chart
+         * 
+         * @return: The filter/frequency chart
          */
         public Series getFilterChart()
         {
@@ -149,7 +159,12 @@ namespace comp3931Project
         }
 
         /**
-         * Updates the range selected by the user
+         * Purpose: Updates the range selected by the user
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains cursor event data
+         * 
+         * @return: None
          */
         private void chart1_SelectionRangeChanged(object sender, CursorEventArgs e)
         {
@@ -165,14 +180,19 @@ namespace comp3931Project
         }
 
         /**
-         * For comparison purposes. Performs nonthreaded filtering
+         * Purpose: For comparison purposes. Performs nonAssembly filtering
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains event data
+         * 
+         * @return: None
          */
         private void filterSyncButton_Click(object sender, EventArgs e)
         {
             double[] samples = dynamicWaveGraph.getSample();
             Series freq = dynamicWaveGraph.getChartLabel();
             Calculations.createLowPassFilter(samples.Length, (int)end);
-            Calculations.convolveSync(samples);
+            Calculations.convolveNonAsm(samples);
             samples = dynamicWaveGraph.getSample();
             freq.Points.Clear();
             dynamicWaveGraph.populateLineChart(samples, freq);
@@ -181,7 +201,12 @@ namespace comp3931Project
         }
 
         /**
-         * For comparison purposes. Performs threaded inverse DFT
+         * Purpose: For comparison purposes. Performs threaded inverse DFT
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains event data
+         * 
+         * @return: None
          */
         private void iDFTButton_Click(object sender, EventArgs e)
         {
@@ -190,7 +215,12 @@ namespace comp3931Project
         }
 
         /**
-         * For comparison purposes. Performs nonthreaded inverse DFT
+         * Purpose: For comparison purposes. Performs nonthreaded inverse DFT
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains event data
+         * 
+         * @return: None
          */
         private void iDFTSyncButton_Click(object sender, EventArgs e)
         {
