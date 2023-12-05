@@ -223,8 +223,6 @@ namespace comp3931Project
             return R;
         }
 
-
-
         public void WriteWavFile(String filename)
         {
             FileStream fs = new FileStream(filename, FileMode.Create);

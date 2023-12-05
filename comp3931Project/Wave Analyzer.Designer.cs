@@ -42,6 +42,7 @@
             filterToolStripMenuItem = new ToolStripMenuItem();
             waveDisplayToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
+            newToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -66,14 +67,14 @@
             // FileOpenToolStripMenuItem
             // 
             FileOpenToolStripMenuItem.Name = "FileOpenToolStripMenuItem";
-            FileOpenToolStripMenuItem.Size = new Size(180, 22);
+            FileOpenToolStripMenuItem.Size = new Size(168, 22);
             FileOpenToolStripMenuItem.Text = "Open";
             FileOpenToolStripMenuItem.Click += surpriseToolStripMenuItem_Click;
             // 
             // saveToAudioFileToolStripMenuItem
             // 
             saveToAudioFileToolStripMenuItem.Name = "saveToAudioFileToolStripMenuItem";
-            saveToAudioFileToolStripMenuItem.Size = new Size(180, 22);
+            saveToAudioFileToolStripMenuItem.Size = new Size(168, 22);
             saveToAudioFileToolStripMenuItem.Text = "Save to Audio File";
             saveToAudioFileToolStripMenuItem.Click += saveToAudioFileToolStripMenuItem_Click;
             // 
@@ -115,22 +116,23 @@
             // 
             // ToolRecordButton
             // 
+            ToolRecordButton.DropDownItems.AddRange(new ToolStripItem[] { newToolStripMenuItem });
             ToolRecordButton.Name = "ToolRecordButton";
-            ToolRecordButton.Size = new Size(144, 22);
+            ToolRecordButton.Size = new Size(180, 22);
             ToolRecordButton.Text = "Record";
-            ToolRecordButton.Click += ToolRecordButton_Click;
+            ToolRecordButton.MouseEnter += ToolRecordButton_MouseEnter;
             // 
             // filterToolStripMenuItem
             // 
             filterToolStripMenuItem.Name = "filterToolStripMenuItem";
-            filterToolStripMenuItem.Size = new Size(144, 22);
+            filterToolStripMenuItem.Size = new Size(180, 22);
             filterToolStripMenuItem.Text = "Filter";
             filterToolStripMenuItem.Click += filterToolStripMenuItem_Click;
             // 
             // waveDisplayToolStripMenuItem
             // 
             waveDisplayToolStripMenuItem.Name = "waveDisplayToolStripMenuItem";
-            waveDisplayToolStripMenuItem.Size = new Size(144, 22);
+            waveDisplayToolStripMenuItem.Size = new Size(180, 22);
             waveDisplayToolStripMenuItem.Text = "Wave Display";
             // 
             // settingsToolStripMenuItem
@@ -138,6 +140,13 @@
             settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             settingsToolStripMenuItem.Size = new Size(61, 20);
             settingsToolStripMenuItem.Text = "Settings";
+            // 
+            // newToolStripMenuItem
+            // 
+            newToolStripMenuItem.Name = "newToolStripMenuItem";
+            newToolStripMenuItem.Size = new Size(180, 22);
+            newToolStripMenuItem.Text = "New";
+            newToolStripMenuItem.Click += newToolStripMenuItem_Click;
             // 
             // WaveAnalyzer
             // 
@@ -174,5 +183,6 @@
         private ToolStripMenuItem openToolStripMenuItem;
         private ToolStripMenuItem pasteGraphToolStripMenuItem;
         private ToolStripMenuItem ToolRecordButton;
+        private ToolStripMenuItem newToolStripMenuItem;
     }
 }

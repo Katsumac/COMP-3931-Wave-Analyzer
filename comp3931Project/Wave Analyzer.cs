@@ -8,7 +8,8 @@ namespace comp3931Project
 {
     public partial class WaveAnalyzer : Form
     {
-        WaveWindow wavewindow;
+        List<WaveWindow> waveWindowList = new List<WaveWindow>();
+        WaveWindow activeWaveWindow;
 
         public WaveAnalyzer()
         {
@@ -21,10 +22,8 @@ namespace comp3931Project
             loadDynamicWaveGraph();
             loadDynamicWaveGraph2();
             loadFilter();
-            WaveWindow ww = new WaveWindow();
-            wavewindow = ww;
-            EventWaitHandle waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset, "StartRecordingProgram");
-            waitHandle.Set();
+       
+        
         }
 
         private void loadDynamicWaveGraph()
@@ -90,6 +89,7 @@ namespace comp3931Project
 
         private void surpriseToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            WaveWindow wavewindow = new WaveWindow();  
             Wave wave = new Wave();
             wavewindow.setWave(wave);
 
@@ -121,6 +121,8 @@ namespace comp3931Project
                 }
 
                 wavewindow.Show();
+                waveWindowList.Add(wavewindow);
+                setActiveWindow(wavewindow);
             }
         }
 
@@ -154,13 +156,13 @@ namespace comp3931Project
             saveFileDialog1.ShowDialog();
             if (saveFileDialog1.FileName != "")
             {
-                Wave wave = wavewindow.getWave();
+                Wave wave = activeWaveWindow.getWave();
                 wave.WriteWavFile(saveFileDialog1.FileName);
             }
 
-                // WaveFileReadWrite.writeFile(WaveFileReadWrite.readFile("../../../music.wav"), ".\\comp3931Project\\music.wav"); //DataID 1634074624
+            // WaveFileReadWrite.writeFile(WaveFileReadWrite.readFile("../../../music.wav"), ".\\comp3931Project\\music.wav"); //DataID 1634074624
 
-            }
+        }
 
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -194,7 +196,7 @@ namespace comp3931Project
         }
 
 
-        private void ToolRecordButton_Click(object sender, EventArgs e)
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Thread recordProgramThread = new Thread(StartRecordProgram);
             Form mdiParentFor = this;
@@ -202,16 +204,25 @@ namespace comp3931Project
             Thread recordHandling = new Thread(new ParameterizedThreadStart(RecordingMethod));
             recordHandling.Start(this);
         }
+
+        private void ToolRecordButton_MouseEnter(object sender, EventArgs e)
+        {
+            EventWaitHandle waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset, "StartRecordingProgram");
+            waitHandle.Set();
+        }
+
+        private void setActiveWindow(WaveWindow w)
+        {
+            activeWaveWindow = w;
+            // TODO send data
+        }
+
         static void RecordingMethod(object parameter)
         {
             bool programOpen = true;
 
             // Create events with unique names
             WaveAnalyzer formInstance = (WaveAnalyzer)parameter;
-
-            // Use Invoke to set child window on the UI thread
-           
-
 
             using (EventWaitHandle recordingEnd = new EventWaitHandle(false, EventResetMode.AutoReset, "recordingEnd"))
             using (EventWaitHandle playRecording = new EventWaitHandle(false, EventResetMode.AutoReset, "playRecording"))
@@ -223,7 +234,7 @@ namespace comp3931Project
 
                 // Wait for any event to be signaled
 
-                while (true)
+                while (programOpen)
                 {
                     int signaledEventIndex = WaitHandle.WaitAny(eventsArray);
                     // Process the signaled event
@@ -233,7 +244,7 @@ namespace comp3931Project
                             Debug.WriteLine("Recording ended, passing data");
                             IntPtr pByteData = getPSaveBuffer();
                             uint pByteLength = getDwDataLength();
-                     
+
                             int intValue;
 
                             // Check for potential overflow before converting
@@ -256,18 +267,19 @@ namespace comp3931Project
                             formInstance.Invoke((MethodInvoker)delegate
                             {
 
-                            Wave waave = new Wave();
-                            waave.readByteArr(byteArray);
-                            WaveWindow waveWindowRecorded = new WaveWindow();
+                                Wave waave = new Wave();
+                                waave.readByteArr(byteArray);
+                                WaveWindow waveWindowRecorded = new WaveWindow();
 
 
-                            waveWindowRecorded.ChartWave(waave);
+                                waveWindowRecorded.ChartWave(waave);
 
-                        waveWindowRecorded.MdiParent = formInstance;
-                            waveWindowRecorded.TopLevel = false;
-                            waveWindowRecorded.Location = new Point(0, 320);
-                            waveWindowRecorded.Size = new Size(1035, 300);
-                            waveWindowRecorded.Show();
+                                waveWindowRecorded.MdiParent = formInstance;
+                                waveWindowRecorded.TopLevel = false;
+                                waveWindowRecorded.Location = new Point(0, 320);
+                                waveWindowRecorded.Size = new Size(1035, 300);
+                                waveWindowRecorded.Show();
+                                formInstance.setActiveWindow(waveWindowRecorded);
 
                             });
                             break;
@@ -302,5 +314,6 @@ namespace comp3931Project
 
         [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
         static extern uint getDwDataLength();
+
     }
 }
