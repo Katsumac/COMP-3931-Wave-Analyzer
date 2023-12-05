@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
-using System.Diagnostics;
-using System.Reflection.Metadata.Ecma335;
+﻿using System.Windows.Forms.DataVisualization.Charting;
 
 namespace comp3931Project
 {
+    /**
+     * Represents the wave graph
+     */
     public partial class dynamicWaveGraph : Form
     {
 
@@ -22,13 +14,15 @@ namespace comp3931Project
         private static double[] sample;
         private double start;
         private double end;
-        private const int pageSize = 10;
-        private const int yAxisMax = 20;
-        private const int yAxisMin = -20;
-        private int zoomedYAxisValue = 20;
+        private const int pageSize = 10; // initial number of x values seen on the graph
+        private const int yAxisMax = 20; // max value for the y axis
+        private const int yAxisMin = -20; // min value for the y axis
+        private int zoomedYAxisValue = 20; // counter used for zooming
 
         /**
-         * Initializes the wave graph
+         * Purpose: Initializes the wave graph
+         * 
+         * @return: None
          */
         public dynamicWaveGraph()
         {
@@ -36,7 +30,12 @@ namespace comp3931Project
         }
 
         /**
-         * Creates the graph samples and draws them
+         * Purpose: Creates the graph samples and draws them
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains event data
+         * 
+         * @return: None
          */
         private void dynamicWaveGraph_Load(object sender, EventArgs e)
         {
@@ -50,14 +49,19 @@ namespace comp3931Project
 
             // Customize the bar chart
             ChartArea filterChartArea = chart1.ChartAreas[frequency.ChartArea];
-            customizeLineChart(pageSize, filterChartArea, sample);
+            customizeLineChart(pageSize, filterChartArea);
 
             chart1.MouseWheel += chart1_MouseWheel;
             chart1.SelectionRangeChanged += Chart_SelectionRangeChanged;
         }
 
         /**
-         * Handles the drawing of the graph
+         * Purpose: Handles the drawing of the graph
+         * 
+         * @param sample: The samples
+         * @param chartLabel: The graph's chart label
+         * 
+         * @return: None
          */
         public static void populateLineChart(double[] sample, Series chartLabel)
         {
@@ -66,9 +70,14 @@ namespace comp3931Project
         }
 
         /**
-         * Adds customizations to the graph such as zooming, axes, and style
+         * Purpose: Adds customizations to the graph such as scrollbars, zooming, axes, and style
+         * 
+         * @param pageSize: The initial number of x values seen on the graph
+         * @oaram chartArea: A rectangular area on a chart image
+         * 
+         * @return: None
          */
-        private void customizeLineChart(int pageSize, ChartArea chartArea, double[] sample)
+        private void customizeLineChart(int pageSize, ChartArea chartArea)
         {
             // How much data we want
             chartArea.AxisX.Minimum = 0;
@@ -76,38 +85,25 @@ namespace comp3931Project
             // Works with Zoomable to allow zooming via highlighting
             chartArea.CursorX.IsUserEnabled = true;
             chartArea.CursorX.IsUserSelectionEnabled = true;
-
             chartArea.CursorX.AutoScroll = true; // Enables scrolling
 
             // How much we see on one page
             chartArea.AxisY.Maximum = yAxisMax;
             chartArea.AxisY.Minimum = yAxisMin;
+            
             chartArea.AxisX.ScaleView.Zoom(0, pageSize);
             chartArea.AxisX.Interval = 1;
-
             chartArea.AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll; // Sets the thumb style
-
             chartArea.AxisX.ScaleView.SmallScrollSize = pageSize; // Small scrolling size
         }
 
         /**
-         * Returns the x values of the wave graph
-         */
-        public double[] getXValues()
-        {
-            return xValues;
-        }
-
-        /**
-         * Returns the y values of the wave graph
-         */
-        public double[] getYValues()
-        {
-            return yValues;
-        }
-
-        /**
-         * Performs zooming when the mouse wheel is scrolled
+         * Purpose: Performs zooming when the mouse wheel is scrolled
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains mouse event data
+         * 
+         * @return: None
          */
         private void chart1_MouseWheel(object sender, MouseEventArgs e)
         {
@@ -130,7 +126,12 @@ namespace comp3931Project
         }
 
         /**
-         * Updates the range selected by the user
+         * Purpose: Updates the range selected by the user
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains cursor event data
+         * 
+         * @return: None
          */
         private void Chart_SelectionRangeChanged(object sender, CursorEventArgs e)
         {
@@ -146,7 +147,12 @@ namespace comp3931Project
         }
 
         /**
-         * Performs DFT when the DFT button is clicked
+         * Purpose: Performs DFT when the DFT button is clicked
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains event data
+         * 
+         * @return: None
          */
         private void DFTButton_Click(object sender, EventArgs e)
         {
@@ -161,7 +167,12 @@ namespace comp3931Project
         }
 
         /**
-         * For comparison purposes. Performs nonthreaded DFT when the DFT (sync) button is clicked
+         * Purpose: For comparison purposes. Performs nonthreaded DFT when the DFT (sync) button is clicked
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains event data
+         * 
+         * @return: None
          */
         private void DFTSyncButton_Click(object sender, EventArgs e)
         {
@@ -176,7 +187,12 @@ namespace comp3931Project
         }
 
         /**
-         * Handles copy/cut/paste from the ctrl + C, X and V keys
+         * Purpose: Handles copy/cut/paste from the ctrl + C, X and V keys
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains key event data
+         * 
+         * @return: None
          */
         private void chart1_KeyDown(object sender, KeyEventArgs e)
         {
@@ -195,7 +211,11 @@ namespace comp3931Project
         }
 
         /**
-         * Gets the values from the selection range and copies them to the clipboard
+         * Purpose: Gets the values from the selection range and copies them to the clipboard
+         * 
+         * @param isCut: bool that represents whether the incoming values were cut (true) or copied (false)
+         * 
+         * @return: None
          */
         private void setValuesToClipboard(bool isCut)
         {
@@ -216,7 +236,11 @@ namespace comp3931Project
         }
 
         /**
-         * Sets the data as a string and saves it to the clipboard
+         * Purpose: Sets the data as a string and saves it to the clipboard
+         * 
+         * @param yValues: The y values the user has selected from the wave graph
+         * 
+         * @return: None
          */
         private void copySelection(double[] yValues)
         {
@@ -225,7 +249,13 @@ namespace comp3931Project
         }
 
         /**
-         * Takes the selected values and pastes them on the wave graph
+         * Purpose: Takes the selected values and pastes them on the wave graph
+         * 
+         * @param xValues: The x values the user has selected from the wave graph
+         * @param yValues: The y values the user has selected from the wave graph
+         * @param chartLabel: Represents a set of data points
+         * 
+         * @return: None
          */
         private void pasteLineChart(double[] xValues, double[] yValues, Series chartLabel)
         {
@@ -240,7 +270,9 @@ namespace comp3931Project
         }
 
         /**
-         * Retrieves the selected values from the clipboard and copies them to a double array
+         * Purpose: Retrieves the selected values from the clipboard and copies them to a double array
+         * 
+         * @return: The user-selected values from the clipboard
          */
         private double[] retrieveData()
         {
@@ -256,7 +288,9 @@ namespace comp3931Project
         }
 
         /**
-         * Returns the sample array
+         * Purpose: Returns the sample array
+         * 
+         * @return: The sample array
          */
         public static double[] getSample()
         {
@@ -264,7 +298,11 @@ namespace comp3931Project
         }
 
         /**
-         * Sets sample to a new double array
+         * Purpose: Sets sample to a new double array
+         * 
+         * @param newSample: The new sample array
+         * 
+         * @return: None
          */
         public static void setSample(double[] newSample)
         {
@@ -272,7 +310,9 @@ namespace comp3931Project
         }
 
         /**
-         * Returns the chart label
+         * Purpose: Returns the chart label
+         * 
+         * @return: The chart label
          */
         public static Series getChartLabel()
         {
@@ -280,9 +320,11 @@ namespace comp3931Project
         }
 
         /**
-         * Performs the triangle windowing on the samples
+         * Purpose: Performs the triangle windowing on the samples
+         * 
+         * @return: None
          */
-        public void applyTriangularWindow()
+        private void applyTriangularWindow()
         {
             int N = sample.Length;
             for (int n = 0; n < N; n++)
@@ -292,9 +334,11 @@ namespace comp3931Project
         }
 
         /**
-         * Performs rectangle windowing on the samples
+         * Purpose: Performs rectangle windowing on the samples
+         * 
+         * @return: None
          */
-        public void applyRectangularWindow()
+        private void applyRectangularWindow()
         {
             int N = sample.Length;
             for (int n = 0; n < N; n++)
