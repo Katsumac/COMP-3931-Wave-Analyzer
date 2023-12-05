@@ -17,24 +17,21 @@ namespace comp3931Project
     {
         private double start;
         private double end;
+        private static Series filterChart;
 
+        /**
+         * Initializes the filter/frequency graph
+         */
         public Filter()
         {
             InitializeComponent();
         }
 
-        private static Series filterChart;
-
+        /**
+         * Loads a blank filter/frequency graph
+         */
         public void Filter_Load(object sender, EventArgs e)
         {
-
-            /*            double[] A = Calculations.DFT(Calculations.createSamples(30, 8), 30);
-            */            /*            ComplexNumber.complexnumber[] A = Calculations.DFT(Calculations.createSamples(30, 8), 30);*/
-
-
-            /*            if (isPopulated)
-                        {*/
-            // clear the chart
             const int pageSize = 10;
             chart1.Series.Clear();
             filterChart = chart1.Series.Add("Frequency");
@@ -42,13 +39,7 @@ namespace comp3931Project
             filterChart.Points.AddXY(1, 1);
             filterChart.Color = Color.Transparent;
 
-            // Populate the bar chart chart
-            /*                populateBarChart(dynamicWaveGraph.getData(), filterChart);
-            */
-            /*            populateBarChart(A, filterChart);*/
             chart1.Update();
-            /*            }*/
-
 
             // Customize the bar chart
             ChartArea filterChartArea = chart1.ChartAreas[filterChart.ChartArea];
@@ -57,9 +48,11 @@ namespace comp3931Project
             chart1.MouseWheel += chart1_MouseWheel;
 
             chart1.SelectionRangeChanged += chart1_SelectionRangeChanged;
-
         }
 
+        /**
+        * Handles the drawing of the graph
+        */
         public void populateBarChart(double[] A, Series chartLabel)
         {
             for (int i = 0; i < A.Length; i++)
@@ -130,15 +123,6 @@ namespace comp3931Project
             return filterChart;
         }
 
-
-        private void populateBarChart(ComplexNumber.complexnumber[] A, Series chartLabel)
-        {
-            for (int f = 0; f < A.Length; f++)
-            {
-                filterChart.Points.AddXY(f, A[f]);
-            }
-        }
-
         // Work on this
         private void FilterButton_Click(object sender, EventArgs e)
         {
@@ -148,7 +132,7 @@ namespace comp3931Project
             Calculations.convolve(a);
             a = dynamicWaveGraph.getSample();
             b.Points.Clear();
-            dynamicWaveGraph.populateLineChart(a, 0, b);
+            dynamicWaveGraph.populateLineChart(a, b);
             dynamicWaveGraph d = new dynamicWaveGraph();
             d.Update();
         }
@@ -179,7 +163,7 @@ namespace comp3931Project
             Calculations.convolveSync(a);
             a = dynamicWaveGraph.getSample();
             b.Points.Clear();
-            dynamicWaveGraph.populateLineChart(a, 0, b);
+            dynamicWaveGraph.populateLineChart(a, b);
             dynamicWaveGraph d = new dynamicWaveGraph();
             d.Update();
         }

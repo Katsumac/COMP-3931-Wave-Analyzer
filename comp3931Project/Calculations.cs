@@ -25,7 +25,7 @@ namespace comp3931Project
         private static double inverseDFTRuntimeSync; // Runtime for nonthreaded inverseDFT
         private static double convolutionRuntimeSync; // Runtime for nonthreaded convolution
 
-        private const int NUM_THREADS = 4;
+        private const int MAX_NUM_THREADS = 4;
 
         /**
          * For comparison purposes. Performs nonthreaded full DFT to the samples passed in
@@ -257,14 +257,14 @@ namespace comp3931Project
          * Runs the threads for DFT
          */
         private static void runDFTThreads(double[] S, int N) {
-            Thread[] threads = new Thread[NUM_THREADS];
-            for (int threadCount = 0; threadCount < NUM_THREADS; threadCount++) {
-                int start = threadCount * S.Length / NUM_THREADS;
-                int end = (threadCount + 1) * S.Length / NUM_THREADS;
+            Thread[] threads = new Thread[MAX_NUM_THREADS];
+            for (int threadCount = 0; threadCount < MAX_NUM_THREADS; threadCount++) {
+                int start = threadCount * S.Length / MAX_NUM_THREADS;
+                int end = (threadCount + 1) * S.Length / MAX_NUM_THREADS;
                 threads[threadCount] = new Thread(() => DFT_ThreadProc(S, N, start, end));
                 threads[threadCount].Start();
             }
-            for (int threadCount = 0; threadCount < NUM_THREADS; threadCount++) {
+            for (int threadCount = 0; threadCount < MAX_NUM_THREADS; threadCount++) {
                 threads[threadCount].Join();
             }
         }
@@ -273,14 +273,14 @@ namespace comp3931Project
          * Runs the threads for inverse DFT
          */
         private static void runInverseDFTThreads(int N, double[] lowPassFilter) {
-            Thread[] threads = new Thread[NUM_THREADS];
-            for (int threadCount = 0; threadCount < NUM_THREADS; threadCount++) {
-                int start = threadCount * s.Length / NUM_THREADS;
-                int end = (threadCount + 1) * s.Length / NUM_THREADS;
+            Thread[] threads = new Thread[MAX_NUM_THREADS];
+            for (int threadCount = 0; threadCount < MAX_NUM_THREADS; threadCount++) {
+                int start = threadCount * s.Length / MAX_NUM_THREADS;
+                int end = (threadCount + 1) * s.Length / MAX_NUM_THREADS;
                 threads[threadCount] = new Thread(() => inverseDFT_ThreadProc(s, lowPassFilter, N, start, end));
                 threads[threadCount].Start();
             }
-            for (int threadCount = 0; threadCount < NUM_THREADS; threadCount++) {
+            for (int threadCount = 0; threadCount < MAX_NUM_THREADS; threadCount++) {
                 threads[threadCount].Join();
             }
         }
@@ -289,14 +289,14 @@ namespace comp3931Project
          * Runs the threads for convolution
          */
         private static void runConvolutionThread(double[] filter, double[] samples, double[] convolutedSamples) {
-            Thread[] threads = new Thread[NUM_THREADS];
-            for (int threadCount = 0; threadCount < NUM_THREADS; threadCount++){
-                int start = threadCount * s.Length / NUM_THREADS;
-                int end = (threadCount + 1) * s.Length / NUM_THREADS;
+            Thread[] threads = new Thread[MAX_NUM_THREADS];
+            for (int threadCount = 0; threadCount < MAX_NUM_THREADS; threadCount++){
+                int start = threadCount * s.Length / MAX_NUM_THREADS;
+                int end = (threadCount + 1) * s.Length / MAX_NUM_THREADS;
                 threads[threadCount] = new Thread(() => convolve_ThreadProc(filter, samples, convolutedSamples, start, end));
                 threads[threadCount].Start();
             }
-            for (int threadCount = 0; threadCount < NUM_THREADS; threadCount++){
+            for (int threadCount = 0; threadCount < MAX_NUM_THREADS; threadCount++){
                 threads[threadCount].Join();
             }
         }

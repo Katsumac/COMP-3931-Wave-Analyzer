@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             contextMenuStrip1 = new ContextMenuStrip(components);
             chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             FilterButton = new Button();
@@ -49,25 +49,25 @@
             // 
             // chart1
             // 
-            chartArea1.Name = "ChartArea1";
-            chart1.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            chart1.Legends.Add(legend1);
+            chartArea3.Name = "ChartArea1";
+            chart1.ChartAreas.Add(chartArea3);
+            legend3.Name = "Legend1";
+            chart1.Legends.Add(legend3);
             chart1.Location = new Point(2, 0);
             chart1.Margin = new Padding(0);
             chart1.Name = "chart1";
-            series1.ChartArea = "ChartArea1";
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            chart1.Series.Add(series1);
-            chart1.Size = new Size(1015, 252);
+            series3.ChartArea = "ChartArea1";
+            series3.Legend = "Legend1";
+            series3.Name = "Series1";
+            chart1.Series.Add(series3);
+            chart1.Size = new Size(1033, 298);
             chart1.TabIndex = 1;
             chart1.Text = "chart1";
             chart1.SelectionRangeChanged += chart1_SelectionRangeChanged;
             // 
             // FilterButton
             // 
-            FilterButton.Location = new Point(887, 45);
+            FilterButton.Location = new Point(904, 50);
             FilterButton.Name = "FilterButton";
             FilterButton.Size = new Size(94, 29);
             FilterButton.TabIndex = 2;
@@ -77,7 +77,7 @@
             // 
             // filterSyncButton
             // 
-            filterSyncButton.Location = new Point(887, 90);
+            filterSyncButton.Location = new Point(904, 103);
             filterSyncButton.Name = "filterSyncButton";
             filterSyncButton.Size = new Size(94, 29);
             filterSyncButton.TabIndex = 3;
@@ -87,7 +87,7 @@
             // 
             // iDFTButton
             // 
-            iDFTButton.Location = new Point(887, 135);
+            iDFTButton.Location = new Point(904, 160);
             iDFTButton.Name = "iDFTButton";
             iDFTButton.Size = new Size(94, 29);
             iDFTButton.TabIndex = 4;
@@ -97,7 +97,7 @@
             // 
             // iDFTSyncButton
             // 
-            iDFTSyncButton.Location = new Point(887, 181);
+            iDFTSyncButton.Location = new Point(904, 214);
             iDFTSyncButton.Name = "iDFTSyncButton";
             iDFTSyncButton.Size = new Size(94, 29);
             iDFTSyncButton.TabIndex = 5;
@@ -109,7 +109,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1017, 253);
+            ClientSize = new Size(1035, 300);
             Controls.Add(iDFTSyncButton);
             Controls.Add(iDFTButton);
             Controls.Add(filterSyncButton);

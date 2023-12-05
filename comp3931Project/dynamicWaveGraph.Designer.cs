@@ -49,14 +49,14 @@
             series1.Legend = "Legend1";
             series1.Name = "Series1";
             chart1.Series.Add(series1);
-            chart1.Size = new Size(1016, 253);
+            chart1.Size = new Size(1037, 301);
             chart1.TabIndex = 0;
             chart1.Text = "chart1";
             chart1.KeyDown += chart1_KeyDown;
             // 
             // DFTButton
             // 
-            DFTButton.Location = new Point(887, 52);
+            DFTButton.Location = new Point(898, 52);
             DFTButton.Name = "DFTButton";
             DFTButton.Size = new Size(94, 29);
             DFTButton.TabIndex = 1;
@@ -66,7 +66,7 @@
             // 
             // DFTSyncButton
             // 
-            DFTSyncButton.Location = new Point(887, 106);
+            DFTSyncButton.Location = new Point(898, 104);
             DFTSyncButton.Name = "DFTSyncButton";
             DFTSyncButton.Size = new Size(94, 29);
             DFTSyncButton.TabIndex = 2;
@@ -78,7 +78,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1017, 253);
+            ClientSize = new Size(1035, 300);
             Controls.Add(DFTSyncButton);
             Controls.Add(DFTButton);
             Controls.Add(chart1);
