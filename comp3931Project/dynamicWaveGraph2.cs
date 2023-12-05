@@ -117,21 +117,21 @@ namespace comp3931Project
 
         private void DFTButton_Click(object sender, EventArgs e)
         {
-            Filter filter = new Filter();
+/*            Filter filter = new Filter();
             filter.getFilterChart().Points.Clear();
             filter.populateBarChart(Calculations.DFT(dynamicWaveGraph.getYValues()), filter.getFilterChart());
             filter.getFilterChart().Color = Color.CornflowerBlue;
-            filter.Filter_Load(sender, e);
+            filter.Filter_Load(sender, e);*/
         }
 
         private void chart1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.V && e.Control)
+/*            if (e.KeyCode == Keys.V && e.Control)
             {
                 frequency.Points.Clear();
                 Debug.WriteLine("Yay!");
                 pasteLineChart(dynamicWaveGraph.getXValues(), dynamicWaveGraph.getYValues(), frequency);
-            }
+            }*/
         }
     }
 }

@@ -28,34 +28,35 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             DFTButton = new Button();
+            DFTSyncButton = new Button();
             ((System.ComponentModel.ISupportInitialize)chart1).BeginInit();
             SuspendLayout();
             // 
             // chart1
             // 
-            chartArea2.Name = "ChartArea1";
-            chart1.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            chart1.Legends.Add(legend2);
+            chartArea1.Name = "ChartArea1";
+            chart1.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            chart1.Legends.Add(legend1);
             chart1.Location = new Point(0, 0);
             chart1.Name = "chart1";
-            series2.ChartArea = "ChartArea1";
-            series2.Legend = "Legend1";
-            series2.Name = "Series1";
-            chart1.Series.Add(series2);
-            chart1.Size = new Size(1016, 253);
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            chart1.Series.Add(series1);
+            chart1.Size = new Size(1037, 301);
             chart1.TabIndex = 0;
             chart1.Text = "chart1";
             chart1.KeyDown += chart1_KeyDown;
             // 
             // DFTButton
             // 
-            DFTButton.Location = new Point(888, 129);
+            DFTButton.Location = new Point(898, 52);
             DFTButton.Name = "DFTButton";
             DFTButton.Size = new Size(94, 29);
             DFTButton.TabIndex = 1;
@@ -63,13 +64,25 @@
             DFTButton.UseVisualStyleBackColor = true;
             DFTButton.Click += DFTButton_Click;
             // 
+            // DFTSyncButton
+            // 
+            DFTSyncButton.Location = new Point(898, 104);
+            DFTSyncButton.Name = "DFTSyncButton";
+            DFTSyncButton.Size = new Size(94, 29);
+            DFTSyncButton.TabIndex = 2;
+            DFTSyncButton.Text = "DFT (Sync)";
+            DFTSyncButton.UseVisualStyleBackColor = true;
+            DFTSyncButton.Click += DFTSyncButton_Click;
+            // 
             // dynamicWaveGraph
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1017, 253);
+            ClientSize = new Size(1035, 300);
+            Controls.Add(DFTSyncButton);
             Controls.Add(DFTButton);
             Controls.Add(chart1);
+            FormBorderStyle = FormBorderStyle.None;
             Name = "dynamicWaveGraph";
             Text = "dynamicWaveGraph";
             Load += dynamicWaveGraph_Load;
@@ -81,5 +94,6 @@
 
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private Button DFTButton;
+        private Button DFTSyncButton;
     }
 }

@@ -3,19 +3,34 @@ using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using static System.Windows.Forms.DataFormats;
-
 namespace comp3931Project
 {
+    /**
+     * Represents the entire Wave Analyzer application
+     */
     public partial class WaveAnalyzer : Form
     {
         List<WaveWindow> waveWindowList = new List<WaveWindow>();
         WaveWindow activeWaveWindow;
 
+        /**
+         * Purpose: Initializes the Wave Analyzer application
+         * 
+         * @return: None
+         */
         public WaveAnalyzer()
         {
             InitializeComponent();
         }
 
+        /**
+         * Purpose: Initializes the base program by loading the wave graph and filter/frequency graph
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains event data
+         * 
+         * @return: None
+         */
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -26,6 +41,11 @@ namespace comp3931Project
         
         }
 
+        /**
+         * Purpose: Loads the wave graph
+         * 
+         * @return: None
+         */
         private void loadDynamicWaveGraph()
         {
             dynamicWaveGraph dynamicWaveGraph = new dynamicWaveGraph();
@@ -66,9 +86,13 @@ namespace comp3931Project
             }
         }
 
+        /**
+         * Purpose: Loads the filter/frequency chart
+         * 
+         * @return: None
+         */
         private void loadFilter()
         {
-
             Filter filter = new Filter();
             filter.MdiParent = this;
             filter.TopLevel = false;
