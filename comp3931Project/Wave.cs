@@ -139,7 +139,81 @@ namespace comp3931Project
         }
 
      
-        public double[] getL()
+        public void readByteArr(byte[] bArr)
+        {
+
+            using (MemoryStream memoryStream = new MemoryStream(bArr))
+            using (BinaryReader reader = new BinaryReader(memoryStream))
+            {
+                memoryStream.Seek(0, SeekOrigin.Begin);
+
+                /* this.ChunkID = reader.ReadInt32();
+                 this.ChunkSize = reader.ReadInt32();
+                 this.Format = reader.ReadInt32();
+
+                 this.FMTID = reader.ReadInt32();
+                 this.FMTSize = reader.ReadInt32();
+                 this.FMTFormatTag = reader.ReadInt16();
+                 this.FMTChannels = reader.ReadInt16();
+                 this.FMTSampleRate = reader.ReadInt32();
+                 this.FMTByteRate = reader.ReadInt32();
+                 this.FMBlock = reader.ReadInt16();
+                 this.FMTBPS = reader.ReadInt16();
+
+                 this.DataID = reader.ReadInt32();
+                 this.DataSize = reader.ReadInt32();*/
+                this.FMTBPS = 8;
+                this.FMTChannels = 1;
+                this.DataSize = bArr.Length;
+            int bytesPerSample = FMTBPS / 8;
+            int samples = DataSize / bytesPerSample;
+
+           // byte[] buffer = reader.ReadBytes(bArr.Length); // buffer containing amplitudes as bytes
+
+            double[] doubleArr;
+
+            switch (this.FMTBPS)
+            {
+                case 8:
+                    byte[] byteBuffer = new byte[DataSize];
+                    Buffer.BlockCopy(bArr, 0, byteBuffer, 0, DataSize);
+                    doubleArr = byteBuffer.Select(b => Convert.ToDouble(b)).ToArray();
+                    break;
+                case 16:
+                    short[] shortBuffer = new short[DataSize / 2];
+                    Buffer.BlockCopy(bArr, 0, shortBuffer, 0, DataSize);
+                    doubleArr = shortBuffer.Select(s => Convert.ToDouble(s)).ToArray();
+                    break;
+                case 32:
+                    int[] intBuffer = new int[DataSize / 4];
+                    Buffer.BlockCopy(bArr, 0, intBuffer, 0, DataSize);
+                    doubleArr = intBuffer.Select(i => Convert.ToDouble(i)).ToArray();
+                    break;
+                default:
+                    //maybe pop an error message?
+                    throw new Exception("Difficulty Reading Data.");
+            }
+
+            if (FMTChannels == 1)
+            {
+                this.L = doubleArr;
+            }
+            else
+            {
+                this.L = new double[samples / 2];
+                this.R = new double[samples / 2];
+
+                for (int i = 0, interleavedValue = 0; i < doubleArr.Length; i++)
+                {
+                    this.L[i] = doubleArr[interleavedValue++];
+                    this.R[i] = doubleArr[interleavedValue++];
+                }
+            }
+            }
+        }
+    
+
+    public double[] getL()
         {
             return L;
         }

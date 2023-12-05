@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using static System.Windows.Forms.DataFormats;
@@ -21,6 +23,8 @@ namespace comp3931Project
             loadFilter();
             WaveWindow ww = new WaveWindow();
             wavewindow = ww;
+            EventWaitHandle waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset, "StartRecordingProgram");
+            waitHandle.Set();
         }
 
         private void loadDynamicWaveGraph()
@@ -86,8 +90,6 @@ namespace comp3931Project
 
         private void surpriseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
-
             Wave wave = new Wave();
             wavewindow.setWave(wave);
 
@@ -104,7 +106,6 @@ namespace comp3931Project
 
                 wavewindow.MdiParent = this;
                 wavewindow.TopLevel = false;
-                // wavewindow.Show();
                 wavewindow.Location = new Point(0, 320);
                 wavewindow.Size = new Size(1035, 300);
                 wavewindow.Show();
@@ -121,21 +122,6 @@ namespace comp3931Project
 
                 wavewindow.Show();
             }
-
-           
-
-            //WaveAnalyzerPanel.Controls.Add(wavewindow);
-            //wavewindow.TopLevel = false;
-            // wavewindow.FormBorderStyle = FormBorderStyle.None;
-
-            //   wavewindow.AutoScroll = true;
-            /*  wavewindow.StartPosition = FormStartPosition.Manual;
-              wavewindow.Left = 500;
-              wavewindow.Top = 500;*/
-
-            // WaveAnalyzer.panel1.Controls.Add(wavewindow);
-            //  wavewindow.Location = new Point(0, 0);
-            //   wavewindow.Show();
         }
 
 
@@ -210,12 +196,100 @@ namespace comp3931Project
 
         private void ToolRecordButton_Click(object sender, EventArgs e)
         {
-            start();
-            IntPtr i = getPSaveBuffer();
-            getDwDataLength();
+            Thread recordProgramThread = new Thread(StartRecordProgram);
+            Form mdiParentFor = this;
+            recordProgramThread.Start();
+            Thread recordHandling = new Thread(new ParameterizedThreadStart(RecordingMethod));
+            recordHandling.Start(this);
+        }
+        static void RecordingMethod(object parameter)
+        {
+            bool programOpen = true;
 
+            // Create events with unique names
+            WaveAnalyzer formInstance = (WaveAnalyzer)parameter;
+
+            // Use Invoke to set child window on the UI thread
+           
+
+
+            using (EventWaitHandle recordingEnd = new EventWaitHandle(false, EventResetMode.AutoReset, "recordingEnd"))
+            using (EventWaitHandle playRecording = new EventWaitHandle(false, EventResetMode.AutoReset, "playRecording"))
+            using (EventWaitHandle closeProgram = new EventWaitHandle(false, EventResetMode.AutoReset, "playRecording"))
+            using (EventWaitHandle event2 = new EventWaitHandle(false, EventResetMode.AutoReset, "P2"))
+            {
+                // Create an array of events
+                WaitHandle[] eventsArray = { recordingEnd, playRecording, closeProgram };
+
+                // Wait for any event to be signaled
+
+                while (true)
+                {
+                    int signaledEventIndex = WaitHandle.WaitAny(eventsArray);
+                    // Process the signaled event
+                    switch (signaledEventIndex)
+                    {
+                        case 0:
+                            Debug.WriteLine("Recording ended, passing data");
+                            IntPtr pByteData = getPSaveBuffer();
+                            uint pByteLength = getDwDataLength();
+                     
+                            int intValue;
+
+                            // Check for potential overflow before converting
+                            if (pByteLength <= int.MaxValue)
+                            {
+                                intValue = (int)pByteLength;
+                            }
+                            else
+                            {
+                                // Handle the case where the ulong value is too large to fit into an int
+                                // You might want to throw an exception, use a default value, or handle it in some other way
+                                // For example:
+                                intValue = 0; // or any other appropriate default value
+                                Console.WriteLine("Warning: ulong value too large to fit into int.");
+                            }
+
+
+                            byte[] byteArray = new byte[intValue];
+                            Marshal.Copy(pByteData, byteArray, 0, intValue);
+                            formInstance.Invoke((MethodInvoker)delegate
+                            {
+
+                            Wave waave = new Wave();
+                            waave.readByteArr(byteArray);
+                            WaveWindow waveWindowRecorded = new WaveWindow();
+
+
+                            waveWindowRecorded.ChartWave(waave);
+
+                        waveWindowRecorded.MdiParent = formInstance;
+                            waveWindowRecorded.TopLevel = false;
+                            waveWindowRecorded.Location = new Point(0, 320);
+                            waveWindowRecorded.Size = new Size(1035, 300);
+                            waveWindowRecorded.Show();
+
+                            });
+                            break;
+                        case 1:
+                            Debug.WriteLine("Play Recording");
+                            break;
+                        case 2:
+                            programOpen = false;
+                            Debug.WriteLine("Close Program");
+                            break;
+                        default:
+                            Console.WriteLine("Unexpected event");
+                            break;
+                    }
+                }
+            }
         }
 
+        static void StartRecordProgram()
+        {
+            start();
+        }
 
 
 
@@ -223,10 +297,10 @@ namespace comp3931Project
         static extern IntPtr getPSaveBuffer();
 
         [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
-        static extern bool start();
+        static extern int start();
 
 
         [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
-        static extern ulong getDwDataLength();
+        static extern uint getDwDataLength();
     }
 }
