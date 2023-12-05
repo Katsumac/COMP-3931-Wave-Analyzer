@@ -22,6 +22,10 @@ namespace comp3931Project
         private static double[] sample;
         private double start;
         private double end;
+        private const int pageSize = 10;
+        private const int yAxisMax = 20;
+        private const int yAxisMin = -20;
+        private int zoomedYAxisValue = 20;
 
         /**
          * Initializes the wave graph
@@ -37,7 +41,6 @@ namespace comp3931Project
         private void dynamicWaveGraph_Load(object sender, EventArgs e)
         {
             sample = Calculations.createSamples(30, 8);
-            const int pageSize = 10;
             chart1.Series.Clear(); // clear the chart
 
             // Populate the bar chart chart
@@ -77,8 +80,8 @@ namespace comp3931Project
             chartArea.CursorX.AutoScroll = true; // Enables scrolling
 
             // How much we see on one page
-            chartArea.AxisY.Maximum = 5;
-            chartArea.AxisY.Minimum = -5;
+            chartArea.AxisY.Maximum = yAxisMax;
+            chartArea.AxisY.Minimum = yAxisMin;
             chartArea.AxisX.ScaleView.Zoom(0, pageSize);
             chartArea.AxisX.Interval = 1;
 
@@ -109,14 +112,20 @@ namespace comp3931Project
         private void chart1_MouseWheel(object sender, MouseEventArgs e)
         {
             Chart chart = (Chart)sender;
+            Axis xAxis = chart.ChartAreas[0].AxisX;
             Axis yAxis = chart.ChartAreas[0].AxisY;
+            double xMin = xAxis.ScaleView.ViewMinimum; // Get minimum x axis value
+            double xMax = xAxis.ScaleView.ViewMaximum; // Get maximum x axis value
+            double posXStart = xAxis.PixelPositionToValue(e.Location.X) - (xMax - xMin) / 10;
+            double posXFinish = xAxis.PixelPositionToValue(e.Location.X) + (xMax - xMin) / 10;
 
             if (e.Delta < 0) { // Zoom out
-                yAxis.Maximum++;
-                yAxis.Minimum--;
-            } else if (e.Delta > 0 && yAxis.Maximum > 1) { // Zoom in
-                yAxis.Maximum--;
-                yAxis.Minimum++;
+                zoomedYAxisValue = 20;
+                yAxis.ScaleView.ZoomReset();
+                xAxis.ScaleView.Zoom(0, pageSize);
+            } else if (e.Delta > 0 && zoomedYAxisValue > 1) { // Zoom in
+                xAxis.ScaleView.Zoom(Math.Floor(posXStart), Math.Floor(posXFinish));
+                yAxis.ScaleView.Zoom(0, --zoomedYAxisValue);
             }
         }
 
