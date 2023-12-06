@@ -10,7 +10,7 @@ namespace comp3931Project
      */
     public partial class WaveAnalyzer : Form
     {
-        List<WaveWindow> waveWindowList = new List<WaveWindow>();
+        static List<WaveWindow> waveWindowList = new List<WaveWindow>();
         WaveWindow activeWaveWindow;
 
         /**
@@ -53,7 +53,7 @@ namespace comp3931Project
             dynamicWaveGraph.TopLevel = false;
             dynamicWaveGraph.Show();
             dynamicWaveGraph.Location = new Point(0, 10);
-            dynamicWaveGraph.Size = new Size(1035, 300);
+            dynamicWaveGraph.Size = new Size(2035, 800);
 
             foreach (Control control in this.Controls)
             {
@@ -329,15 +329,22 @@ namespace comp3931Project
 
 
 
-        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
-        static extern IntPtr getPSaveBuffer();
+
 
         [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
         static extern int start();
 
+        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        static extern IntPtr getPSaveBuffer();
+
+        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        static extern void setPSaveBuffer(IntPtr pointer);
 
         [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
         static extern uint getDwDataLength();
+
+        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        static extern void setDwDataLength(uint dataLength);
 
     }
 }
