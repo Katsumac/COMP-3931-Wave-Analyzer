@@ -335,7 +335,6 @@ namespace comp3931Project
         [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
         static extern int start();
 
-
         [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
         static extern uint getDwDataLength();
 
