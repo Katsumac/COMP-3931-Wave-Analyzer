@@ -2,16 +2,30 @@ using System.Diagnostics;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using static comp3931Project.Wave;
 using static System.Windows.Forms.DataFormats;
 namespace comp3931Project
 {
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct WAVEFORMATEX
+    {
+        public ushort wFormatTag;
+        public ushort nChannels;
+        public uint nSamplesPerSec;
+        public uint nAvgBytesPerSec;
+        public ushort nBlockAlign;
+        public ushort wBitsPerSample;
+        public ushort cbSize;
+    }
+
     /**
      * Represents the entire Wave Analyzer application
      */
     public partial class WaveAnalyzer : Form
     {
-        List<WaveWindow> waveWindowList = new List<WaveWindow>();
-        WaveWindow activeWaveWindow;
+        static List<WaveWindow> waveWindowList = new List<WaveWindow>();
+         static WaveWindow activeWaveWindow;
 
         /**
          * Purpose: Initializes the Wave Analyzer application
@@ -250,7 +264,7 @@ namespace comp3931Project
 
             using (EventWaitHandle recordingEnd = new EventWaitHandle(false, EventResetMode.AutoReset, "recordingEnd"))
             using (EventWaitHandle playRecording = new EventWaitHandle(false, EventResetMode.AutoReset, "playRecording"))
-            using (EventWaitHandle closeProgram = new EventWaitHandle(false, EventResetMode.AutoReset, "playRecording"))
+            using (EventWaitHandle closeProgram = new EventWaitHandle(false, EventResetMode.AutoReset, "closeProgram"))
             using (EventWaitHandle event2 = new EventWaitHandle(false, EventResetMode.AutoReset, "P2"))
             {
                 // Create an array of events
@@ -268,7 +282,9 @@ namespace comp3931Project
                             Debug.WriteLine("Recording ended, passing data");
                             IntPtr pByteData = getPSaveBuffer();
                             uint pByteLength = getDwDataLength();
-
+                            IntPtr waveHeaderPtr = getHeaderStructure();
+                            WAVEFORMATEX waveFormatEx = Marshal.PtrToStructure<WAVEFORMATEX>(waveHeaderPtr);
+                            Debug.WriteLine(pByteLength);
                             int intValue;
 
                             // Check for potential overflow before converting
@@ -288,11 +304,12 @@ namespace comp3931Project
 
                             byte[] byteArray = new byte[intValue];
                             Marshal.Copy(pByteData, byteArray, 0, intValue);
+                            Debug.WriteLine(intValue);
                             formInstance.Invoke((MethodInvoker)delegate
                             {
 
                                 Wave waave = new Wave();
-                                waave.readByteArr(byteArray);
+                                waave.populateFromRecord(waveFormatEx, byteArray, intValue);
                                 WaveWindow waveWindowRecorded = new WaveWindow();
 
 
@@ -309,6 +326,41 @@ namespace comp3931Project
                             break;
                         case 1:
                             Debug.WriteLine("Play Recording");
+                    
+                           // IntPtr data = *activeWaveWindow.getWave().getData();
+                           // setPSaveBuffer(data);
+                           setD
+                            /*
+                             * 
+                             *  IntPtr pByteData = getPSaveBuffer();
+                            uint pByteLength = getDwDataLength();
+                            IntPtr waveHeaderPtr = getHeaderStructure();
+                            WAVEFORMATEX waveFormatEx = Marshal.PtrToStructure<WAVEFORMATEX>(waveHeaderPtr);
+                            Debug.WriteLine(pByteLength);
+                            int intValue;
+
+                            // Check for potential overflow before converting
+                            if (pByteLength <= int.MaxValue)
+                            {
+                                intValue = (int)pByteLength;
+                            }
+                            else
+                            {
+                                // Handle the case where the ulong value is too large to fit into an int
+                                // You might want to throw an exception, use a default value, or handle it in some other way
+                                // For example:
+                                intValue = 0; // or any other appropriate default value
+                                Console.WriteLine("Warning: ulong value too large to fit into int.");
+                            }
+
+
+                            byte[] byteArray = new byte[intValue];
+                            Marshal.Copy(pByteData, byteArray, 0, intValue);
+                            Debug.WriteLine(intValue);
+                             * */
+                            //set heaader data from active window
+                            //set other data from active window 
+
                             break;
                         case 2:
                             programOpen = false;
@@ -333,10 +385,20 @@ namespace comp3931Project
         static extern IntPtr getPSaveBuffer();
 
         [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        static extern void setPSaveBuffer(IntPtr p);
+
+        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
         static extern int start();
 
         [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
         static extern uint getDwDataLength();
+
+        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        static extern void setDwDataLength(uint dl);
+
+
+        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr getHeaderStructure();
 
     }
 }
