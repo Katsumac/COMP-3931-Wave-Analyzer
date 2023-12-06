@@ -28,67 +28,60 @@
         /// </summary>
         private void InitializeComponent()
         {
-            WaveBox = new PictureBox();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             WaveBoxPanel = new Panel();
-            WaveWindowPanel = new Panel();
-            ((System.ComponentModel.ISupportInitialize)WaveBox).BeginInit();
+            waveChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             WaveBoxPanel.SuspendLayout();
-            WaveWindowPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)waveChart).BeginInit();
             SuspendLayout();
-            // 
-            // WaveBox
-            // 
-            WaveBox.BackColor = SystemColors.ControlDarkDark;
-            WaveBox.Location = new Point(2, 1);
-            WaveBox.Margin = new Padding(2, 1, 2, 1);
-            WaveBox.Name = "WaveBox";
-            WaveBox.Size = new Size(1226, 523);
-            WaveBox.TabIndex = 0;
-            WaveBox.TabStop = false;
-            WaveBox.Paint += WaveBox_Paint;
             // 
             // WaveBoxPanel
             // 
             WaveBoxPanel.AutoScroll = true;
-            WaveBoxPanel.Controls.Add(WaveWindowPanel);
+            WaveBoxPanel.Controls.Add(waveChart);
             WaveBoxPanel.Dock = DockStyle.Fill;
             WaveBoxPanel.Location = new Point(0, 0);
             WaveBoxPanel.Margin = new Padding(2, 1, 2, 1);
             WaveBoxPanel.Name = "WaveBoxPanel";
-            WaveBoxPanel.Size = new Size(1017, 353);
+            WaveBoxPanel.Size = new Size(890, 265);
             WaveBoxPanel.TabIndex = 1;
             // 
-            // WaveWindowPanel
+            // waveChart
             // 
-            WaveWindowPanel.AutoScroll = true;
-            WaveWindowPanel.Controls.Add(WaveBox);
-            WaveWindowPanel.Location = new Point(0, 4);
-            WaveWindowPanel.Margin = new Padding(3, 4, 3, 4);
-            WaveWindowPanel.Name = "WaveWindowPanel";
-            WaveWindowPanel.Size = new Size(1039, 535);
-            WaveWindowPanel.TabIndex = 1;
+            chartArea1.Name = "ChartArea1";
+            waveChart.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            waveChart.Legends.Add(legend1);
+            waveChart.Location = new Point(0, 0);
+            waveChart.Name = "waveChart";
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            waveChart.Series.Add(series1);
+            waveChart.Size = new Size(890, 265);
+            waveChart.TabIndex = 0;
+            waveChart.Text = "waveChart";
             // 
             // WaveWindow
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlDark;
-            ClientSize = new Size(1017, 353);
+            ClientSize = new Size(890, 265);
             Controls.Add(WaveBoxPanel);
             Margin = new Padding(2, 1, 2, 1);
             Name = "WaveWindow";
             Text = "WaveWindow";
             Load += WaveWindow_Load;
-            ((System.ComponentModel.ISupportInitialize)WaveBox).EndInit();
             WaveBoxPanel.ResumeLayout(false);
-            WaveWindowPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)waveChart).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
-
-        private PictureBox WaveBox;
         private Panel WaveBoxPanel;
-        private Panel WaveWindowPanel;
+        private System.Windows.Forms.DataVisualization.Charting.Chart waveChart;
     }
 }

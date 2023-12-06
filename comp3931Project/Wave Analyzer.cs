@@ -1,3 +1,8 @@
+using System.Diagnostics;
+using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using static System.Windows.Forms.DataFormats;
 namespace comp3931Project
 {
     /**
@@ -5,6 +10,9 @@ namespace comp3931Project
      */
     public partial class WaveAnalyzer : Form
     {
+        List<WaveWindow> waveWindowList = new List<WaveWindow>();
+        WaveWindow activeWaveWindow;
+
         /**
          * Purpose: Initializes the Wave Analyzer application
          * 
@@ -29,6 +37,8 @@ namespace comp3931Project
             loadDynamicWaveGraph();
             loadDynamicWaveGraph2();
             loadFilter();
+       
+        
         }
 
         /**
@@ -103,9 +113,41 @@ namespace comp3931Project
 
         private void surpriseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WaveWindow wavewindow = new WaveWindow() { TopLevel = false, TopMost = true };
-            wavewindow.FormBorderStyle = FormBorderStyle.None;
-            wavewindow.Show();
+            WaveWindow wavewindow = new WaveWindow();  
+            Wave wave = new Wave();
+            wavewindow.setWave(wave);
+
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.Filter = "Wav|*.wav";
+            openFileDialog1.Title = "Open a Wav File";
+            openFileDialog1.ShowDialog();
+
+            if (openFileDialog1.FileName != "")
+            {
+                wave.ReadWavFile(openFileDialog1.FileName);
+
+                wavewindow.ChartWave(wave);
+
+                wavewindow.MdiParent = this;
+                wavewindow.TopLevel = false;
+                wavewindow.Location = new Point(0, 320);
+                wavewindow.Size = new Size(1035, 300);
+                wavewindow.Show();
+
+                foreach (Control control in this.Controls)
+                {
+                    MdiClient client = control as MdiClient;
+                    if (client != null)
+                    {
+                        client.BackColor = Color.Blue;
+                        break;
+                    }
+                }
+
+                wavewindow.Show();
+                waveWindowList.Add(wavewindow);
+                setActiveWindow(wavewindow);
+            }
         }
 
 
@@ -120,19 +162,32 @@ namespace comp3931Project
 
         private void audioFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WaveFileReadWrite.readFile(".\\comp3931Project\\music.wav");
+            Wave wave = new Wave();
+            wave.ReadWavFile("../../../TestWav.wav");
+
+            dynamicWaveGraph waveGraph = new dynamicWaveGraph();
+            waveGraph.Show();
+
+
         }
 
         private void saveToAudioFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WaveFileReadWrite.writeFile(WaveFileReadWrite.readFile(".\\comp3931Project\\music.wav"), ".\\comp3931Project\\music.wav");
+
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "Wav|*.wav";
+            saveFileDialog1.Title = "Save a Wav File";
+            saveFileDialog1.ShowDialog();
+            if (saveFileDialog1.FileName != "")
+            {
+                Wave wave = activeWaveWindow.getWave();
+                wave.WriteWavFile(saveFileDialog1.FileName);
+            }
+
+            // WaveFileReadWrite.writeFile(WaveFileReadWrite.readFile("../../../music.wav"), ".\\comp3931Project\\music.wav"); //DataID 1634074624
+
         }
 
-        private void waveGraphToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            dynamicWaveGraph waveGraph = new dynamicWaveGraph();
-            waveGraph.Show();
-        }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -142,8 +197,8 @@ namespace comp3931Project
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.InitialDirectory = "c:\\";
-                openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-                openFileDialog.FilterIndex = 2;
+                openFileDialog.Filter = "Wav|*.wav";
+                openFileDialog.Title = "Save a Wav File";
                 openFileDialog.RestoreDirectory = true;
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
@@ -163,6 +218,126 @@ namespace comp3931Project
 
             MessageBox.Show(fileContent, "File Content at path: " + filePath, MessageBoxButtons.OK);
         }
+
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Thread recordProgramThread = new Thread(StartRecordProgram);
+            Form mdiParentFor = this;
+            recordProgramThread.Start();
+            Thread recordHandling = new Thread(new ParameterizedThreadStart(RecordingMethod));
+            recordHandling.Start(this);
+        }
+
+        private void ToolRecordButton_MouseEnter(object sender, EventArgs e)
+        {
+            EventWaitHandle waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset, "StartRecordingProgram");
+            waitHandle.Set();
+        }
+
+        private void setActiveWindow(WaveWindow w)
+        {
+            activeWaveWindow = w;
+            // TODO send data
+        }
+
+        static void RecordingMethod(object parameter)
+        {
+            bool programOpen = true;
+
+            // Create events with unique names
+            WaveAnalyzer formInstance = (WaveAnalyzer)parameter;
+
+            using (EventWaitHandle recordingEnd = new EventWaitHandle(false, EventResetMode.AutoReset, "recordingEnd"))
+            using (EventWaitHandle playRecording = new EventWaitHandle(false, EventResetMode.AutoReset, "playRecording"))
+            using (EventWaitHandle closeProgram = new EventWaitHandle(false, EventResetMode.AutoReset, "playRecording"))
+            using (EventWaitHandle event2 = new EventWaitHandle(false, EventResetMode.AutoReset, "P2"))
+            {
+                // Create an array of events
+                WaitHandle[] eventsArray = { recordingEnd, playRecording, closeProgram };
+
+                // Wait for any event to be signaled
+
+                while (programOpen)
+                {
+                    int signaledEventIndex = WaitHandle.WaitAny(eventsArray);
+                    // Process the signaled event
+                    switch (signaledEventIndex)
+                    {
+                        case 0:
+                            Debug.WriteLine("Recording ended, passing data");
+                            IntPtr pByteData = getPSaveBuffer();
+                            uint pByteLength = getDwDataLength();
+
+                            int intValue;
+
+                            // Check for potential overflow before converting
+                            if (pByteLength <= int.MaxValue)
+                            {
+                                intValue = (int)pByteLength;
+                            }
+                            else
+                            {
+                                // Handle the case where the ulong value is too large to fit into an int
+                                // You might want to throw an exception, use a default value, or handle it in some other way
+                                // For example:
+                                intValue = 0; // or any other appropriate default value
+                                Console.WriteLine("Warning: ulong value too large to fit into int.");
+                            }
+
+
+                            byte[] byteArray = new byte[intValue];
+                            Marshal.Copy(pByteData, byteArray, 0, intValue);
+                            formInstance.Invoke((MethodInvoker)delegate
+                            {
+
+                                Wave waave = new Wave();
+                                waave.readByteArr(byteArray);
+                                WaveWindow waveWindowRecorded = new WaveWindow();
+
+
+                                waveWindowRecorded.ChartWave(waave);
+
+                                waveWindowRecorded.MdiParent = formInstance;
+                                waveWindowRecorded.TopLevel = false;
+                                waveWindowRecorded.Location = new Point(0, 320);
+                                waveWindowRecorded.Size = new Size(1035, 300);
+                                waveWindowRecorded.Show();
+                                formInstance.setActiveWindow(waveWindowRecorded);
+
+                            });
+                            break;
+                        case 1:
+                            Debug.WriteLine("Play Recording");
+                            break;
+                        case 2:
+                            programOpen = false;
+                            Debug.WriteLine("Close Program");
+                            break;
+                        default:
+                            Console.WriteLine("Unexpected event");
+                            break;
+                    }
+                }
+            }
+        }
+
+        static void StartRecordProgram()
+        {
+            start();
+        }
+
+
+
+        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        static extern IntPtr getPSaveBuffer();
+
+        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        static extern int start();
+
+
+        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        static extern uint getDwDataLength();
 
     }
 }
