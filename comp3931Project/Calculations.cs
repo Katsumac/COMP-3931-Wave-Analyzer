@@ -111,13 +111,17 @@ namespace comp3931Project
          * 
          * @return: The sample array
          */
-        public static double[] inverseDFTSync(int N, double[] lowPassFilter) {
+
+
+
+
+        public static double[] inverseDFTSync(int N, double[] ampOrFilter) {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             s = new double[N];
             for (int t = 0; t <= N - 1; t++) {
                 for (int f = 0; f <= N - 1; f++) {
-                    s[t] += lowPassFilter[f] * (Math.Cos(2 * Math.PI * t * f / N) + Math.Sin(2 * Math.PI * t * f / N));
+                    s[t] += ampOrFilter[f] * (Math.Cos(2 * Math.PI * t * f / N) + Math.Sin(2 * Math.PI * t * f / N));
                 }
                 s[t] /= N;
             }

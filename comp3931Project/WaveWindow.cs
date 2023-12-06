@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,19 +19,15 @@ namespace comp3931Project
     public partial class WaveWindow : Form
     {
 
-        private Pen pen = new Pen(Color.Red, 2.0F);
-
-        private List<PointF> wavePoints = new List<PointF> { };
-
         private Wave wave;
 
-        private static double[] filteredValues;
-        private static Series frequency;
+        private static Series amplitude;
         private static double[] xValues;
         private static double[] yValues;
-        private static double[] sample;
+        private static double[] dataL;
         private double start;
         private double end;
+        private bool isRectangleWindowing = true; // Toggles between rectangular and triangular windowing. Default is rectangular windowing
 
 
         public WaveWindow()
@@ -38,10 +35,9 @@ namespace comp3931Project
             // create an id 
             InitializeComponent();
             waveChart.MouseWheel += waveChart_MouseWheel;
-
-
-
+            waveChart.SelectionRangeChanged += waveChart_SelectionRangeChanged;
         }
+
 
         public void setWave(Wave w)
         {
@@ -56,11 +52,19 @@ namespace comp3931Project
         public void ChartWave(Wave w)
         {
             this.wave = w;
-            double[] dataL = wave.getL();
+            dataL = wave.getL();
+
+            waveChart.Series.Clear();
+
+            amplitude = waveChart.Series.Add("Amplitude");
+
+            ChartArea waveChartChartArea = waveChart.ChartAreas[amplitude.ChartArea];
+            waveChartChartArea.AxisX.Title = "Sample #";
+            waveChartChartArea.AxisY.Title = "Amplitude";
 
             for (int i = 0; i < dataL.Length; i++)
             {
-                waveChart.Series[0].Points.AddXY(i, dataL[i]);
+                amplitude.Points.AddXY(i, dataL[i]);
             }
 
 
@@ -143,13 +147,18 @@ namespace comp3931Project
             //  waveChart.ChartAreas[0].AxisX.Maximum = dataL.Length;
             // Configure the X-axis for scrolling and zooming
             waveChart.ChartAreas[0].AxisX.ScrollBar.Enabled = true;
-            waveChart.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
+            waveChart.ChartAreas[0].AxisX.ScaleView.Zoomable = false;
             waveChart.ChartAreas[0].AxisY.ScrollBar.Enabled = true;
             waveChart.ChartAreas[0].AxisY.ScaleView.Zoomable = true;
             waveChart.ChartAreas[0].AxisX.ScaleView.SizeType = DateTimeIntervalType.Number;
             waveChart.ChartAreas[0].AxisX.ScaleView.SmallScrollSize = dataL.Length - 2;
             waveChart.ChartAreas[0].CursorX.AutoScroll = true;
             // waveChart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
+
+
+            waveChart.ChartAreas[0].CursorX.IsUserEnabled = true;
+            waveChart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
+            waveChart.ChartAreas[0].CursorX.AutoScroll = true; // Enables scrolling
 
             // Set initial visible range (adjust as needed)
             waveChart.ChartAreas[0].AxisX.ScaleView.Zoom(0, dataL.Length / 2);
@@ -159,7 +168,7 @@ namespace comp3931Project
              waveChart.ChartAreas[0].AxisY.Minimum = yAxisMin;
  */
             double interval = yAxisMax;
-            waveChart.Series[0].ChartType = SeriesChartType.FastLine;
+            amplitude.ChartType = SeriesChartType.FastLine;
 
             /*waveChart.Series[0].ChartType = SeriesChartType.FastLine;
             //   waveChart.ChartAreas[0].CursorX.AutoScroll = true;
@@ -235,86 +244,278 @@ namespace comp3931Project
                     xAxis.ScaleView.Zoom(posXStart, posXFinish);
                     yAxis.ScaleView.Zoom(posYStart, posYFinish);
                 }
+
             }
             catch { }
-        }
-
-
-
-        private void ProcessSamples(double[] S)
-        {
-
-            /* 
-             private void dynamicWaveGraph_Load(object sender, EventArgs e)
-        {
-            sample = Calculations.createSamples(30, 8);
-
-            const int pageSize = 10;
-
-            // clear the chart
-            chart1.Series.Clear();
-
-            // Populate the bar chart chart
-            frequency = chart1.Series.Add("Frequency");
-            frequency.ChartType = SeriesChartType.Spline;
-
-            populateLineChart(sample, frequency);
-
-            // Customize the bar chart
-            ChartArea filterChartArea = chart1.ChartAreas[frequency.ChartArea];
-            customizeLineChart(pageSize, filterChartArea, sample);
-
-            chart1.MouseWheel += chart1_MouseWheel;
-            chart1.SelectionRangeChanged += Chart_SelectionRangeChanged;
         }
 
         public static void populateLineChart(double[] sample, Series chartLabel)
         {
             for (int i = 0; i < sample.Length; i++)
-                chartLabel.Points.AddXY(i, sample[i]/sample.Max());
+                chartLabel.Points.AddXY(i, sample[i]);
         }
 
-        private void customizeLineChart(int pageSize, ChartArea chartArea, double[] sample)
+        /**
+         * Purpose: Updates the range selected by the user
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains cursor event data
+         * 
+         * @return: None
+         */
+        private void waveChart_SelectionRangeChanged(object sender, CursorEventArgs e)
         {
-            // How much data we want
-            chartArea.AxisX.Minimum = 0;
-            chartArea.AxisX.Maximum = sample.Length;
+            start = e.NewSelectionStart;
+            end = e.NewSelectionEnd;
 
-            // Enables scrolling
-            chartArea.CursorX.AutoScroll = true;
-
-            // How much we see on one page
-            chartArea.AxisX.ScaleView.Zoomable = false;
-            chartArea.AxisX.ScaleView.Zoom(0, pageSize);
-            chartArea.AxisX.Interval = 1;
-
-            // Works with Zoomable to allow zooming via highlighting
-            chartArea.CursorX.IsUserEnabled = true;
-            chartArea.CursorX.IsUserSelectionEnabled = true;
-
-            // Sets the thumb style
-            chartArea.AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll;
-
-            // Small scrolling size
-            chartArea.AxisX.ScaleView.SmallScrollSize = pageSize;
-        }
-             
-             
-             
-             */
-
+            if (start > end)
+            {
+                double temp = start;
+                start = end;
+                end = temp;
+            }
         }
 
-        private void ProcessSamples(int[] S)
+        /**
+         * Purpose: Performs DFT when the DFT button is clicked
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains event data
+         * 
+         * @return: None
+         */
+        private void DFTButton_Click(object sender, EventArgs e)
         {
-
+            Filter filter = new Filter();
+            filter.getFilterChart().Points.Clear();
+            if (isRectangleWindowing)
+            {
+                applyRectangularWindow();
+            }
+            else
+            {
+                applyTriangularWindow();
+            }
+            double[] DFTSamples = Calculations.DFT(dataL);
+            filter.populateBarChart(DFTSamples, filter.getFilterChart());
+            filter.getFilterChart().Color = Color.Green;
+            filter.Filter_Load(sender, e);
         }
 
-        private void ProcessSamples(byte[] S)
+        /**
+         * Purpose: For comparison purposes. Performs nonthreaded DFT when the DFT (sync) button is clicked
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains event data
+         * 
+         * @return: None
+         */
+        private void DFTSyncButton_Click(object sender, EventArgs e)
         {
-
+            Filter filter = new Filter();
+            filter.getFilterChart().Points.Clear();
+            if (isRectangleWindowing)
+            {
+                applyRectangularWindow();
+            }
+            else
+            {
+                applyTriangularWindow();
+            }
+            double[] DFTSamples = Calculations.DFTSync(dataL);
+            filter.populateBarChart(DFTSamples, filter.getFilterChart());
+            filter.getFilterChart().Color = Color.Green;
+            filter.Filter_Load(sender, e);
         }
 
+        /**
+         * Purpose: Handles copy/cut/paste from the ctrl + C, X and V keys
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains key event data
+         * 
+         * @return: None
+         */
+        private void waveChart_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.C && e.Control)
+            {
+                setValuesToClipboard(false);
+            }
+            else if (e.KeyCode == Keys.X && e.Control)
+            {
+                setValuesToClipboard(true);
+            }
+            else if (e.KeyCode == Keys.V && e.Control)
+            {
+                pasteLineChart(xValues, retrieveData(), amplitude);
+            }
+        }
+
+        /**
+         * Purpose: Gets the values from the selection range and copies them to the clipboard
+         * 
+         * @param isCut: bool that represents whether the incoming values were cut (true) or copied (false)
+         * 
+         * @return: None
+         */
+        private void setValuesToClipboard(bool isCut)
+        {
+            int range = (int)(end - start) + 1;
+            xValues = new double[range];
+            yValues = new double[range];
+            for (int i = 0; i < range; i++)
+            {
+                xValues[i] = amplitude.Points[(int)(start + i)].GetValueByName("X");
+                yValues[i] = amplitude.Points[(int)(start + i)].GetValueByName("Y");
+
+                if (isCut)
+                {
+                    dataL[i] = 0;
+                }
+            }
+            copySelection(yValues);
+        }
+
+        /**
+         * Purpose: Sets the data as a string and saves it to the clipboard
+         * 
+         * @param yValues: The y values the user has selected from the wave graph
+         * 
+         * @return: None
+         */
+        private void copySelection(double[] yValues)
+        {
+            string data = string.Join(",", yValues);
+            Clipboard.SetText(data);
+        }
+
+        /**
+         * Purpose: Takes the selected values and pastes them on the wave graph
+         * 
+         * @param xValues: The x values the user has selected from the wave graph
+         * @param yValues: The y values the user has selected from the wave graph
+         * @param chartLabel: Represents a set of data points
+         * 
+         * @return: None
+         */
+        private void pasteLineChart(double[] xValues, double[] yValues, Series chartLabel)
+        {
+            int yIndex = 0;
+            for (int i = (int)start; i < xValues.Length + start; i++)
+            {
+                dataL[i] = yValues[yIndex];
+                yIndex++;
+            }
+            chartLabel.Points.Clear();
+            populateLineChart(dataL, chartLabel);
+        }
+
+        /**
+         * Purpose: Retrieves the selected values from the clipboard and copies them to a double array
+         * 
+         * @return: The user-selected values from the clipboard
+         */
+        private double[] retrieveData()
+        {
+            string copiedDataString = Clipboard.GetText();
+            string[] copiedDataStringArr = copiedDataString.Split(',');
+            double[] actualData = new double[copiedDataStringArr.Length];
+
+            for (int i = 0; i < copiedDataStringArr.Length; i++)
+            {
+                actualData[i] = Convert.ToDouble(copiedDataStringArr[i]);
+            }
+            return actualData;
+        }
+
+        /**
+         * Purpose: Returns the sample array
+         * 
+         * @return: The sample array
+         */
+        public static double[] getSample()
+        {
+            return dataL;
+        }
+
+        /**
+         * Purpose: Sets sample to a new double array
+         * 
+         * @param newSample: The new sample array
+         * 
+         * @return: None
+         */
+        public static void setSample(double[] newSample)
+        {
+            dataL = newSample;
+        }
+
+        /**
+         * Purpose: Returns the chart label
+         * 
+         * @return: The chart label
+         */
+        public static Series getChartLabel()
+        {
+            return amplitude;
+        }
+
+        /**
+         * Purpose: Performs the triangle windowing on the samples
+         * 
+         * @return: None
+         */
+        private void applyTriangularWindow()
+        {
+            int N = dataL.Length;
+            for (int n = 0; n < N; n++)
+            {
+                dataL[n] *= 1.0 - Math.Abs((n - N / 2) / (N / 2));
+            }
+        }
+
+        /**
+        * Purpose: Performs rectangle windowing on the samples
+        * 
+        * @return: None
+        */
+        private void applyRectangularWindow()
+        {
+            int N = dataL.Length;
+            for (int n = 0; n < N; n++)
+            {
+                dataL[n] *= 1;
+            }
+        }
+
+        /**
+         * Purpose: Changes the boolean isRectangleWindow to toggle to rectangular windowing
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains key event data
+         * 
+         * @return: None
+         */
+        private void RectangleWindowButton_CheckedChanged(object sender, EventArgs e)
+        {
+            isRectangleWindowing = true;
+        }
+
+        /**
+         * Purpose: Changes the boolean isRectangleWindow to toggle to triangular windowing
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains key event data
+         * 
+         * @return: None
+         */
+        private void TriangleWindowButton_CheckedChanged(object sender, EventArgs e)
+        {
+            isRectangleWindowing = false;
+        }
+
+        
 
     }
 }

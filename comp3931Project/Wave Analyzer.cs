@@ -33,12 +33,8 @@ namespace comp3931Project
          */
         private void Form1_Load(object sender, EventArgs e)
         {
-
-            loadDynamicWaveGraph();
-            loadFilter();
-       
-        
-        }
+/*            loadDynamicWaveGraph();
+*/        }
 
         /**
          * Purpose: Loads the wave graph
@@ -65,19 +61,19 @@ namespace comp3931Project
             }
         }
 
-        /**
-         * Purpose: Loads the filter/frequency chart
-         * 
-         * @return: None
-         */
+                /**
+       * Purpose: Loads the filter/frequency chart
+       * 
+       * @return: None
+       */
         private void loadFilter()
         {
             Filter filter = new Filter();
             filter.MdiParent = this;
             filter.TopLevel = false;
             filter.Show();
-            filter.Location = new Point(0, 630);
-            filter.Size = new Size(1035, 300);
+            filter.Location = new Point(0, 420);
+            filter.Size = new Size(1033, 381);
 
             foreach (Control control in this.Controls)
             {
@@ -110,7 +106,7 @@ namespace comp3931Project
                 wavewindow.MdiParent = this;
                 wavewindow.TopLevel = false;
                 wavewindow.Location = new Point(0, 320);
-                wavewindow.Size = new Size(1035, 300);
+                wavewindow.Size = new Size(1033, 372);
                 wavewindow.Show();
 
                 foreach (Control control in this.Controls)
@@ -123,17 +119,14 @@ namespace comp3931Project
                     }
                 }
 
+                loadFilter();
+
                 wavewindow.Show();
                 waveWindowList.Add(wavewindow);
                 setActiveWindow(wavewindow);
             }
         }
 
-
-        private void filterToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            loadFilter();
-        }
         private void WaveAnalyzerPanel_Paint(object sender, PaintEventArgs e)
         {
 
