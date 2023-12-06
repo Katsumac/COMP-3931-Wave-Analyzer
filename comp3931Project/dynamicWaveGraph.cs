@@ -18,6 +18,7 @@ namespace comp3931Project
         private const int yAxisMax = 20; // max value for the y axis
         private const int yAxisMin = -20; // min value for the y axis
         private int zoomedYAxisValue = 20; // counter used for zooming
+        private bool isRectangleWindow = true;
 
         /**
          * Purpose: Initializes the wave graph
@@ -82,7 +83,7 @@ namespace comp3931Project
             // How much data we want
             chartArea.AxisX.Minimum = 0;
 
-            // Works with Zoomable to allow zooming via highlighting
+            // Works with Zoomable to allow for highlighting
             chartArea.CursorX.IsUserEnabled = true;
             chartArea.CursorX.IsUserSelectionEnabled = true;
             chartArea.CursorX.AutoScroll = true; // Enables scrolling
@@ -90,8 +91,9 @@ namespace comp3931Project
             // How much we see on one page
             chartArea.AxisY.Maximum = yAxisMax;
             chartArea.AxisY.Minimum = yAxisMin;
-            
-            chartArea.AxisX.ScaleView.Zoom(0, pageSize);
+
+            chartArea.AxisX.ScaleView.Zoomable = false; // Cannot zoom by highlighting
+            chartArea.AxisX.ScaleView.Zoom(0, pageSize); // Sets default zoom
             chartArea.AxisX.Interval = 1;
             chartArea.AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll; // Sets the thumb style
             chartArea.AxisX.ScaleView.SmallScrollSize = pageSize; // Small scrolling size
@@ -115,11 +117,14 @@ namespace comp3931Project
             double posXStart = xAxis.PixelPositionToValue(e.Location.X) - (xMax - xMin) / 10;
             double posXFinish = xAxis.PixelPositionToValue(e.Location.X) + (xMax - xMin) / 10;
 
-            if (e.Delta < 0) { // Zoom out
+            if (e.Delta < 0)
+            { // Zoom out
                 zoomedYAxisValue = 20;
                 yAxis.ScaleView.ZoomReset();
                 xAxis.ScaleView.Zoom(0, pageSize);
-            } else if (e.Delta > 0 && zoomedYAxisValue > 1) { // Zoom in
+            }
+            else if (e.Delta > 0 && zoomedYAxisValue > 1)
+            { // Zoom in
                 xAxis.ScaleView.Zoom(Math.Floor(posXStart), Math.Floor(posXFinish));
                 yAxis.ScaleView.Zoom(0, --zoomedYAxisValue);
             }
@@ -158,8 +163,11 @@ namespace comp3931Project
         {
             Filter filter = new Filter();
             filter.getFilterChart().Points.Clear();
-            /*applyTriangularWindow();*/
-            applyRectangularWindow();
+            if (isRectangleWindow) {
+                applyRectangularWindow();
+            } else {
+                applyTriangularWindow();
+            }
             double[] DFTSamples = Calculations.DFT(sample);
             filter.populateBarChart(DFTSamples, filter.getFilterChart());
             filter.getFilterChart().Color = Color.Green;
@@ -178,8 +186,12 @@ namespace comp3931Project
         {
             Filter filter = new Filter();
             filter.getFilterChart().Points.Clear();
-            /*applyTriangularWindow();*/
-            applyRectangularWindow();
+            if (isRectangleWindow) {
+                applyRectangularWindow();
+            }
+            else {
+                applyTriangularWindow();
+            }
             double[] DFTSamples = Calculations.DFTSync(sample);
             filter.populateBarChart(DFTSamples, filter.getFilterChart());
             filter.getFilterChart().Color = Color.Green;
@@ -345,6 +357,16 @@ namespace comp3931Project
             {
                 sample[n] *= 1;
             }
+        }
+
+        private void RectangleWindow_CheckedChanged(object sender, EventArgs e)
+        {
+            isRectangleWindow = true;
+        }
+
+        private void TriangleWindow_CheckedChanged(object sender, EventArgs e)
+        {
+            isRectangleWindow = false;
         }
     }
 }

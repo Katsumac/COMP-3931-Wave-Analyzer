@@ -11,7 +11,7 @@ namespace comp3931Project
         private double end;
         private static Series filterChart;
         private const int pageSize = 20;
-        private const int yAxisMax = 10;
+        private const int yAxisMax = 1;
         private const int yAxisMin = 0;
         private int zoomedYAxisValue = 10;
 
@@ -91,8 +91,9 @@ namespace comp3931Project
             // How much we see on one page
             chartArea.AxisY.Maximum = yAxisMax;
             chartArea.AxisY.Minimum = yAxisMin;
-            
-            chartArea.AxisX.ScaleView.Zoom(0, pageSize);
+
+            chartArea.AxisX.ScaleView.Zoomable = false; // Cannot zoom by highlighting
+            chartArea.AxisX.ScaleView.Zoom(0, pageSize); // Sets default zoom
             filterChart["PixelPointWidth"] = "16";
             chartArea.AxisX.Interval = 1;
             chartArea.AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll; // Sets the thumb style
