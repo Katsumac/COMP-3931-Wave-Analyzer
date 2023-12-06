@@ -371,7 +371,7 @@ namespace comp3931Project
 
                 if (isCut)
                 {
-                    dataL[i] = 0;
+                    dataL[(int)xValues[i]] = 0;
                 }
             }
             copySelection(yValues);

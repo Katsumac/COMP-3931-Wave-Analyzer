@@ -212,7 +212,7 @@ namespace comp3931Project
                     convolutedSamples[sT] += filter[fT] * samples[sT + fT];
                 }
             }
-            dynamicWaveGraph.setSample(convolutedSamples); // Filters the current sample. Should we do it so that it filters the original sample every time?
+            WaveWindow.setSample(convolutedSamples); // Filters the current sample. Should we do it so that it filters the original sample every time?
             stopwatch.Stop();
             TimeSpan ts = stopwatch.Elapsed;
             convolutionRuntimeSync = ts.TotalMilliseconds;
@@ -257,7 +257,7 @@ namespace comp3931Project
                 samples[t] = s[t];
             }
             runConvolutionThreads(filter, samples, convolutedSamples);
-            dynamicWaveGraph.setSample(convolutedSamples);
+            WaveWindow.setSample(convolutedSamples);
             stopwatch.Stop();
             TimeSpan ts = stopwatch.Elapsed;
             convolutionRuntimeThreaded = ts.TotalMilliseconds;

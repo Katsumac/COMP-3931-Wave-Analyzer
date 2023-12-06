@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using static System.Windows.Forms.DataFormats;
@@ -73,7 +74,7 @@ namespace comp3931Project
             filter.TopLevel = false;
             filter.Show();
             filter.Location = new Point(0, 420);
-            filter.Size = new Size(1033, 381);
+            filter.Size = new Size(1053, 372);
 
             foreach (Control control in this.Controls)
             {
@@ -86,7 +87,7 @@ namespace comp3931Project
             }
         }
 
-        private void surpriseToolStripMenuItem_Click(object sender, EventArgs e)
+        private void FileOpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             WaveWindow wavewindow = new WaveWindow();  
             Wave wave = new Wave();
@@ -106,7 +107,8 @@ namespace comp3931Project
                 wavewindow.MdiParent = this;
                 wavewindow.TopLevel = false;
                 wavewindow.Location = new Point(0, 320);
-                wavewindow.Size = new Size(1033, 372);
+                wavewindow.Size = new Size(1053, 372);
+                wavewindow.Text = openFileDialog1.SafeFileName;
                 wavewindow.Show();
 
                 foreach (Control control in this.Controls)
@@ -155,6 +157,7 @@ namespace comp3931Project
                 Wave wave = activeWaveWindow.getWave();
                 wave.WriteWavFile(saveFileDialog1.FileName);
             }
+            activeWaveWindow.Text = Path.GetFileName(saveFileDialog1.FileName);
 
             // WaveFileReadWrite.writeFile(WaveFileReadWrite.readFile("../../../music.wav"), ".\\comp3931Project\\music.wav"); //DataID 1634074624
 
@@ -263,12 +266,12 @@ namespace comp3931Project
                             formInstance.Invoke((MethodInvoker)delegate
                             {
 
-                                Wave waave = new Wave();
-                                waave.readByteArr(byteArray);
+                                Wave wave = new Wave();
+                                wave.readByteArr(byteArray);
                                 WaveWindow waveWindowRecorded = new WaveWindow();
 
 
-                                waveWindowRecorded.ChartWave(waave);
+                                waveWindowRecorded.ChartWave(wave);
 
                                 waveWindowRecorded.MdiParent = formInstance;
                                 waveWindowRecorded.TopLevel = false;
@@ -276,7 +279,7 @@ namespace comp3931Project
                                 waveWindowRecorded.Size = new Size(1035, 300);
                                 waveWindowRecorded.Show();
                                 formInstance.setActiveWindow(waveWindowRecorded);
-
+                                formInstance.loadFilter();
                             });
                             break;
                         case 1:
@@ -298,8 +301,6 @@ namespace comp3931Project
         {
             start();
         }
-
-
 
 
 

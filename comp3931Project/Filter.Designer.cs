@@ -60,7 +60,7 @@
             series1.Legend = "Legend1";
             series1.Name = "Series1";
             chart1.Series.Add(series1);
-            chart1.Size = new Size(1035, 300);
+            chart1.Size = new Size(1035, 324);
             chart1.TabIndex = 1;
             chart1.Text = "chart1";
             chart1.SelectionRangeChanged += chart1_SelectionRangeChanged;
@@ -109,13 +109,15 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1035, 300);
+            ClientSize = new Size(1035, 325);
             Controls.Add(iDFTSyncButton);
             Controls.Add(iDFTButton);
             Controls.Add(filterSyncButton);
             Controls.Add(FilterButton);
             Controls.Add(chart1);
+            Location = new Point(0, 420);
             Name = "Filter";
+            StartPosition = FormStartPosition.Manual;
             Text = "Filter";
             Load += Filter_Load;
             ((System.ComponentModel.ISupportInitialize)chart1).EndInit();
