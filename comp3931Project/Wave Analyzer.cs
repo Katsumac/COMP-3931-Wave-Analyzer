@@ -10,7 +10,7 @@ namespace comp3931Project
      */
     public partial class WaveAnalyzer : Form
     {
-        List<WaveWindow> waveWindowList = new List<WaveWindow>();
+        static List<WaveWindow> waveWindowList = new List<WaveWindow>();
         WaveWindow activeWaveWindow;
 
         /**
