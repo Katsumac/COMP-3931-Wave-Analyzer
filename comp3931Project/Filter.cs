@@ -11,7 +11,7 @@ namespace comp3931Project
         private double end;
         private static Series filterChart;
         private const int pageSize = 20;
-        private const int yAxisMax = 1;
+        private const int yAxisMax = 50;
         private const int yAxisMin = 0;
         private int zoomedYAxisValue = 10;
 
@@ -211,8 +211,12 @@ namespace comp3931Project
          */
         private void iDFTButton_Click(object sender, EventArgs e)
         {
-            double[] testArray = new double[30];
-            Calculations.inverseDFT(testArray.Length, testArray);
+            double[] samples = Calculations.inverseDFT(Calculations.getAmplitudes().Length, Calculations.getAmplitudes());
+            Series freq = dynamicWaveGraph.getChartLabel();
+            freq.Points.Clear();
+            dynamicWaveGraph.populateLineChart(samples, freq);
+            dynamicWaveGraph waveGraph = new dynamicWaveGraph();
+            waveGraph.Update();
         }
 
         /**
@@ -225,8 +229,12 @@ namespace comp3931Project
          */
         private void iDFTSyncButton_Click(object sender, EventArgs e)
         {
-            double[] testArray = new double[30];
-            Calculations.inverseDFTSync(testArray.Length, testArray);
+            double[] samples = Calculations.inverseDFTSync(Calculations.getAmplitudes().Length, Calculations.getAmplitudes());
+            Series freq = dynamicWaveGraph.getChartLabel();
+            freq.Points.Clear();
+            dynamicWaveGraph.populateLineChart(samples, freq);
+            dynamicWaveGraph waveGraph = new dynamicWaveGraph();
+            waveGraph.Update();
         }
     }
 }

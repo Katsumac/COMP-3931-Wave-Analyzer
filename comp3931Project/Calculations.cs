@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
 
 namespace comp3931Project
 {
@@ -53,7 +54,7 @@ namespace comp3931Project
                     real[f] += S[t] * Math.Cos((2 * Math.PI * t * f) / N);
                     imaginary[f] -= S[t] * Math.Sin((2 * Math.PI * t * f) / N);
                 }
-                A[f] = Math.Sqrt(Math.Pow(real[f], 2) + Math.Pow(imaginary[f], 2)) * 2 / N;
+                A[f] = Math.Sqrt(Math.Pow(real[f], 2) + Math.Pow(imaginary[f], 2));
                 phase[f] = Math.Atan(real[f] / imaginary[f]);
             }
             stopwatch.Stop();
@@ -80,7 +81,7 @@ namespace comp3931Project
                     real[f] += S[t] * Math.Cos((2 * Math.PI * t * f) / N);
                     imaginary[f] -= S[t] * Math.Sin((2 * Math.PI * t * f) / N);
                 }
-                A[f] = Math.Sqrt(Math.Pow(real[f], 2) + Math.Pow(imaginary[f], 2)) * 2 / N;
+                A[f] = Math.Sqrt(Math.Pow(real[f], 2) + Math.Pow(imaginary[f], 2));
                 phase[f] = Math.Atan(real[f] / imaginary[f]);
             }
         }
@@ -383,17 +384,30 @@ namespace comp3931Project
          * 
          * @return: None
          */
-        private static void runConvolutionThread(double[] filter, double[] samples, double[] convolutedSamples) {
+        private static void runConvolutionThread(double[] filter, double[] samples, double[] convolutedSamples)
+        {
             Thread[] threads = new Thread[MAX_NUM_THREADS];
-            for (int threadCount = 0; threadCount < MAX_NUM_THREADS; threadCount++){
+            for (int threadCount = 0; threadCount < MAX_NUM_THREADS; threadCount++)
+            {
                 int start = threadCount * s.Length / MAX_NUM_THREADS;
                 int end = (threadCount + 1) * s.Length / MAX_NUM_THREADS;
                 threads[threadCount] = new Thread(() => convolve_ThreadProc(filter, samples, convolutedSamples, start, end));
                 threads[threadCount].Start();
             }
-            for (int threadCount = 0; threadCount < MAX_NUM_THREADS; threadCount++){
+            for (int threadCount = 0; threadCount < MAX_NUM_THREADS; threadCount++)
+            {
                 threads[threadCount].Join();
             }
+        }
+
+        /**
+         * Purpose: Returns the amplitudes
+         * 
+         * @return: The array of amplitudes
+         */
+        public static double[] getAmplitudes()
+        {
+            return A;
         }
     }
 }

@@ -12,13 +12,13 @@ namespace comp3931Project
         private static double[] xValues;
         private static double[] yValues;
         private static double[] sample;
-        private double start;
-        private double end;
+        private static double start;
+        private static double end;
         private const int pageSize = 10; // initial number of x values seen on the graph
-        private const int yAxisMax = 20; // max value for the y axis
-        private const int yAxisMin = -20; // min value for the y axis
+        private const int yAxisMax = 5; // max value for the y axis
+        private const int yAxisMin = -5; // min value for the y axis
         private int zoomedYAxisValue = 20; // counter used for zooming
-        private bool isRectangleWindow = true;
+        private bool isRectangleWindowing = true; // Toggles between rectangular and triangular windowing. Default is rectangular windowing
 
         /**
          * Purpose: Initializes the wave graph
@@ -163,7 +163,7 @@ namespace comp3931Project
         {
             Filter filter = new Filter();
             filter.getFilterChart().Points.Clear();
-            if (isRectangleWindow) {
+            if (isRectangleWindowing) {
                 applyRectangularWindow();
             } else {
                 applyTriangularWindow();
@@ -186,7 +186,7 @@ namespace comp3931Project
         {
             Filter filter = new Filter();
             filter.getFilterChart().Points.Clear();
-            if (isRectangleWindow) {
+            if (isRectangleWindowing) {
                 applyRectangularWindow();
             }
             else {
@@ -272,7 +272,7 @@ namespace comp3931Project
         private void pasteLineChart(double[] xValues, double[] yValues, Series chartLabel)
         {
             int yIndex = 0;
-            for (int i = 0; i < xValues.Length; i++)
+            for (int i = (int) start; i < xValues.Length + start; i++)
             {
                 sample[i] = yValues[yIndex];
                 yIndex++;
@@ -359,14 +359,30 @@ namespace comp3931Project
             }
         }
 
+        /**
+         * Purpose: Changes the boolean isRectangleWindow to toggle to rectangular windowing
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains key event data
+         * 
+         * @return: None
+         */
         private void RectangleWindow_CheckedChanged(object sender, EventArgs e)
         {
-            isRectangleWindow = true;
+            isRectangleWindowing = true;
         }
 
+        /**
+         * Purpose: Changes the boolean isRectangleWindow to toggle to triangular windowing
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains key event data
+         * 
+         * @return: None
+         */
         private void TriangleWindow_CheckedChanged(object sender, EventArgs e)
         {
-            isRectangleWindow = false;
+            isRectangleWindowing = false;
         }
     }
 }
