@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,10 @@ namespace comp3931Project
         private static double convolutionRuntimeSync; // Runtime for nonthreaded convolution
 
         private const int MAX_NUM_THREADS = 4;
+
+        [DllImport("C:\\Users\\justi\\source\\repos\\comp3931Project\\x64\\Debug\\dft.dll", CharSet = CharSet.Auto)]
+        static extern double[] convolveASM();
+
 
         /**
          * Purpose: For comparison purposes. Performs nonthreaded full DFT to the samples passed in.
@@ -195,10 +200,10 @@ namespace comp3931Project
             stopwatch.Start();
             double[] filter = inverseDFT(lowPassFilter.Length, lowPassFilter);
             double[] samples = new double[s.Length + filter.Length - 1];
+            double[] convolutedSamples = new double[s.Length];
             for (int t = 0; t < s.Length; t++) {
                 samples[t] = s[t];
             }
-            double[] convolutedSamples = new double[s.Length];
             for (int sT = 0; sT < s.Length; sT++) {
                 for (int fT = 0; fT < filter.Length; fT++) {
                     convolutedSamples[sT] += filter[fT] * samples[sT + fT];
