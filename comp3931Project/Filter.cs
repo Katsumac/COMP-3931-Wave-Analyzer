@@ -193,7 +193,7 @@ namespace comp3931Project
             double[] samples = dynamicWaveGraph.getSample();
             Series freq = dynamicWaveGraph.getChartLabel();
             Calculations.createLowPassFilter(samples.Length, (int)end);
-            Calculations.convolveNonAsm(samples);
+            Calculations.convolveSync(samples);
             samples = dynamicWaveGraph.getSample();
             freq.Points.Clear();
             dynamicWaveGraph.populateLineChart(samples, freq);

@@ -35,7 +35,6 @@ namespace comp3931Project
         {
 
             loadDynamicWaveGraph();
-            loadDynamicWaveGraph2();
             loadFilter();
        
         
@@ -54,26 +53,6 @@ namespace comp3931Project
             dynamicWaveGraph.Show();
             dynamicWaveGraph.Location = new Point(0, 10);
             dynamicWaveGraph.Size = new Size(1035, 300);
-
-            foreach (Control control in this.Controls)
-            {
-                MdiClient client = control as MdiClient;
-                if (client != null)
-                {
-                    client.BackColor = Color.Blue;
-                    break;
-                }
-            }
-        }
-
-        private void loadDynamicWaveGraph2()
-        {
-            dynamicWaveGraph2 dynamicWaveGraph2 = new dynamicWaveGraph2();
-            dynamicWaveGraph2.MdiParent = this;
-            dynamicWaveGraph2.TopLevel = false;
-            dynamicWaveGraph2.Show();
-            dynamicWaveGraph2.Location = new Point(0, 320);
-            dynamicWaveGraph2.Size = new Size(1035, 300);
 
             foreach (Control control in this.Controls)
             {

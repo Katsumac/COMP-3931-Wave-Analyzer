@@ -40,7 +40,7 @@ namespace comp3931Project
          */
         private void dynamicWaveGraph_Load(object sender, EventArgs e)
         {
-            sample = Calculations.createSamples(30, 8);
+            sample = Calculations.createSamples(50000, 8); // 30, 8
             chart1.Series.Clear(); // clear the chart
 
             // Populate the bar chart chart
