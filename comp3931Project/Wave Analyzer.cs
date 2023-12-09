@@ -305,26 +305,26 @@ namespace comp3931Project
             start();
         }
 
-        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        [DllImport("./recorderDLL.dll", CharSet = CharSet.Auto)]
         static extern IntPtr getPSaveBuffer();
 
-        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        [DllImport("./recorderDLL.dll", CharSet = CharSet.Auto)]
         static extern void setPSaveBuffer(IntPtr p);
 
-        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        [DllImport("./recorderDLL.dll", CharSet = CharSet.Auto)]
         static extern void receiveBufferFromCSharp(IntPtr p, uint length);
 
-        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
-        static extern int start();
+        [DllImport("./recorderDLL.dll", CharSet = CharSet.Auto)]
+        static extern int start();      
 
-        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        [DllImport("./recorderDLL.dll", CharSet = CharSet.Auto)]
         static extern uint getDwDataLength();
 
 
-        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        [DllImport("./recorderDLL.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr getHeaderStructure();
 
-        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        [DllImport("./recorderDLL.dll", CharSet = CharSet.Auto)]
         static extern void setDwDataLength(uint dataLength);
 
         private void toolsToolStripMenuItem_Click(object sender, EventArgs e)
