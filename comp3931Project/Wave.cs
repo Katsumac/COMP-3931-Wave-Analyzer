@@ -1,4 +1,14 @@
-﻿namespace comp3931Project
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Channels;
+using System.Threading.Tasks;
+using System.Windows.Forms.DataVisualization.Charting;
+
+namespace comp3931Project
 {
     /**
      * Class that represents a wave. Contains header information
@@ -66,6 +76,7 @@
             this.FMTByteRate = reader.ReadInt32();
             this.FMBlock = reader.ReadInt16();
             this.FMTBPS = reader.ReadInt16();
+           
 
 
             this.DataID = reader.ReadInt32();
@@ -77,6 +88,7 @@
             // possibly read all data into a buffer then process into the proper format, then split channels
 
             byte[] buffer = new byte[DataSize];
+            buffer = reader.ReadBytes(DataSize);
             Data = new byte[DataSize];
             for (int i = 0; i < DataSize; i++)
 
@@ -84,7 +96,7 @@
                 Data[i] = buffer[i];
             }
 
-            buffer = reader.ReadBytes(DataSize); // buffer containing amplitudes as bytes
+           // buffer containing amplitudes as bytes
 
             double[] doubleArr;
 
@@ -153,56 +165,56 @@
         public void readByteArr(byte[] bArr)
         {
 
+        {
             using (MemoryStream memoryStream = new MemoryStream(bArr))
             using (BinaryReader reader = new BinaryReader(memoryStream))
             {
                 memoryStream.Seek(0, SeekOrigin.Begin);
-                this.FMTBPS = 8;
-                this.FMTChannels = 1;
-                this.DataSize = bArr.Length;
+
+                this.ChunkID = 1179011410;
+                this.ChunkSize = bArr.Length + 44;
+                this.Format = 1163280727;
+
+                this.FMTID = 544501094;
+                this.FMTSize = 16;
+                this.FMTFormatTag = (short)wf.wFormatTag;
+                this.FMTChannels = (short)wf.nChannels;
+                this.FMTSampleRate = (int)wf.nSamplesPerSec;
+                this.FMTByteRate = (int)wf.nAvgBytesPerSec;
+                this.FMBlock = (short)wf.nBlockAlign;
+                this.FMTBPS = (short)wf.wBitsPerSample;
+                this.DataID = 1635017060;
+
+                this.DataSize = intValue;
+
+                this.Data = new byte[DataSize];
+                for (int i = 0; i < DataSize; i++)
+                {
+                    Data[i] = bArr[i];
+                }
+
+           
                 int bytesPerSample = FMTBPS / 8;
                 int samples = DataSize / bytesPerSample;
 
-                double[] doubleArr;
+                double[] doubleArr = bArr.Select(b => Convert.ToDouble(b)).ToArray();
 
-                switch (this.FMTBPS)
-                {
-                    case 8:
-                        byte[] byteBuffer = new byte[DataSize];
-                        Buffer.BlockCopy(bArr, 0, byteBuffer, 0, DataSize);
-                        doubleArr = byteBuffer.Select(b => Convert.ToDouble(b)).ToArray();
-                        break;
-                    case 16:
-                        short[] shortBuffer = new short[DataSize / 2];
-                        Buffer.BlockCopy(bArr, 0, shortBuffer, 0, DataSize);
-                        doubleArr = shortBuffer.Select(s => Convert.ToDouble(s)).ToArray();
-                        break;
-                    case 32:
-                        int[] intBuffer = new int[DataSize / 4];
-                        Buffer.BlockCopy(bArr, 0, intBuffer, 0, DataSize);
-                        doubleArr = intBuffer.Select(i => Convert.ToDouble(i)).ToArray();
-                        break;
-                    default:
-                        //maybe pop an error message?
-                        throw new Exception("Difficulty Reading Data.");
-                }
-
-                if (FMTChannels == 1)
-                {
+                this.L = new double[this.DataSize];
+               
                     this.L = doubleArr;
-                }
-                else
-                {
-                    this.L = new double[samples / 2];
-                    this.R = new double[samples / 2];
-
-                    for (int i = 0, interleavedValue = 0; i < doubleArr.Length; i++)
-                    {
-                        this.L[i] = doubleArr[interleavedValue++];
-                        this.R[i] = doubleArr[interleavedValue++];
-                    }
-                }
+               
             }
+        }
+    
+
+    public double[] getL()
+        {
+            return L;
+        }
+
+        public int getDataSize()
+        {
+            return this.DataSize;
         }
 
         /**
@@ -212,7 +224,7 @@
          */
         public double[] getL()
         {
-            return L;
+            return Data;
         }
 
         /**
