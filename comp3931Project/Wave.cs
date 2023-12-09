@@ -156,14 +156,15 @@ namespace comp3931Project
         }
 
         /**
-         * Purpose: Reads the byte array
+         * Purpose: Reads the byte array retrieved from the record DLL
          * 
+         * @param wf: The header information that is linked to the bArr
          * @param bArr: The byte array with data from the buffer
+         * @param intValue: integer representing the datasize of the bArr
          * 
          * @return: None
          */
-        public void readByteArr(byte[] bArr)
-        {
+        public void populateFromRecord(WAVEFORMATEX wf, byte[] bArr, int intValue)
 
         {
             using (MemoryStream memoryStream = new MemoryStream(bArr))
@@ -222,7 +223,7 @@ namespace comp3931Project
          * 
          * @return: A double array containing left channel data
          */
-        public double[] getL()
+        public byte[] getData()
         {
             return Data;
         }

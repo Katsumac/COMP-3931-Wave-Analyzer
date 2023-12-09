@@ -25,7 +25,7 @@ namespace comp3931Project
     public unsafe partial class WaveAnalyzer : Form
     {
         static List<WaveWindow> waveWindowList = new List<WaveWindow>();
-         static WaveWindow activeWaveWindow;
+        static WaveWindow activeWaveWindow;
 
         /**
          * Purpose: Initializes the Wave Analyzer application
@@ -37,11 +37,11 @@ namespace comp3931Project
             InitializeComponent();
         }
 
-       /**
-       * Purpose: Loads the filter/frequency chart
-       * 
-       * @return: None
-       */
+        /**
+        * Purpose: Loads the filter/frequency chart
+        * 
+        * @return: None
+        */
         private void loadFilter()
         {
             Filter filter = new Filter();
@@ -72,7 +72,7 @@ namespace comp3931Project
          */
         private void FileOpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            WaveWindow wavewindow = new WaveWindow();  
+            WaveWindow wavewindow = new WaveWindow();
             Wave wave = new Wave();
             wavewindow.setWave(wave);
 
@@ -227,10 +227,13 @@ namespace comp3931Project
                             int intValue;
 
                             // Check for overflow before converting
-                            if (pByteLength <= int.MaxValue) {
+                            if (pByteLength <= int.MaxValue)
+                            {
                                 intValue = (int)pByteLength;
-                            } else {
-                                intValue = 0; 
+                            }
+                            else
+                            {
+                                intValue = 0;
                                 Console.WriteLine("Warning: ulong value too large to fit into int.");
                             }
 
@@ -241,7 +244,7 @@ namespace comp3931Project
                                 WaveWindow waveWindowRecorded = new WaveWindow();
 
 
-                                waveWindowRecorded.ChartWave(wave);
+                                waveWindowRecorded.ChartWave(waave);
 
                                 waveWindowRecorded.MdiParent = formInstance;
                                 waveWindowRecorded.TopLevel = false;
@@ -277,7 +280,7 @@ namespace comp3931Project
                             EventWaitHandle dataSent = new EventWaitHandle(false, EventResetMode.AutoReset, "dataToDLL");
                             dataSent.Set();
                             Debug.WriteLine("data sent!");
-                         
+
                             break;
                         case 2:
                             programOpen = false;
@@ -324,5 +327,10 @@ namespace comp3931Project
         [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
         static extern void setDwDataLength(uint dataLength);
 
+        private void toolsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EventWaitHandle waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset, "StartRecordingProgram");
+            waitHandle.Set();
+        }
     }
 }
