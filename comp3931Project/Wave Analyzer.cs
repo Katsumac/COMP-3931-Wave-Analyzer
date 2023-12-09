@@ -358,9 +358,6 @@ namespace comp3931Project
         [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
         static extern uint getDwDataLength();
 
-        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
-        static extern void setDwDataLength(uint dl);
-
 
         [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr getHeaderStructure();
