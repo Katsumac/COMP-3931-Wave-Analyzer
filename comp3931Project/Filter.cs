@@ -10,8 +10,8 @@ namespace comp3931Project
         private double start;
         private double end;
         private static Series filterChart;
-        private const int pageSize = 20;
-        private const int yAxisMax = 10;
+        private const int pageSize = 40;
+        private const int yAxisMax = 10000;
         private const int yAxisMin = 0;
         private int zoomedYAxisValue = 10;
 
@@ -45,6 +45,9 @@ namespace comp3931Project
 
             // Customize the bar chart
             ChartArea filterChartArea = chart1.ChartAreas[filterChart.ChartArea];
+            filterChartArea.AxisX.Title = "Frequency Bin";
+            filterChartArea.AxisY.Title = "Amplitude";
+
             customizeBarChart(pageSize, filterChartArea, filterChart);
 
             chart1.MouseWheel += chart1_MouseWheel;
@@ -91,8 +94,9 @@ namespace comp3931Project
             // How much we see on one page
             chartArea.AxisY.Maximum = yAxisMax;
             chartArea.AxisY.Minimum = yAxisMin;
-            
-            chartArea.AxisX.ScaleView.Zoom(0, pageSize);
+
+            chartArea.AxisX.ScaleView.Zoomable = false; // Cannot zoom by highlighting
+            chartArea.AxisX.ScaleView.Zoom(0, pageSize); // Sets default zoom
             filterChart["PixelPointWidth"] = "16";
             chartArea.AxisX.Interval = 1;
             chartArea.AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll; // Sets the thumb style
@@ -137,14 +141,14 @@ namespace comp3931Project
          */
         private void FilterButton_Click(object sender, EventArgs e)
         {
-            double[] samples = dynamicWaveGraph.getSample();
-            Series freq = dynamicWaveGraph.getChartLabel();
+            double[] samples = WaveWindow.getSample();
+            Series freq = WaveWindow.getChartLabel();
             Calculations.createLowPassFilter(samples.Length, (int)end);
             Calculations.convolve(samples);
-            samples = dynamicWaveGraph.getSample();
+            samples = WaveWindow.getSample();
             freq.Points.Clear();
-            dynamicWaveGraph.populateLineChart(samples, freq);
-            dynamicWaveGraph waveGraph = new dynamicWaveGraph();
+            WaveWindow.populateLineChart(samples, freq);
+            WaveWindow waveGraph = new WaveWindow();
             waveGraph.Update();
         }
 
@@ -189,14 +193,14 @@ namespace comp3931Project
          */
         private void filterSyncButton_Click(object sender, EventArgs e)
         {
-            double[] samples = dynamicWaveGraph.getSample();
-            Series freq = dynamicWaveGraph.getChartLabel();
+            double[] samples = WaveWindow.getSample();
+            Series freq = WaveWindow.getChartLabel();
             Calculations.createLowPassFilter(samples.Length, (int)end);
-            Calculations.convolveNonAsm(samples);
-            samples = dynamicWaveGraph.getSample();
+            Calculations.convolveSync(samples);
+            samples = WaveWindow.getSample();
             freq.Points.Clear();
-            dynamicWaveGraph.populateLineChart(samples, freq);
-            dynamicWaveGraph waveGraph = new dynamicWaveGraph();
+            WaveWindow.populateLineChart(samples, freq);
+            WaveWindow waveGraph = new WaveWindow();
             waveGraph.Update();
         }
 
@@ -210,8 +214,13 @@ namespace comp3931Project
          */
         private void iDFTButton_Click(object sender, EventArgs e)
         {
-            double[] testArray = new double[30];
-            Calculations.inverseDFT(testArray.Length, testArray);
+            double[] samples = Calculations.inverseDFT(Calculations.getAmplitudes().Length, Calculations.getAmplitudes());
+            WaveWindow.setSample(samples);
+            Series freq = WaveWindow.getChartLabel();
+            freq.Points.Clear();
+            WaveWindow.populateLineChart(samples, freq);
+            WaveWindow waveGraph = new WaveWindow();
+            waveGraph.Update();
         }
 
         /**
@@ -224,8 +233,12 @@ namespace comp3931Project
          */
         private void iDFTSyncButton_Click(object sender, EventArgs e)
         {
-            double[] testArray = new double[30];
-            Calculations.inverseDFTSync(testArray.Length, testArray);
+            double[] samples = Calculations.inverseDFTSync(Calculations.getAmplitudes().Length, Calculations.getAmplitudes());
+            Series freq = WaveWindow.getChartLabel();
+            freq.Points.Clear();
+            WaveWindow.populateLineChart(samples, freq);
+            WaveWindow waveGraph = new WaveWindow();
+            waveGraph.Update();
         }
     }
 }

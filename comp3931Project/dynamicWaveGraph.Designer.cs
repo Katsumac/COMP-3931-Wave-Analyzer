@@ -34,6 +34,8 @@
             chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             DFTButton = new Button();
             DFTSyncButton = new Button();
+            RectangleWindow = new RadioButton();
+            TriangleWindow = new RadioButton();
             ((System.ComponentModel.ISupportInitialize)chart1).BeginInit();
             SuspendLayout();
             // 
@@ -74,11 +76,39 @@
             DFTSyncButton.UseVisualStyleBackColor = true;
             DFTSyncButton.Click += DFTSyncButton_Click;
             // 
+            // RectangleWindow
+            // 
+            RectangleWindow.AutoSize = true;
+            RectangleWindow.BackColor = SystemColors.Window;
+            RectangleWindow.Location = new Point(861, 167);
+            RectangleWindow.Name = "RectangleWindow";
+            RectangleWindow.Size = new Size(176, 24);
+            RectangleWindow.TabIndex = 3;
+            RectangleWindow.TabStop = true;
+            RectangleWindow.Text = "Rectangle Windowing";
+            RectangleWindow.UseVisualStyleBackColor = false;
+            RectangleWindow.CheckedChanged += RectangleWindow_CheckedChanged;
+            // 
+            // TriangleWindow
+            // 
+            TriangleWindow.AutoSize = true;
+            TriangleWindow.BackColor = SystemColors.Window;
+            TriangleWindow.Location = new Point(861, 211);
+            TriangleWindow.Name = "TriangleWindow";
+            TriangleWindow.Size = new Size(163, 24);
+            TriangleWindow.TabIndex = 4;
+            TriangleWindow.TabStop = true;
+            TriangleWindow.Text = "Triangle Windowing";
+            TriangleWindow.UseVisualStyleBackColor = false;
+            TriangleWindow.CheckedChanged += TriangleWindow_CheckedChanged;
+            // 
             // dynamicWaveGraph
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1035, 300);
+            Controls.Add(TriangleWindow);
+            Controls.Add(RectangleWindow);
             Controls.Add(DFTSyncButton);
             Controls.Add(DFTButton);
             Controls.Add(chart1);
@@ -88,6 +118,7 @@
             Load += dynamicWaveGraph_Load;
             ((System.ComponentModel.ISupportInitialize)chart1).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -95,5 +126,7 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private Button DFTButton;
         private Button DFTSyncButton;
+        private RadioButton RectangleWindow;
+        private RadioButton TriangleWindow;
     }
 }

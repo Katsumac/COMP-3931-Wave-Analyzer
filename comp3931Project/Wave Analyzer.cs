@@ -49,13 +49,8 @@ namespace comp3931Project
          */
         private void Form1_Load(object sender, EventArgs e)
         {
-
-            loadDynamicWaveGraph();
-            loadDynamicWaveGraph2();
-            loadFilter();
-       
-        
-        }
+/*            loadDynamicWaveGraph();
+*/        }
 
         /**
          * Purpose: Loads the wave graph
@@ -69,7 +64,7 @@ namespace comp3931Project
             dynamicWaveGraph.TopLevel = false;
             dynamicWaveGraph.Show();
             dynamicWaveGraph.Location = new Point(0, 10);
-            dynamicWaveGraph.Size = new Size(1035, 300);
+            dynamicWaveGraph.Size = new Size(2035, 800);
 
             foreach (Control control in this.Controls)
             {
@@ -82,39 +77,19 @@ namespace comp3931Project
             }
         }
 
-        private void loadDynamicWaveGraph2()
-        {
-            dynamicWaveGraph2 dynamicWaveGraph2 = new dynamicWaveGraph2();
-            dynamicWaveGraph2.MdiParent = this;
-            dynamicWaveGraph2.TopLevel = false;
-            dynamicWaveGraph2.Show();
-            dynamicWaveGraph2.Location = new Point(0, 320);
-            dynamicWaveGraph2.Size = new Size(1035, 300);
-
-            foreach (Control control in this.Controls)
-            {
-                MdiClient client = control as MdiClient;
-                if (client != null)
-                {
-                    client.BackColor = Color.Blue;
-                    break;
-                }
-            }
-        }
-
-        /**
-         * Purpose: Loads the filter/frequency chart
-         * 
-         * @return: None
-         */
+                /**
+       * Purpose: Loads the filter/frequency chart
+       * 
+       * @return: None
+       */
         private void loadFilter()
         {
             Filter filter = new Filter();
             filter.MdiParent = this;
             filter.TopLevel = false;
             filter.Show();
-            filter.Location = new Point(0, 630);
-            filter.Size = new Size(1035, 300);
+            filter.Location = new Point(0, 420);
+            filter.Size = new Size(1033, 381);
 
             foreach (Control control in this.Controls)
             {
@@ -147,7 +122,7 @@ namespace comp3931Project
                 wavewindow.MdiParent = this;
                 wavewindow.TopLevel = false;
                 wavewindow.Location = new Point(0, 320);
-                wavewindow.Size = new Size(1035, 300);
+                wavewindow.Size = new Size(1033, 372);
                 wavewindow.Show();
 
                 foreach (Control control in this.Controls)
@@ -160,6 +135,8 @@ namespace comp3931Project
                     }
                 }
 
+                loadFilter();
+
                 wavewindow.Show();
                 waveWindowList.Add(wavewindow);
                 activeWaveWindow = wavewindow;
@@ -167,11 +144,6 @@ namespace comp3931Project
             }
         }
 
-
-        private void filterToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            loadFilter();
-        }
         private void WaveAnalyzerPanel_Paint(object sender, PaintEventArgs e)
         {
 
@@ -392,6 +364,9 @@ namespace comp3931Project
 
         [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr getHeaderStructure();
+
+        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        static extern void setDwDataLength(uint dataLength);
 
     }
 }
