@@ -1,3 +1,5 @@
+using ScottPlot.Palettes;
+using System;
 using System.Diagnostics;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
@@ -22,7 +24,7 @@ namespace comp3931Project
     /**
      * Represents the entire Wave Analyzer application
      */
-    public partial class WaveAnalyzer : Form
+    public unsafe partial class WaveAnalyzer : Form
     {
         static List<WaveWindow> waveWindowList = new List<WaveWindow>();
          static WaveWindow activeWaveWindow;
@@ -160,6 +162,7 @@ namespace comp3931Project
 
                 wavewindow.Show();
                 waveWindowList.Add(wavewindow);
+                activeWaveWindow = wavewindow;
                 setActiveWindow(wavewindow);
             }
         }
@@ -280,36 +283,35 @@ namespace comp3931Project
                     {
                         case 0:
                             Debug.WriteLine("Recording ended, passing data");
+
                             IntPtr pByteData = getPSaveBuffer();
                             uint pByteLength = getDwDataLength();
+                            byte[] temp = new byte[pByteLength];
+
+                            unsafe
+                            {
+                                byte* bPointer = (byte*)pByteData;
+                                for (int i = 0; i < pByteLength; i++)
+                                {
+                                    temp[i] = bPointer[i];
+                                }
+                            }
                             IntPtr waveHeaderPtr = getHeaderStructure();
                             WAVEFORMATEX waveFormatEx = Marshal.PtrToStructure<WAVEFORMATEX>(waveHeaderPtr);
-                            Debug.WriteLine(pByteLength);
                             int intValue;
 
-                            // Check for potential overflow before converting
-                            if (pByteLength <= int.MaxValue)
-                            {
+                            // Check for overflow before converting
+                            if (pByteLength <= int.MaxValue) {
                                 intValue = (int)pByteLength;
-                            }
-                            else
-                            {
-                                // Handle the case where the ulong value is too large to fit into an int
-                                // You might want to throw an exception, use a default value, or handle it in some other way
-                                // For example:
-                                intValue = 0; // or any other appropriate default value
+                            } else {
+                                intValue = 0; 
                                 Console.WriteLine("Warning: ulong value too large to fit into int.");
                             }
 
-
-                            byte[] byteArray = new byte[intValue];
-                            Marshal.Copy(pByteData, byteArray, 0, intValue);
-                            Debug.WriteLine(intValue);
                             formInstance.Invoke((MethodInvoker)delegate
                             {
-
                                 Wave waave = new Wave();
-                                waave.populateFromRecord(waveFormatEx, byteArray, intValue);
+                                waave.populateFromRecord(waveFormatEx, temp, intValue);
                                 WaveWindow waveWindowRecorded = new WaveWindow();
 
 
@@ -326,41 +328,30 @@ namespace comp3931Project
                             break;
                         case 1:
                             Debug.WriteLine("Play Recording");
-                    
-                           // IntPtr data = *activeWaveWindow.getWave().getData();
-                           // setPSaveBuffer(data);
-                           setD
-                            /*
-                             * 
-                             *  IntPtr pByteData = getPSaveBuffer();
-                            uint pByteLength = getDwDataLength();
-                            IntPtr waveHeaderPtr = getHeaderStructure();
-                            WAVEFORMATEX waveFormatEx = Marshal.PtrToStructure<WAVEFORMATEX>(waveHeaderPtr);
-                            Debug.WriteLine(pByteLength);
-                            int intValue;
 
-                            // Check for potential overflow before converting
-                            if (pByteLength <= int.MaxValue)
+                            formInstance.Invoke((MethodInvoker)delegate
                             {
-                                intValue = (int)pByteLength;
-                            }
-                            else
-                            {
-                                // Handle the case where the ulong value is too large to fit into an int
-                                // You might want to throw an exception, use a default value, or handle it in some other way
-                                // For example:
-                                intValue = 0; // or any other appropriate default value
-                                Console.WriteLine("Warning: ulong value too large to fit into int.");
-                            }
+                                byte[] arr = activeWaveWindow.getWave().getData();
+                                IntPtr ptr = Marshal.AllocHGlobal(Marshal.SizeOf(arr[0]) * activeWaveWindow.getWave().getDataSize());
 
+                                try
+                                {
+                                    Marshal.Copy(arr, 0, ptr, activeWaveWindow.getWave().getDataSize());
+                                    byte[] data = new byte[activeWaveWindow.getWave().getDataSize()];
+                                    Marshal.Copy(ptr, data, 0, activeWaveWindow.getWave().getDataSize());
+                                    receiveBufferFromCSharp(ptr, (uint)activeWaveWindow.getWave().getDataSize());
+                                }
+                                finally
+                                {
+                                    Marshal.FreeHGlobal(ptr);
+                                }
+                            });
 
-                            byte[] byteArray = new byte[intValue];
-                            Marshal.Copy(pByteData, byteArray, 0, intValue);
-                            Debug.WriteLine(intValue);
-                             * */
-                            //set heaader data from active window
-                            //set other data from active window 
-
+                            setDwDataLength((uint)activeWaveWindow.getWave().getDataSize());
+                            EventWaitHandle dataSent = new EventWaitHandle(false, EventResetMode.AutoReset, "dataToDLL");
+                            dataSent.Set();
+                            Debug.WriteLine("data sent!");
+                         
                             break;
                         case 2:
                             programOpen = false;
@@ -370,6 +361,7 @@ namespace comp3931Project
                             Console.WriteLine("Unexpected event");
                             break;
                     }
+                    Debug.WriteLine("loop end!");
                 }
             }
         }
@@ -379,13 +371,14 @@ namespace comp3931Project
             start();
         }
 
-
-
         [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
         static extern IntPtr getPSaveBuffer();
 
         [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
         static extern void setPSaveBuffer(IntPtr p);
+
+        [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
+        static extern void receiveBufferFromCSharp(IntPtr p, uint length);
 
         [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
         static extern int start();

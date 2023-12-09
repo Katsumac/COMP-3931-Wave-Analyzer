@@ -62,6 +62,7 @@ namespace comp3931Project
             this.FMTByteRate = reader.ReadInt32();
             this.FMBlock = reader.ReadInt16();
             this.FMTBPS = reader.ReadInt16();
+           
 
 
             this.DataID = reader.ReadInt32();
@@ -73,6 +74,7 @@ namespace comp3931Project
             // possibly read all data into a buffer then process into the proper format, then split channels
 
             byte[] buffer = new byte[DataSize];
+            buffer = reader.ReadBytes(DataSize);
             Data = new byte[DataSize];
             for (int i = 0; i < DataSize; i++)
 
@@ -80,7 +82,7 @@ namespace comp3931Project
                 Data[i] = buffer[i];
             }
 
-            buffer = reader.ReadBytes(DataSize); // buffer containing amplitudes as bytes
+           // buffer containing amplitudes as bytes
 
             double[] doubleArr;
 
@@ -150,7 +152,7 @@ namespace comp3931Project
 
                 this.ChunkID = 1179011410;
                 this.ChunkSize = bArr.Length + 44;
-                this.Format = wf.wFormatTag;
+                this.Format = 1163280727;
 
                 this.FMTID = 544501094;
                 this.FMTSize = 16;
@@ -160,20 +162,23 @@ namespace comp3931Project
                 this.FMTByteRate = (int)wf.nAvgBytesPerSec;
                 this.FMBlock = (short)wf.nBlockAlign;
                 this.FMTBPS = (short)wf.wBitsPerSample;
-                this.Data = bArr;
-           
-
-
                 this.DataID = 1635017060;
 
                 this.DataSize = intValue;
+
+                this.Data = new byte[DataSize];
+                for (int i = 0; i < DataSize; i++)
+                {
+                    Data[i] = bArr[i];
+                }
+
+           
                 int bytesPerSample = FMTBPS / 8;
-            int samples = DataSize / bytesPerSample;
+                int samples = DataSize / bytesPerSample;
 
-                // byte[] buffer = reader.ReadBytes(bArr.Length); // buffer containing amplitudes as bytes
                 double[] doubleArr = bArr.Select(b => Convert.ToDouble(b)).ToArray();
-                
 
+                this.L = new double[this.DataSize];
                
                     this.L = doubleArr;
                
