@@ -1,5 +1,5 @@
 #include <windows.h>
-#include "dft.h"
+#include "convolution.h"
 
 HINSTANCE hinst;
 
@@ -10,7 +10,7 @@ int WINAPI DllMain(HINSTANCE hInstance, DWORD fdwReason, PVOID pvReserved)
 }
 
 EXPORT BYTE* convolveASM(int size) {
-	BYTE* arr = (BYTE *) malloc(sizeof(double) * size);
+	BYTE* arr = (BYTE *) malloc(sizeof(BYTE) * size);
 	for (int i = 0; i < size; i++) {
 		arr[i] = i * 3.14;
 	}

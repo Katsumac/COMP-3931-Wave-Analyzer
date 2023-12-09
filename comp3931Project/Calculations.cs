@@ -1,11 +1,5 @@
 using System.Runtime.InteropServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
 
 namespace comp3931Project
 {
@@ -29,8 +23,8 @@ namespace comp3931Project
         private static double inverseDFTRuntimeSync; // Runtime for nonthreaded inverseDFT
         private static double convolutionRuntimeSync; // Runtime for nonthreaded convolution
 
-        [DllImport("C:\\Users\\justi\\source\\repos\\comp3931Project\\x64\\Debug\\dft.dll", CharSet = CharSet.Auto)]
-        static extern double[] convolveASM();
+        [DllImport("C:\\Users\\justi\\source\\repos\\comp3931Project\\x64\\Debug\\convolution.dll", CharSet = CharSet.Auto)]
+        static extern IntPtr convolveASM(int num);
 
 
         /**
@@ -73,9 +67,10 @@ namespace comp3931Project
         {
             Parallel.For(0, N, f => {
 
-                for (int t = 0; t <= N - 1; t++) {
-                    real[f] += S[t] * Math.Cos((2 * Math.PI * t * f) / N);
-                    imaginary[f] -= S[t] * Math.Sin((2 * Math.PI * t * f) / N);
+                for (int t = 0; t < N; t++) {
+                    double theta = (2 * Math.PI * t * f) / N;
+                    real[f] += S[t] * Math.Cos(theta);
+                    imaginary[f] -= S[t] * Math.Sin(theta);
                 }
 
                 A[f] = Math.Sqrt(Math.Pow(real[f], 2) + Math.Pow(imaginary[f], 2));
@@ -111,10 +106,6 @@ namespace comp3931Project
          * 
          * @return: The sample array
          */
-
-
-
-
         public static double[] inverseDFTSync(int N, double[] ampOrFilter) {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -212,7 +203,7 @@ namespace comp3931Project
                     convolutedSamples[sT] += filter[fT] * samples[sT + fT];
                 }
             }
-            dynamicWaveGraph.setSample(convolutedSamples); // Filters the current sample. Should we do it so that it filters the original sample every time?
+            WaveWindow.setSample(convolutedSamples);
             stopwatch.Stop();
             TimeSpan ts = stopwatch.Elapsed;
             convolutionRuntimeSync = ts.TotalMilliseconds;
@@ -257,27 +248,11 @@ namespace comp3931Project
                 samples[t] = s[t];
             }
             runConvolutionThreads(filter, samples, convolutedSamples);
-            dynamicWaveGraph.setSample(convolutedSamples);
+            WaveWindow.setSample(convolutedSamples);
             stopwatch.Stop();
             TimeSpan ts = stopwatch.Elapsed;
             convolutionRuntimeThreaded = ts.TotalMilliseconds;
             displayConvolutionBenchmark(); // Benchmarking
-        }
-
-        /**
-         * Purpose: For testing purposes. Creates samples
-         * 
-         * @param N: Sample size
-         * @param f: Frequency
-         * 
-         * @return: A sample array
-         */
-        public static double[] createSamples(int N, int f) {
-            double[] s = new double[N];
-            for (int t = 0; t < N; t++) {
-                s[t] = Math.Cos((2 * Math.PI * t * f) / N) + Math.Cos((2 * Math.PI * t * (f + 2)) / N);
-            }
-            return s;
         }
 
         /**
@@ -287,7 +262,7 @@ namespace comp3931Project
          */
         private static void displayDFTBenchmark() {
             if (DFTRuntimeSync != 0 && DFTRuntimeThreaded != 0) {
-                string msg = "Threaded DFT is " + DFTRuntimeSync / DFTRuntimeThreaded + " faster than without threads.";
+                string msg = "Multi-threaded DFT is " + DFTRuntimeSync / DFTRuntimeThreaded + " faster than singl-threaded.";
                 string title = "DFT - Threaded vs Unthreaded";
                 MessageBox.Show(msg, title);
             }
@@ -300,7 +275,7 @@ namespace comp3931Project
          */
         private static void displayInverseDFTBenchmark() {
             if (inverseDFTRuntimeSync != 0 && inverseDFTRuntimeThreaded != 0) {
-                string msg = "Threaded inverse DFT is " + inverseDFTRuntimeSync / inverseDFTRuntimeThreaded + " faster than without threads.";
+                string msg = "Multithreaded inverse DFT is " + inverseDFTRuntimeSync / inverseDFTRuntimeThreaded + " faster than single-threaded.";
                 string title = "InverseDFT - Threaded vs Unthreaded";
                 MessageBox.Show(msg, title);
             }
@@ -313,7 +288,7 @@ namespace comp3931Project
          */
         private static void displayConvolutionBenchmark() {
             if (convolutionRuntimeSync != 0 && convolutionRuntimeThreaded != 0) {
-                string msg = "Threaded convolution is " + convolutionRuntimeSync / convolutionRuntimeThreaded + " faster than without threads.";
+                string msg = "Multithreaded convolution is " + convolutionRuntimeSync / convolutionRuntimeThreaded + " faster than single-threaded.";
                 string title = "Convolution - Threaded vs Unthreaded";
                 MessageBox.Show(msg, title);
             }

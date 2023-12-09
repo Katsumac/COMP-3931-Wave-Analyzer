@@ -32,25 +32,16 @@
             fileToolStripMenuItem = new ToolStripMenuItem();
             FileOpenToolStripMenuItem = new ToolStripMenuItem();
             saveToAudioFileToolStripMenuItem = new ToolStripMenuItem();
-            fileToolStripMenuItem1 = new ToolStripMenuItem();
-            loadToolStripMenuItem = new ToolStripMenuItem();
-            audioFileToolStripMenuItem = new ToolStripMenuItem();
-            waveGraphToolStripMenuItem = new ToolStripMenuItem();
-            openToolStripMenuItem = new ToolStripMenuItem();
-            pasteGraphToolStripMenuItem = new ToolStripMenuItem();
             toolsToolStripMenuItem = new ToolStripMenuItem();
             ToolRecordButton = new ToolStripMenuItem();
             newToolStripMenuItem = new ToolStripMenuItem();
-            filterToolStripMenuItem = new ToolStripMenuItem();
-            waveDisplayToolStripMenuItem = new ToolStripMenuItem();
-            settingsToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
             // 
             menuStrip1.ImageScalingSize = new Size(20, 20);
-            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, loadToolStripMenuItem, toolsToolStripMenuItem, settingsToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, toolsToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Padding = new Padding(6, 3, 0, 3);
@@ -60,7 +51,7 @@
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { FileOpenToolStripMenuItem, saveToAudioFileToolStripMenuItem, fileToolStripMenuItem1 });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { FileOpenToolStripMenuItem, saveToAudioFileToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(46, 24);
             fileToolStripMenuItem.Text = "File";
@@ -70,7 +61,7 @@
             FileOpenToolStripMenuItem.Name = "FileOpenToolStripMenuItem";
             FileOpenToolStripMenuItem.Size = new Size(224, 26);
             FileOpenToolStripMenuItem.Text = "Open";
-            FileOpenToolStripMenuItem.Click += surpriseToolStripMenuItem_Click;
+            FileOpenToolStripMenuItem.Click += FileOpenToolStripMenuItem_Click;
             // 
             // saveToAudioFileToolStripMenuItem
             // 
@@ -79,44 +70,9 @@
             saveToAudioFileToolStripMenuItem.Text = "Save to Audio File";
             saveToAudioFileToolStripMenuItem.Click += saveToAudioFileToolStripMenuItem_Click;
             // 
-            // fileToolStripMenuItem1
-            // 
-            fileToolStripMenuItem1.Name = "fileToolStripMenuItem1";
-            fileToolStripMenuItem1.Size = new Size(224, 26);
-            fileToolStripMenuItem1.Text = "File";
-            // 
-            // loadToolStripMenuItem
-            // 
-            loadToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { audioFileToolStripMenuItem, waveGraphToolStripMenuItem, openToolStripMenuItem, pasteGraphToolStripMenuItem });
-            loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            loadToolStripMenuItem.Size = new Size(56, 24);
-            loadToolStripMenuItem.Text = "Load";
-            // 
-            // audioFileToolStripMenuItem
-            // 
-            audioFileToolStripMenuItem.Name = "audioFileToolStripMenuItem";
-            audioFileToolStripMenuItem.Size = new Size(159, 26);
-            audioFileToolStripMenuItem.Text = "Audio File";
-            audioFileToolStripMenuItem.Click += audioFileToolStripMenuItem_Click;
-            // 
-            // waveGraphToolStripMenuItem
-            // 
-            waveGraphToolStripMenuItem.Name = "waveGraphToolStripMenuItem";
-            waveGraphToolStripMenuItem.Size = new Size(159, 26);
-            // 
-            // openToolStripMenuItem
-            // 
-            openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(159, 26);
-            // 
-            // pasteGraphToolStripMenuItem
-            // 
-            pasteGraphToolStripMenuItem.Name = "pasteGraphToolStripMenuItem";
-            pasteGraphToolStripMenuItem.Size = new Size(159, 26);
-            // 
             // toolsToolStripMenuItem
             // 
-            toolsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { ToolRecordButton, filterToolStripMenuItem, waveDisplayToolStripMenuItem });
+            toolsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { ToolRecordButton });
             toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             toolsToolStripMenuItem.Size = new Size(58, 24);
             toolsToolStripMenuItem.Text = "Tools";
@@ -125,34 +81,16 @@
             // 
             ToolRecordButton.DropDownItems.AddRange(new ToolStripItem[] { newToolStripMenuItem });
             ToolRecordButton.Name = "ToolRecordButton";
-            ToolRecordButton.Size = new Size(181, 26);
+            ToolRecordButton.Size = new Size(224, 26);
             ToolRecordButton.Text = "Record";
             ToolRecordButton.MouseEnter += ToolRecordButton_MouseEnter;
             // 
             // newToolStripMenuItem
             // 
             newToolStripMenuItem.Name = "newToolStripMenuItem";
-            newToolStripMenuItem.Size = new Size(122, 26);
+            newToolStripMenuItem.Size = new Size(224, 26);
             newToolStripMenuItem.Text = "New";
             newToolStripMenuItem.Click += newToolStripMenuItem_Click;
-            // 
-            // filterToolStripMenuItem
-            // 
-            filterToolStripMenuItem.Name = "filterToolStripMenuItem";
-            filterToolStripMenuItem.Size = new Size(181, 26);
-            filterToolStripMenuItem.Text = "Filter";
-            // 
-            // waveDisplayToolStripMenuItem
-            // 
-            waveDisplayToolStripMenuItem.Name = "waveDisplayToolStripMenuItem";
-            waveDisplayToolStripMenuItem.Size = new Size(181, 26);
-            waveDisplayToolStripMenuItem.Text = "Wave Display";
-            // 
-            // settingsToolStripMenuItem
-            // 
-            settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            settingsToolStripMenuItem.Size = new Size(76, 24);
-            settingsToolStripMenuItem.Text = "Settings";
             // 
             // WaveAnalyzer
             // 
@@ -165,7 +103,6 @@
             MainMenuStrip = menuStrip1;
             Name = "WaveAnalyzer";
             Text = "Wave Analyzer";
-            Load += Form1_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             ResumeLayout(false);
@@ -176,19 +113,9 @@
         private MenuStrip menuStrip1;
         private ToolStripMenuItem fileToolStripMenuItem;
         private ToolStripMenuItem toolsToolStripMenuItem;
-        private ToolStripMenuItem loadToolStripMenuItem;
-        private ToolStripMenuItem settingsToolStripMenuItem;
         private ToolStripMenuItem FileOpenToolStripMenuItem;
-
-        private ToolStripMenuItem audioFileToolStripMenuItem;
         private ToolStripMenuItem saveToAudioFileToolStripMenuItem;
-        private ToolStripMenuItem filterToolStripMenuItem;
-        private ToolStripMenuItem waveDisplayToolStripMenuItem;
-        private ToolStripMenuItem waveGraphToolStripMenuItem;
-        private ToolStripMenuItem openToolStripMenuItem;
-        private ToolStripMenuItem pasteGraphToolStripMenuItem;
         private ToolStripMenuItem ToolRecordButton;
         private ToolStripMenuItem newToolStripMenuItem;
-        private ToolStripMenuItem fileToolStripMenuItem1;
     }
 }

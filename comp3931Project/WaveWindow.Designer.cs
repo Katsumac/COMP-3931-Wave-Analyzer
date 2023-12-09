@@ -53,14 +53,14 @@
             WaveBoxPanel.Location = new Point(0, 0);
             WaveBoxPanel.Margin = new Padding(2, 1, 2, 1);
             WaveBoxPanel.Name = "WaveBoxPanel";
-            WaveBoxPanel.Size = new Size(1015, 325);
+            WaveBoxPanel.Size = new Size(1035, 325);
             WaveBoxPanel.TabIndex = 1;
             // 
             // TriangleWindowButton
             // 
             TriangleWindowButton.AutoSize = true;
             TriangleWindowButton.BackColor = SystemColors.Window;
-            TriangleWindowButton.Location = new Point(839, 219);
+            TriangleWindowButton.Location = new Point(860, 211);
             TriangleWindowButton.Name = "TriangleWindowButton";
             TriangleWindowButton.Size = new Size(163, 24);
             TriangleWindowButton.TabIndex = 4;
@@ -73,7 +73,7 @@
             // 
             RectangleWindowButton.AutoSize = true;
             RectangleWindowButton.BackColor = SystemColors.Window;
-            RectangleWindowButton.Location = new Point(839, 166);
+            RectangleWindowButton.Location = new Point(860, 163);
             RectangleWindowButton.Name = "RectangleWindowButton";
             RectangleWindowButton.Size = new Size(176, 24);
             RectangleWindowButton.TabIndex = 3;
@@ -116,7 +116,7 @@
             series1.Legend = "Legend1";
             series1.Name = "Series1";
             waveChart.Series.Add(series1);
-            waveChart.Size = new Size(1015, 327);
+            waveChart.Size = new Size(1035, 327);
             waveChart.TabIndex = 0;
             waveChart.Text = "waveChart";
             waveChart.SelectionRangeChanged += waveChart_SelectionRangeChanged;
@@ -127,7 +127,7 @@
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlDark;
-            ClientSize = new Size(1015, 325);
+            ClientSize = new Size(1035, 325);
             Controls.Add(WaveBoxPanel);
             Margin = new Padding(2, 1, 2, 1);
             MaximizeBox = false;
@@ -156,5 +156,6 @@
         private Button DFTSyncButton;
         private RadioButton RectangleWindowButton;
         private RadioButton TriangleWindowButton;
+        private Button DefaultWave;
     }
 }

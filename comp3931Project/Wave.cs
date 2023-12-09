@@ -10,10 +10,13 @@ using System.Windows.Forms.DataVisualization.Charting;
 
 namespace comp3931Project
 {
+    /**
+     * Class that represents a wave. Contains header information
+     */
     public class Wave
     {
         // HEADER = 44 bytes
-        
+
         // RIFF Chunk
         private int ChunkID;
         private int ChunkSize;
@@ -38,10 +41,20 @@ namespace comp3931Project
         private double[] L;
         private byte[] Data;
 
+        /**
+         * Wave constructor
+         */
         public Wave()
         {
         }
 
+        /**
+         * Purpose: Reads the opened wav file
+         * 
+         * @param filename: The name of the file
+         * 
+         * @return: None
+         */
         public void ReadWavFile(String filename)
         {
             FileStream fs = new FileStream(filename, FileMode.Open);
@@ -50,6 +63,7 @@ namespace comp3931Project
 
             reader.BaseStream.Seek(0, SeekOrigin.Begin);
 
+            // Reads the header information from the file
             this.ChunkID = reader.ReadInt32();
             this.ChunkSize = reader.ReadInt32();
             this.Format = reader.ReadInt32();
@@ -141,8 +155,15 @@ namespace comp3931Project
             }
         }
 
-     
-        public void populateFromRecord(WAVEFORMATEX wf, byte[] bArr , int intValue)
+        /**
+         * Purpose: Reads the byte array
+         * 
+         * @param bArr: The byte array with data from the buffer
+         * 
+         * @return: None
+         */
+        public void readByteArr(byte[] bArr)
+        {
 
         {
             using (MemoryStream memoryStream = new MemoryStream(bArr))
@@ -196,16 +217,43 @@ namespace comp3931Project
             return this.DataSize;
         }
 
-        public byte[] getData()
+        /**
+         * Purpose: Returns data from the left channel
+         * 
+         * @return: A double array containing left channel data
+         */
+        public double[] getL()
         {
             return Data;
         }
 
+        /**
+         * Purpose: Returns data from the right channel
+         * 
+         * @return: A double array containing right channel data
+         */
         public double[] getR()
         {
             return R;
         }
 
+        /**
+         * Purpose: Returns the sample rate of the wave
+         * 
+         * @return: The sample rate
+         */
+        public int getSampleRate()
+        {
+            return FMTSampleRate;
+        }
+
+        /**
+         * Purpose: Writes a new wav file
+         * 
+         * @param filename: The name of the file
+         * 
+         * @return: None
+         */
         public void WriteWavFile(String filename)
         {
             FileStream fs = new FileStream(filename, FileMode.Create);
@@ -224,35 +272,42 @@ namespace comp3931Project
             writer.Write(this.FMTBPS);
             writer.Write(this.DataID);
             writer.Write(this.DataSize);
-         
-            switch (this.FMTBPS){
+
+            switch (this.FMTBPS)
+            {
                 case 8:
-                    for (int i = 0; i < this.L.Length; i++){
+                    for (int i = 0; i < this.L.Length; i++)
+                    {
                         writer.Write((byte)this.L[i]);
-                        if (this.FMTChannels == 2){
+                        if (this.FMTChannels == 2)
+                        {
                             writer.Write((byte)this.R[i]);
                         }
                     }
                     break;
                 case 16:
-                    for (int i = 0; i < this.L.Length; i++){
+                    for (int i = 0; i < this.L.Length; i++)
+                    {
                         writer.Write((Int16)this.L[i]);
-                        if (this.FMTChannels == 2){
+                        if (this.FMTChannels == 2)
+                        {
                             writer.Write((Int16)this.R[i]);
                         }
                     }
                     break;
                 case 32:
-                    for (int i = 0; i < this.L.Length; i++){
-                            writer.Write(this.L[i]);
-                        if (this.FMTChannels == 2){
+                    for (int i = 0; i < this.L.Length; i++)
+                    {
+                        writer.Write(this.L[i]);
+                        if (this.FMTChannels == 2)
+                        {
                             writer.Write(this.R[i]);
                         }
                     }
                     break;
-                    default:
-                        break;
-                }
+                default:
+                    break;
+            }
             fs.Close();
         }
     }

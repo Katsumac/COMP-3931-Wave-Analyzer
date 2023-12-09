@@ -10,10 +10,7 @@ namespace comp3931Project
         private double start;
         private double end;
         private static Series filterChart;
-        private const int pageSize = 40;
-        private const int yAxisMax = 10000;
-        private const int yAxisMin = 0;
-        private int zoomedYAxisValue = 10;
+        private const int pageSize = 50;
 
         /**
          * Purpose: Initializes the filter/frequency graph
@@ -36,7 +33,7 @@ namespace comp3931Project
         public void Filter_Load(object sender, EventArgs e)
         {
             chart1.Series.Clear();
-            filterChart = chart1.Series.Add("Frequency");
+            filterChart = chart1.Series.Add("Amplitude");
 
             filterChart.Points.AddXY(1, 1);
             filterChart.Color = Color.Transparent;
@@ -45,7 +42,7 @@ namespace comp3931Project
 
             // Customize the bar chart
             ChartArea filterChartArea = chart1.ChartAreas[filterChart.ChartArea];
-            filterChartArea.AxisX.Title = "Frequency Bin";
+            filterChartArea.AxisX.Title = "Frequency (Hz)";
             filterChartArea.AxisY.Title = "Amplitude";
 
             customizeBarChart(pageSize, filterChartArea, filterChart);
@@ -59,18 +56,22 @@ namespace comp3931Project
         * Purpose: Handles the drawing of the graph
         * 
         * @param A: The amplitudes
+        * @param S: The sample rate
         * @param chartLabel: Represents a set of data points
         * 
         * @return: None
         */
-        public void populateBarChart(double[] A, Series chartLabel)
+        public void populateBarChart(double[] A, int S, Series chartLabel)
         {
+            chartLabel.Points.Clear();
+            A[0] = 0;
             for (int i = 0; i < A.Length; i++)
             {
-                chartLabel.Points.AddXY(i, A[i]);
+                chartLabel.Points.AddXY(i * S / A.Length, A[i]);
             }
             ChartArea filterChartArea = chart1.ChartAreas[filterChart.ChartArea];
             customizeBarChart(pageSize, filterChartArea, filterChart);
+            chart1.Update();
         }
 
         /**
@@ -92,16 +93,26 @@ namespace comp3931Project
             chartArea.CursorX.AutoScroll = true; // Enables scrolling
 
             // How much we see on one page
-            chartArea.AxisY.Maximum = yAxisMax;
-            chartArea.AxisY.Minimum = yAxisMin;
 
             chartArea.AxisX.ScaleView.Zoomable = false; // Cannot zoom by highlighting
-            chartArea.AxisX.ScaleView.Zoom(0, pageSize); // Sets default zoom
             filterChart["PixelPointWidth"] = "16";
-            chartArea.AxisX.Interval = 1;
+            chartArea.AxisX.Interval = 5;
             chartArea.AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll; // Sets the thumb style
             chartArea.AxisX.ScaleView.SmallScrollSize = pageSize; // Small scrolling size
         }
+
+        /**
+         * Context frame that stores x and y values of where we are zooming
+         */
+        private class ZoomFrame
+        {
+            public double XStart { get; set; }
+            public double XFinish { get; set; }
+            public double YStart { get; set; }
+            public double YFinish { get; set; }
+        }
+
+        private readonly Stack<ZoomFrame> _zoomFrames = new Stack<ZoomFrame>();
 
         /**
          * Purpose: Performs zooming when the mouse wheel is scrolled
@@ -113,22 +124,49 @@ namespace comp3931Project
          */
         private void chart1_MouseWheel(object sender, MouseEventArgs e)
         {
-            Chart chart = (Chart)sender;
-            Axis xAxis = chart.ChartAreas[0].AxisX;
-            Axis yAxis = chart.ChartAreas[0].AxisY;
-            double xMin = xAxis.ScaleView.ViewMinimum; // Get minimum x axis value
-            double xMax = xAxis.ScaleView.ViewMaximum; // Get maximum x axis value
-            double posXStart = xAxis.PixelPositionToValue(e.Location.X) - (xMax - xMin) / 10;
-            double posXFinish = xAxis.PixelPositionToValue(e.Location.X) + (xMax - xMin) / 10;
+            var chart = (Chart)sender;
+            var xAxis = chart.ChartAreas[0].AxisX;
+            var yAxis = chart.ChartAreas[0].AxisY;
 
-            if (e.Delta < 0) { // Zoom out
-                zoomedYAxisValue = 10;
-                yAxis.ScaleView.ZoomReset();
-                xAxis.ScaleView.Zoom(0, pageSize);
-            } else if (e.Delta > 0 && zoomedYAxisValue > 1) { // Zoom in
-                xAxis.ScaleView.Zoom(Math.Floor(posXStart), Math.Floor(posXFinish));
-                yAxis.ScaleView.Zoom(0, --zoomedYAxisValue);
+            try
+            {
+                if (e.Delta < 0)
+                {
+                    if (0 < _zoomFrames.Count)
+                    {
+                        var frame = _zoomFrames.Pop();
+                        if (_zoomFrames.Count == 0)
+                        {
+                            xAxis.ScaleView.ZoomReset();
+                            yAxis.ScaleView.ZoomReset();
+                        }
+                        else
+                        {
+                            xAxis.ScaleView.Zoom(frame.XStart, frame.XFinish);
+                            yAxis.ScaleView.Zoom(frame.YStart, frame.YFinish);
+                        }
+                    }
+                }
+                else if (e.Delta > 0)
+                {
+                    var xMin = xAxis.ScaleView.ViewMinimum;
+                    var xMax = xAxis.ScaleView.ViewMaximum;
+                    var yMin = yAxis.ScaleView.ViewMinimum;
+                    var yMax = yAxis.ScaleView.ViewMaximum;
+
+                    _zoomFrames.Push(new ZoomFrame { XStart = xMin, XFinish = xMax, YStart = yMin, YFinish = yMax });
+
+                    var posXStart = xAxis.PixelPositionToValue(e.Location.X) - (xMax - xMin) / 4;
+                    var posXFinish = xAxis.PixelPositionToValue(e.Location.X) + (xMax - xMin) / 4;
+                    var posYStart = yAxis.PixelPositionToValue(e.Location.Y) - (yMax - yMin) / 4;
+                    var posYFinish = yAxis.PixelPositionToValue(e.Location.Y) + (yMax - yMin) / 4;
+
+                    xAxis.ScaleView.Zoom(posXStart, posXFinish);
+                    yAxis.ScaleView.Zoom(posYStart, posYFinish);
+                }
+
             }
+            catch { }
         }
 
         /**
