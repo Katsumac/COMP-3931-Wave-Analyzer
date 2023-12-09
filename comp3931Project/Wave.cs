@@ -146,10 +146,10 @@ namespace comp3931Project
                 this.R = new double[samples / 2];
 
 
-                for (int i = 0, interleavedValue = 0; i < doubleArr.Length; i++)
+                for (int i = 0; i < samples; i++)
                 {
-                    this.L[i] = doubleArr[interleavedValue++];
-                    this.R[i] = doubleArr[interleavedValue++];
+                    this.L[i] = doubleArr[i * 2];    
+                    this.R[i] = doubleArr[i * 2 + 1]; 
                 }
 
             }
@@ -246,6 +246,16 @@ namespace comp3931Project
         public int getSampleRate()
         {
             return FMTSampleRate;
+        }
+
+        /**
+        * Purpose: Returns the channels of the wave
+        * 
+        * @return: The number of channels
+        */
+        public int getChannels()
+        {
+            return FMTChannels;
         }
 
         /**
