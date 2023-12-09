@@ -156,5 +156,6 @@
         private Button DFTSyncButton;
         private RadioButton RectangleWindowButton;
         private RadioButton TriangleWindowButton;
+        private Button DefaultWave;
     }
 }

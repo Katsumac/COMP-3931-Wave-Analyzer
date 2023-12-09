@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Channels;
-using System.Threading.Tasks;
-using System.Windows.Forms.DataVisualization.Charting;
-
-namespace comp3931Project
+﻿namespace comp3931Project
 {
+    /**
+     * Class that represents a wave. Contains header information
+     */
     public class Wave
     {
         // HEADER = 44 bytes
-        
+
         // RIFF Chunk
         private int ChunkID;
         private int ChunkSize;
@@ -37,10 +31,20 @@ namespace comp3931Project
         private double[] L;
         private byte[] Data;
 
+        /**
+         * Wave constructor
+         */
         public Wave()
         {
         }
 
+        /**
+         * Purpose: Reads the opened wav file
+         * 
+         * @param filename: The name of the file
+         * 
+         * @return: None
+         */
         public void ReadWavFile(String filename)
         {
             FileStream fs = new FileStream(filename, FileMode.Open);
@@ -49,6 +53,7 @@ namespace comp3931Project
 
             reader.BaseStream.Seek(0, SeekOrigin.Begin);
 
+            // Reads the header information from the file
             this.ChunkID = reader.ReadInt32();
             this.ChunkSize = reader.ReadInt32();
             this.Format = reader.ReadInt32();
@@ -138,7 +143,13 @@ namespace comp3931Project
             }
         }
 
-     
+        /**
+         * Purpose: Reads the byte array
+         * 
+         * @param bArr: The byte array with data from the buffer
+         * 
+         * @return: None
+         */
         public void readByteArr(byte[] bArr)
         {
 
@@ -146,83 +157,81 @@ namespace comp3931Project
             using (BinaryReader reader = new BinaryReader(memoryStream))
             {
                 memoryStream.Seek(0, SeekOrigin.Begin);
-
-                /* this.ChunkID = reader.ReadInt32();
-                 this.ChunkSize = reader.ReadInt32();
-                 this.Format = reader.ReadInt32();
-
-                 this.FMTID = reader.ReadInt32();
-                 this.FMTSize = reader.ReadInt32();
-                 this.FMTFormatTag = reader.ReadInt16();
-                 this.FMTChannels = reader.ReadInt16();
-                 this.FMTSampleRate = reader.ReadInt32();
-                 this.FMTByteRate = reader.ReadInt32();
-                 this.FMBlock = reader.ReadInt16();
-                 this.FMTBPS = reader.ReadInt16();
-
-                 this.DataID = reader.ReadInt32();
-                 this.DataSize = reader.ReadInt32();*/
                 this.FMTBPS = 8;
                 this.FMTChannels = 1;
                 this.DataSize = bArr.Length;
-            int bytesPerSample = FMTBPS / 8;
-            int samples = DataSize / bytesPerSample;
+                int bytesPerSample = FMTBPS / 8;
+                int samples = DataSize / bytesPerSample;
 
-           // byte[] buffer = reader.ReadBytes(bArr.Length); // buffer containing amplitudes as bytes
+                double[] doubleArr;
 
-            double[] doubleArr;
-
-            switch (this.FMTBPS)
-            {
-                case 8:
-                    byte[] byteBuffer = new byte[DataSize];
-                    Buffer.BlockCopy(bArr, 0, byteBuffer, 0, DataSize);
-                    doubleArr = byteBuffer.Select(b => Convert.ToDouble(b)).ToArray();
-                    break;
-                case 16:
-                    short[] shortBuffer = new short[DataSize / 2];
-                    Buffer.BlockCopy(bArr, 0, shortBuffer, 0, DataSize);
-                    doubleArr = shortBuffer.Select(s => Convert.ToDouble(s)).ToArray();
-                    break;
-                case 32:
-                    int[] intBuffer = new int[DataSize / 4];
-                    Buffer.BlockCopy(bArr, 0, intBuffer, 0, DataSize);
-                    doubleArr = intBuffer.Select(i => Convert.ToDouble(i)).ToArray();
-                    break;
-                default:
-                    //maybe pop an error message?
-                    throw new Exception("Difficulty Reading Data.");
-            }
-
-            if (FMTChannels == 1)
-            {
-                this.L = doubleArr;
-            }
-            else
-            {
-                this.L = new double[samples / 2];
-                this.R = new double[samples / 2];
-
-                for (int i = 0, interleavedValue = 0; i < doubleArr.Length; i++)
+                switch (this.FMTBPS)
                 {
-                    this.L[i] = doubleArr[interleavedValue++];
-                    this.R[i] = doubleArr[interleavedValue++];
+                    case 8:
+                        byte[] byteBuffer = new byte[DataSize];
+                        Buffer.BlockCopy(bArr, 0, byteBuffer, 0, DataSize);
+                        doubleArr = byteBuffer.Select(b => Convert.ToDouble(b)).ToArray();
+                        break;
+                    case 16:
+                        short[] shortBuffer = new short[DataSize / 2];
+                        Buffer.BlockCopy(bArr, 0, shortBuffer, 0, DataSize);
+                        doubleArr = shortBuffer.Select(s => Convert.ToDouble(s)).ToArray();
+                        break;
+                    case 32:
+                        int[] intBuffer = new int[DataSize / 4];
+                        Buffer.BlockCopy(bArr, 0, intBuffer, 0, DataSize);
+                        doubleArr = intBuffer.Select(i => Convert.ToDouble(i)).ToArray();
+                        break;
+                    default:
+                        //maybe pop an error message?
+                        throw new Exception("Difficulty Reading Data.");
+                }
+
+                if (FMTChannels == 1)
+                {
+                    this.L = doubleArr;
+                }
+                else
+                {
+                    this.L = new double[samples / 2];
+                    this.R = new double[samples / 2];
+
+                    for (int i = 0, interleavedValue = 0; i < doubleArr.Length; i++)
+                    {
+                        this.L[i] = doubleArr[interleavedValue++];
+                        this.R[i] = doubleArr[interleavedValue++];
+                    }
                 }
             }
-            }
         }
-    
 
-    public double[] getL()
+        /**
+         * Purpose: Returns data from the left channel
+         * 
+         * @return: A double array containing left channel data
+         */
+        public double[] getL()
         {
             return L;
         }
 
+        /**
+         * Purpose: Returns data from the right channel
+         * 
+         * @return: A double array containing right channel data
+         */
         public double[] getR()
         {
             return R;
         }
 
+        /**
+         * Purpose: Writes a new wav file
+         * 
+         * @param filename: The name of the file
+         * 
+         * @return: None
+         */
         public void WriteWavFile(String filename)
         {
             FileStream fs = new FileStream(filename, FileMode.Create);
@@ -241,35 +250,42 @@ namespace comp3931Project
             writer.Write(this.FMTBPS);
             writer.Write(this.DataID);
             writer.Write(this.DataSize);
-         
-            switch (this.FMTBPS){
+
+            switch (this.FMTBPS)
+            {
                 case 8:
-                    for (int i = 0; i < this.L.Length; i++){
+                    for (int i = 0; i < this.L.Length; i++)
+                    {
                         writer.Write((byte)this.L[i]);
-                        if (this.FMTChannels == 2){
+                        if (this.FMTChannels == 2)
+                        {
                             writer.Write((byte)this.R[i]);
                         }
                     }
                     break;
                 case 16:
-                    for (int i = 0; i < this.L.Length; i++){
+                    for (int i = 0; i < this.L.Length; i++)
+                    {
                         writer.Write((Int16)this.L[i]);
-                        if (this.FMTChannels == 2){
+                        if (this.FMTChannels == 2)
+                        {
                             writer.Write((Int16)this.R[i]);
                         }
                     }
                     break;
                 case 32:
-                    for (int i = 0; i < this.L.Length; i++){
-                            writer.Write(this.L[i]);
-                        if (this.FMTChannels == 2){
+                    for (int i = 0; i < this.L.Length; i++)
+                    {
+                        writer.Write(this.L[i]);
+                        if (this.FMTChannels == 2)
+                        {
                             writer.Write(this.R[i]);
                         }
                     }
                     break;
-                    default:
-                        break;
-                }
+                default:
+                    break;
+            }
             fs.Close();
         }
     }
