@@ -1,9 +1,5 @@
 using System.Diagnostics;
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using static System.Windows.Forms.DataFormats;
 namespace comp3931Project
 {
     /**
@@ -24,45 +20,7 @@ namespace comp3931Project
             InitializeComponent();
         }
 
-        /**
-         * Purpose: Initializes the base program by loading the wave graph and filter/frequency graph
-         * 
-         * @param sender: The object that raised the event
-         * @param e: Contains event data
-         * 
-         * @return: None
-         */
-        private void Form1_Load(object sender, EventArgs e)
-        {
-/*            loadDynamicWaveGraph();
-*/        }
-
-        /**
-         * Purpose: Loads the wave graph
-         * 
-         * @return: None
-         */
-        private void loadDynamicWaveGraph()
-        {
-            dynamicWaveGraph dynamicWaveGraph = new dynamicWaveGraph();
-            dynamicWaveGraph.MdiParent = this;
-            dynamicWaveGraph.TopLevel = false;
-            dynamicWaveGraph.Show();
-            dynamicWaveGraph.Location = new Point(0, 10);
-            dynamicWaveGraph.Size = new Size(2035, 800);
-
-            foreach (Control control in this.Controls)
-            {
-                MdiClient client = control as MdiClient;
-                if (client != null)
-                {
-                    client.BackColor = Color.Blue;
-                    break;
-                }
-            }
-        }
-
-                /**
+       /**
        * Purpose: Loads the filter/frequency chart
        * 
        * @return: None
@@ -87,22 +45,30 @@ namespace comp3931Project
             }
         }
 
+        /**
+         * Purpose: Prompts user to select a wav file. Opens a wave window with the waveform of the wav file and a filter/frequency graph
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains event data
+         * 
+         * @return: None
+         */
         private void FileOpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             WaveWindow wavewindow = new WaveWindow();  
             Wave wave = new Wave();
             wavewindow.setWave(wave);
 
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            OpenFileDialog openFileDialog1 = new OpenFileDialog(); // Opens file menu
             openFileDialog1.Filter = "Wav|*.wav";
             openFileDialog1.Title = "Open a Wav File";
             openFileDialog1.ShowDialog();
 
             if (openFileDialog1.FileName != "")
             {
-                wave.ReadWavFile(openFileDialog1.FileName);
+                wave.ReadWavFile(openFileDialog1.FileName); // Read the wav file
 
-                wavewindow.ChartWave(wave);
+                wavewindow.ChartWave(wave); // Draw the wave on the graph
 
                 wavewindow.MdiParent = this;
                 wavewindow.TopLevel = false;
@@ -129,25 +95,16 @@ namespace comp3931Project
             }
         }
 
-        private void WaveAnalyzerPanel_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void audioFileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Wave wave = new Wave();
-            wave.ReadWavFile("../../../TestWav.wav");
-
-            dynamicWaveGraph waveGraph = new dynamicWaveGraph();
-            waveGraph.Show();
-
-
-        }
-
+        /**
+         * Purpose: Saves the wave in WaveWindow into a new Wav file
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains event data
+         * 
+         * @return: None
+         */
         private void saveToAudioFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "Wav|*.wav";
             saveFileDialog1.Title = "Save a Wav File";
@@ -156,45 +113,18 @@ namespace comp3931Project
             {
                 Wave wave = activeWaveWindow.getWave();
                 wave.WriteWavFile(saveFileDialog1.FileName);
+                activeWaveWindow.Text = Path.GetFileName(saveFileDialog1.FileName);
             }
-            activeWaveWindow.Text = Path.GetFileName(saveFileDialog1.FileName);
-
-            // WaveFileReadWrite.writeFile(WaveFileReadWrite.readFile("../../../music.wav"), ".\\comp3931Project\\music.wav"); //DataID 1634074624
-
         }
 
-
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var fileContent = string.Empty;
-            var filePath = string.Empty;
-
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.InitialDirectory = "c:\\";
-                openFileDialog.Filter = "Wav|*.wav";
-                openFileDialog.Title = "Save a Wav File";
-                openFileDialog.RestoreDirectory = true;
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    //Get the path of specified file
-                    filePath = openFileDialog.FileName;
-
-                    //Read the contents of the file into a stream
-                    var fileStream = openFileDialog.OpenFile();
-
-                    using (StreamReader reader = new StreamReader(fileStream))
-                    {
-                        fileContent = reader.ReadToEnd();
-                    }
-                }
-            }
-
-            MessageBox.Show(fileContent, "File Content at path: " + filePath, MessageBoxButtons.OK);
-        }
-
-
+        /**
+         * Purpose: Starts another record program thread
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains event data
+         * 
+         * @return: None
+         */
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Thread recordProgramThread = new Thread(StartRecordProgram);
@@ -204,18 +134,38 @@ namespace comp3931Project
             recordHandling.Start(this);
         }
 
+        /**
+         * Purpose: Sets an mouse event handler when hovering over the tool record button
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains event data
+         * 
+         * @return: None
+         */
         private void ToolRecordButton_MouseEnter(object sender, EventArgs e)
         {
             EventWaitHandle waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset, "StartRecordingProgram");
             waitHandle.Set();
         }
 
+        /**
+         * Purpose: Sets the active window
+         * 
+         * @param w: A WaveWindow object
+         * 
+         * @return: None
+         */
         private void setActiveWindow(WaveWindow w)
         {
             activeWaveWindow = w;
             // TODO send data
         }
 
+        /**
+         * Purpose: Contains the logic for recording from the recorderDLL.dll
+         * 
+         * @param parameter: An object parameter. Is passed to a thread
+         */
         static void RecordingMethod(object parameter)
         {
             bool programOpen = true;
@@ -297,12 +247,15 @@ namespace comp3931Project
             }
         }
 
+        /**
+         * Purpose: Runs the start function from the recorderDLL.dll
+         * 
+         * @return: None
+         */
         static void StartRecordProgram()
         {
             start();
         }
-
-
 
         [DllImport("../../../recorderDLL.dll", CharSet = CharSet.Auto)]
         static extern int start();

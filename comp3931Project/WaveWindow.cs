@@ -1,18 +1,4 @@
-﻿using ScottPlot;
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
-using static System.Windows.Forms.MonthCalendar;
+﻿using System.Windows.Forms.DataVisualization.Charting;
 
 namespace comp3931Project
 {
@@ -22,14 +8,17 @@ namespace comp3931Project
         private Wave wave;
 
         private static Series amplitude;
-        private static double[] xValues;
-        private static double[] yValues;
+        private static double[] xValues; // Range-selected xValues
+        private static double[] yValues; // Range-selected yValues
         private static double[] dataL;
-        private double start;
-        private double end;
+        private static double[] dataR;
+        private double start; // Start value of selection range
+        private double end; // End value of selection range
         private bool isRectangleWindowing = true; // Toggles between rectangular and triangular windowing. Default is rectangular windowing
 
-
+        /**
+         * The wave window constructor
+         */
         public WaveWindow()
         {
             // create an id 
@@ -38,21 +27,40 @@ namespace comp3931Project
             waveChart.SelectionRangeChanged += waveChart_SelectionRangeChanged;
         }
 
-
+        /**
+         * Purpose: Sets the wave
+         * 
+         * @param w: A Wave instance
+         * 
+         * @return: None
+         */
         public void setWave(Wave w)
         {
             wave = w;
         }
 
+        /**
+         * Purpose: Returns the wave
+         * 
+         * @return: A Wave instance
+         */
         public Wave getWave()
         {
             return wave;
         }
 
+        /**
+         * Purpose: Draws the Wave instance into the wave chart
+         * 
+         * @param w: A Wave instance
+         * 
+         * @return: None
+         */
         public void ChartWave(Wave w)
         {
             this.wave = w;
             dataL = wave.getL();
+            dataR = wave.getR();
 
             waveChart.Series.Clear();
 
@@ -66,8 +74,6 @@ namespace comp3931Project
             {
                 amplitude.Points.AddXY(i, dataL[i]);
             }
-
-
 
             double yMax = 0;
             double yMin = 0;
@@ -85,7 +91,7 @@ namespace comp3931Project
                 }
             }
 
-
+            // Adjusts the default view zoom
             double yAxisMax = 0;
             double yAxisMin = 0;
             double yAxisMaxCur = 0.01;
@@ -131,21 +137,15 @@ namespace comp3931Project
                 }
             }
 
-            if (yAxisMax > yAxisMin * -1 && yAxisMin != 0)
-            {
+            if (yAxisMax > yAxisMin * -1 && yAxisMin != 0) {
                 yAxisMin = -1 * yAxisMax;
-            }
-            else if (yAxisMin == 0)
-            {
-            }
-            else
-            {
+            } else if (yAxisMin == 0){
+            } else {
                 yAxisMax = -1 * yAxisMin;
             }
 
             waveChart.ChartAreas[0].AxisX.Minimum = 0;
-            //  waveChart.ChartAreas[0].AxisX.Maximum = dataL.Length;
-            // Configure the X-axis for scrolling and zooming
+
             waveChart.ChartAreas[0].AxisX.ScrollBar.Enabled = true;
             waveChart.ChartAreas[0].AxisX.ScaleView.Zoomable = false;
             waveChart.ChartAreas[0].AxisY.ScrollBar.Enabled = true;
@@ -153,8 +153,6 @@ namespace comp3931Project
             waveChart.ChartAreas[0].AxisX.ScaleView.SizeType = DateTimeIntervalType.Number;
             waveChart.ChartAreas[0].AxisX.ScaleView.SmallScrollSize = dataL.Length - 2;
             waveChart.ChartAreas[0].CursorX.AutoScroll = true;
-            // waveChart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
-
 
             waveChart.ChartAreas[0].CursorX.IsUserEnabled = true;
             waveChart.ChartAreas[0].CursorX.IsUserSelectionEnabled = true;
@@ -163,35 +161,14 @@ namespace comp3931Project
             // Set initial visible range (adjust as needed)
             waveChart.ChartAreas[0].AxisX.ScaleView.Zoom(0, dataL.Length / 2);
             waveChart.ChartAreas[0].AxisY.ScaleView.Zoom(yAxisMin, yAxisMax);
-            int windowHeight = this.Height;
-            /* waveChart.ChartAreas[0].AxisY.Maximum = yAxisMax;
-             waveChart.ChartAreas[0].AxisY.Minimum = yAxisMin;
- */
-            double interval = yAxisMax;
+
             amplitude.ChartType = SeriesChartType.FastLine;
-
-            /*waveChart.Series[0].ChartType = SeriesChartType.FastLine;
-            //   waveChart.ChartAreas[0].CursorX.AutoScroll = true;
-            waveChart.ChartAreas[0].AxisY.MajorGrid.Interval = interval;
-            waveChart.ChartAreas[0].AxisY.MajorGrid.LineWidth = 2;
-            waveChart.ChartAreas[0].AxisX.MajorGrid.LineWidth = 2;
-            waveChart.ChartAreas[0].AxisY.Interval = interval;
-            //waveChart.ChartAreas[0].AxisX.ScaleView.Zoomable = false;
-           // waveChart.ChartAreas[0].AxisX.ScaleView.SizeType = DateTimeIntervalType.Number;
-            //   waveChart.ChartAreas[0].AxisX.ScaleView.Zoom(1, dataL.Length - 1);
-
-            int pos = (int)waveChart.ChartAreas[0].AxisX.ScaleView.Position;
-
-            waveChart.ChartAreas[0].AxisX.ScrollBar.ButtonStyle = ScrollBarButtonStyles.SmallScroll;
-            waveChart.ChartAreas[0].AxisX.ScrollBar.Size = 15;
-            waveChart.ChartAreas[0].AxisX.ScaleView.SmallScrollSize = dataL.Length - 2;
-            waveChart.ChartAreas[0].AxisY.ScaleView.SmallScrollSize = dataL.Length - 2;
-*/
-
-
         }
 
         // https://stackoverflow.com/questions/13584061/how-to-enable-zooming-in-microsoft-chart-control-by-using-mouse-wheel
+       /**
+        * Context frame to store a range x and y values during zooming
+        */
         private class ZoomFrame
         {
             public double XStart { get; set; }
@@ -202,6 +179,14 @@ namespace comp3931Project
 
         private readonly Stack<ZoomFrame> _zoomFrames = new Stack<ZoomFrame>();
 
+        /**
+         * Purpose: Performs zooming when the mouse wheel is scrolled
+         * 
+         * @param sender: The object that raised the event
+         * @param e: Contains mouse event data
+         * 
+         * @return: None
+         */
         private void waveChart_MouseWheel(object sender, MouseEventArgs e)
         {
             var chart = (Chart)sender;
@@ -249,6 +234,14 @@ namespace comp3931Project
             catch { }
         }
 
+        /**
+         * Purpose: Draws the wave onto the wave chart
+         * 
+         * @param sample: The sample values
+         * @param: chartLabel: The Series to which we add the values to
+         * 
+         * @return: None
+         */
         public static void populateLineChart(double[] sample, Series chartLabel)
         {
             for (int i = 0; i < sample.Length; i++)
@@ -288,18 +281,20 @@ namespace comp3931Project
         {
             Filter filter = new Filter();
             filter.getFilterChart().Points.Clear();
+
+            setDFTValues();
+
             if (isRectangleWindowing)
             {
-                applyRectangularWindow();
+                applyRectangularWindow(yValues);
             }
             else
             {
-                applyTriangularWindow();
+                applyTriangularWindow(yValues);
             }
-            double[] DFTSamples = Calculations.DFT(dataL);
-            filter.populateBarChart(DFTSamples, filter.getFilterChart());
+            double[] samples = Calculations.DFT(yValues);
+            filter.populateBarChart(samples, filter.getFilterChart());
             filter.getFilterChart().Color = Color.Green;
-            filter.Filter_Load(sender, e);
         }
 
         /**
@@ -314,18 +309,18 @@ namespace comp3931Project
         {
             Filter filter = new Filter();
             filter.getFilterChart().Points.Clear();
+
             if (isRectangleWindowing)
             {
-                applyRectangularWindow();
+                applyRectangularWindow(yValues);
             }
             else
             {
-                applyTriangularWindow();
+                applyTriangularWindow(yValues);
             }
-            double[] DFTSamples = Calculations.DFTSync(dataL);
-            filter.populateBarChart(DFTSamples, filter.getFilterChart());
+            double[] samples = Calculations.DFTSync(yValues);
+            filter.populateBarChart(samples, filter.getFilterChart());
             filter.getFilterChart().Color = Color.Green;
-            filter.Filter_Load(sender, e);
         }
 
         /**
@@ -466,12 +461,12 @@ namespace comp3931Project
          * 
          * @return: None
          */
-        private void applyTriangularWindow()
+        private void applyTriangularWindow(double[] arr)
         {
-            int N = dataL.Length;
+            int N = arr.Length;
             for (int n = 0; n < N; n++)
             {
-                dataL[n] *= 1.0 - Math.Abs((n - N / 2) / (N / 2));
+                arr[n] *= 1.0 - Math.Abs((n - N / 2) / (N / 2));
             }
         }
 
@@ -480,12 +475,12 @@ namespace comp3931Project
         * 
         * @return: None
         */
-        private void applyRectangularWindow()
+        private void applyRectangularWindow(double[] arr)
         {
-            int N = dataL.Length;
+            int N = arr.Length;
             for (int n = 0; n < N; n++)
             {
-                dataL[n] *= 1;
+                arr[n] *= 1;
             }
         }
 
@@ -515,7 +510,21 @@ namespace comp3931Project
             isRectangleWindowing = false;
         }
 
-        
-
+        /**
+         * Purpose: Sets values to be sent through DFT
+         * 
+         * @return: None
+         */
+        private void setDFTValues()
+        {
+            int range = (int)(end - start) + 1;
+            xValues = new double[range];
+            yValues = new double[range];
+            for (int i = 0; i < range; i++)
+            {
+                xValues[i] = amplitude.Points[(int)(start + i)].GetValueByName("X");
+                yValues[i] = amplitude.Points[(int)(start + i)].GetValueByName("Y");
+            }
+        }
     }
 }
