@@ -226,6 +226,16 @@
         }
 
         /**
+         * Purpose: Returns the sample rate of the wave
+         * 
+         * @return: The sample rate
+         */
+        public int getSampleRate()
+        {
+            return FMTSampleRate;
+        }
+
+        /**
          * Purpose: Writes a new wav file
          * 
          * @param filename: The name of the file

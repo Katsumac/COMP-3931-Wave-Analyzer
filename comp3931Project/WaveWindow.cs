@@ -245,7 +245,9 @@ namespace comp3931Project
         public static void populateLineChart(double[] sample, Series chartLabel)
         {
             for (int i = 0; i < sample.Length; i++)
+            {
                 chartLabel.Points.AddXY(i, sample[i]);
+            }
         }
 
         /**
@@ -293,7 +295,7 @@ namespace comp3931Project
                 applyTriangularWindow(yValues);
             }
             double[] samples = Calculations.DFT(yValues);
-            filter.populateBarChart(samples, filter.getFilterChart());
+            filter.populateBarChart(samples, wave.getSampleRate(), filter.getFilterChart());
             filter.getFilterChart().Color = Color.Green;
         }
 
@@ -310,6 +312,8 @@ namespace comp3931Project
             Filter filter = new Filter();
             filter.getFilterChart().Points.Clear();
 
+            setDFTValues();
+
             if (isRectangleWindowing)
             {
                 applyRectangularWindow(yValues);
@@ -319,7 +323,7 @@ namespace comp3931Project
                 applyTriangularWindow(yValues);
             }
             double[] samples = Calculations.DFTSync(yValues);
-            filter.populateBarChart(samples, filter.getFilterChart());
+            filter.populateBarChart(samples, wave.getSampleRate(), filter.getFilterChart());
             filter.getFilterChart().Color = Color.Green;
         }
 

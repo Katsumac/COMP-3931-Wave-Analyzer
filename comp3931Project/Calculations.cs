@@ -23,8 +23,8 @@ namespace comp3931Project
         private static double inverseDFTRuntimeSync; // Runtime for nonthreaded inverseDFT
         private static double convolutionRuntimeSync; // Runtime for nonthreaded convolution
 
-        [DllImport("C:\\Users\\justi\\source\\repos\\comp3931Project\\x64\\Debug\\dft.dll", CharSet = CharSet.Auto)]
-        static extern double[] convolveASM();
+        [DllImport("C:\\Users\\justi\\source\\repos\\comp3931Project\\x64\\Debug\\convolution.dll", CharSet = CharSet.Auto)]
+        static extern IntPtr convolveASM(int num);
 
 
         /**
@@ -262,7 +262,7 @@ namespace comp3931Project
          */
         private static void displayDFTBenchmark() {
             if (DFTRuntimeSync != 0 && DFTRuntimeThreaded != 0) {
-                string msg = "Threaded DFT is " + DFTRuntimeSync / DFTRuntimeThreaded + " faster than without threads.";
+                string msg = "Multi-threaded DFT is " + DFTRuntimeSync / DFTRuntimeThreaded + " faster than singl-threaded.";
                 string title = "DFT - Threaded vs Unthreaded";
                 MessageBox.Show(msg, title);
             }
@@ -275,7 +275,7 @@ namespace comp3931Project
          */
         private static void displayInverseDFTBenchmark() {
             if (inverseDFTRuntimeSync != 0 && inverseDFTRuntimeThreaded != 0) {
-                string msg = "Threaded inverse DFT is " + inverseDFTRuntimeSync / inverseDFTRuntimeThreaded + " faster than without threads.";
+                string msg = "Multithreaded inverse DFT is " + inverseDFTRuntimeSync / inverseDFTRuntimeThreaded + " faster than single-threaded.";
                 string title = "InverseDFT - Threaded vs Unthreaded";
                 MessageBox.Show(msg, title);
             }
@@ -288,7 +288,7 @@ namespace comp3931Project
          */
         private static void displayConvolutionBenchmark() {
             if (convolutionRuntimeSync != 0 && convolutionRuntimeThreaded != 0) {
-                string msg = "Threaded convolution is " + convolutionRuntimeSync / convolutionRuntimeThreaded + " faster than without threads.";
+                string msg = "Multithreaded convolution is " + convolutionRuntimeSync / convolutionRuntimeThreaded + " faster than single-threaded.";
                 string title = "Convolution - Threaded vs Unthreaded";
                 MessageBox.Show(msg, title);
             }

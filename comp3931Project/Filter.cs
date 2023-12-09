@@ -42,7 +42,7 @@ namespace comp3931Project
 
             // Customize the bar chart
             ChartArea filterChartArea = chart1.ChartAreas[filterChart.ChartArea];
-            filterChartArea.AxisX.Title = "Frequency Bin";
+            filterChartArea.AxisX.Title = "Frequency (Hz)";
             filterChartArea.AxisY.Title = "Amplitude";
 
             customizeBarChart(pageSize, filterChartArea, filterChart);
@@ -56,17 +56,18 @@ namespace comp3931Project
         * Purpose: Handles the drawing of the graph
         * 
         * @param A: The amplitudes
+        * @param S: The sample rate
         * @param chartLabel: Represents a set of data points
         * 
         * @return: None
         */
-        public void populateBarChart(double[] A, Series chartLabel)
+        public void populateBarChart(double[] A, int S, Series chartLabel)
         {
             chartLabel.Points.Clear();
             A[0] = 0;
             for (int i = 0; i < A.Length; i++)
             {
-                chartLabel.Points.AddXY(i, A[i]);
+                chartLabel.Points.AddXY(i * S / A.Length, A[i]);
             }
             ChartArea filterChartArea = chart1.ChartAreas[filterChart.ChartArea];
             customizeBarChart(pageSize, filterChartArea, filterChart);
