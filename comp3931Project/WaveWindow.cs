@@ -403,8 +403,14 @@ namespace comp3931Project
             int yIndex = 0;
             for (int i = (int)start; i < xValues.Length + start; i++)
             {
-                dataL[i] = yValues[yIndex];
-                yIndex++;
+                if (i >= dataL.Length)
+                {
+                    break;
+                } else
+                {
+                    dataL[i] = yValues[yIndex];
+                    yIndex++;
+                }
             }
             chartLabel.Points.Clear();
             populateLineChart(dataL, chartLabel);
