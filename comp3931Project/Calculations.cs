@@ -262,7 +262,7 @@ namespace comp3931Project
          */
         private static void displayDFTBenchmark() {
             if (DFTRuntimeSync != 0 && DFTRuntimeThreaded != 0) {
-                string msg = "Multi-threaded DFT is " + DFTRuntimeSync / DFTRuntimeThreaded + " faster than singl-threaded.";
+                string msg = "Multi-threaded DFT is " + DFTRuntimeSync / DFTRuntimeThreaded + " faster than single-threaded.";
                 string title = "DFT - Threaded vs Unthreaded";
                 MessageBox.Show(msg, title);
             }
